@@ -1,0 +1,6 @@
+@AdvertBoard.Hosts.Api_HostAddress = http://localhost:5138
+
+GET {{AdvertBoard.Hosts.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
