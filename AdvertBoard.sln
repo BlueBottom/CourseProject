@@ -15,18 +15,31 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Hosts", "Hosts", "{E383C580-A8C7-447A-ADD8-E4AEBAB17BF4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdvertBoard.Application.AppServices", "src\AdvertBoard\Application\AdvertBoard.Application.AppServices\AdvertBoard.Application.AppServices.csproj", "{EF27C82F-2226-4C3F-90B2-EC28B08611C9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B08D8FAC-0A0F-4F79-B8D5-BD58B8CB84BB} = {B08D8FAC-0A0F-4F79-B8D5-BD58B8CB84BB}
+		{E7ABAF7A-43FB-4897-9510-049A753FA6B4} = {E7ABAF7A-43FB-4897-9510-049A753FA6B4}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdvertBoard.Hosts.Api", "src\AdvertBoard\Hosts\AdvertBoard.Hosts.Api\AdvertBoard.Hosts.Api.csproj", "{FA407519-4F77-41B1-AFA2-6B1AB0FC9A60}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdvertBoard.Infrastructure.ComponentRegistrar", "src\AdvertBoard\Infrastructure\AdvertBoard.Infrastructure.ComponentRegistrar\AdvertBoard.Infrastructure.ComponentRegistrar.csproj", "{A0B91A1C-D241-4F6E-9B73-C94993E52968}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E7ABAF7A-43FB-4897-9510-049A753FA6B4} = {E7ABAF7A-43FB-4897-9510-049A753FA6B4}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdvertBoard.Contracts", "src\AdvertBoard\Contracts\AdvertBoard.Contracts\AdvertBoard.Contracts.csproj", "{44490257-73C6-42CD-8A79-4D24F0D1A940}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdvertBoard.Domain", "src\AdvertBoard\Domain\AdvertBoard.Domain\AdvertBoard.Domain.csproj", "{E7ABAF7A-43FB-4897-9510-049A753FA6B4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdvertBoard.Infrastructure.DataAccess", "src\AdvertBoard\Infrastructure\AdvertBoard.Infrastructure.DataAccess\AdvertBoard.Infrastructure.DataAccess.csproj", "{B08D8FAC-0A0F-4F79-B8D5-BD58B8CB84BB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E7ABAF7A-43FB-4897-9510-049A753FA6B4} = {E7ABAF7A-43FB-4897-9510-049A753FA6B4}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdvertBoard.Infrastructure", "src\AdvertBoard\Infrastructure\AdvertBoard.Infrastructure\AdvertBoard.Infrastructure.csproj", "{8D58E3BF-68A2-4D38-B489-8D4E7627EFC0}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E7ABAF7A-43FB-4897-9510-049A753FA6B4} = {E7ABAF7A-43FB-4897-9510-049A753FA6B4}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
