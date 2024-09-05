@@ -1,7 +1,11 @@
 ﻿using AdvertBoard.Contracts.Enums;
 using AdvertBoard.Domain.Base;
+using AdvertBoard.Domain.Contexts.Categories;
+using AdvertBoard.Domain.Contexts.Comments;
+using AdvertBoard.Domain.Contexts.Images;
+using AdvertBoard.Domain.Contexts.Users;
 
-namespace AdvertBoard.Domain.Entities;
+namespace AdvertBoard.Domain.Contexts.Adverts;
 
 /// <summary>
 /// Объявление. 
@@ -11,12 +15,12 @@ public class Advert : BaseEntity
     /// <summary>
     /// Наименование.
     /// </summary>
-    public string Title { get; set; }
-    
+    public string Title { get; set; } = null!;
+
     /// <summary>
     /// Описание.
     /// </summary>
-    public string Description { get; set; }
+    public string? Description { get; set; }
     
     /// <summary>
     /// Цена.
@@ -29,6 +33,16 @@ public class Advert : BaseEntity
     public AdvertStatus Status { get; set; }
     
     /// <summary>
+    /// Город.
+    /// </summary>
+    public string Location { get; set; } = null!;
+    
+    /// <summary>
+    /// Номер телефона.
+    /// </summary>
+    public string? Phone { get; set; }
+
+    /// <summary>
     /// Идентификатор пользователя.
     /// </summary>
     public Guid UserId { get; set; }
@@ -36,7 +50,7 @@ public class Advert : BaseEntity
     /// <summary>
     /// Пользователь, выложивший объявление.
     /// </summary>
-    public User User { get; set; }
+    public virtual User? User { get; set; }
     
     /// <summary>
     /// Идентификатор категории.
@@ -46,15 +60,15 @@ public class Advert : BaseEntity
     /// <summary>
     /// Категория, в которой находится объявление.
     /// </summary>
-    public Category Category { get; set; }
+    public virtual Category? Category { get; set; }
     
     /// <summary>
     /// Изображения объявления.
     /// </summary>
-    public ICollection<Image> Images { get; set; }
+    public virtual ICollection<Image>? Images { get; set; }
     
     /// <summary>
     /// Комментарии к объявлению.
     /// </summary>
-    public ICollection<Comment> Comments { get; set; }
+    public virtual ICollection<Comment>? Comments { get; set; }
 }

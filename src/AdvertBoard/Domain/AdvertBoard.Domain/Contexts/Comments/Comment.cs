@@ -1,6 +1,8 @@
 ﻿using AdvertBoard.Domain.Base;
+using AdvertBoard.Domain.Contexts.Adverts;
+using AdvertBoard.Domain.Contexts.Users;
 
-namespace AdvertBoard.Domain.Entities;
+namespace AdvertBoard.Domain.Contexts.Comments;
 
 /// <summary>
 /// Комментарий к объявлению.
@@ -10,8 +12,8 @@ public class Comment : BaseEntity
     /// <summary>
     /// Содержимое.
     /// </summary>
-    public string Content { get; set; }
-    
+    public string Content { get; set; } = null!;
+
     /// <summary>
     /// Идентификатор пользователя.
     /// </summary>
@@ -20,7 +22,7 @@ public class Comment : BaseEntity
     /// <summary>
     /// Пользователь. 
     /// </summary>
-    public User User { get; set; }
+    public virtual User? User { get; set; }
     
     /// <summary>
     /// Идентификатор объявления.
@@ -30,5 +32,5 @@ public class Comment : BaseEntity
     /// <summary>
     /// Объявление.
     /// </summary>
-    public Advert Advert { get; set; }
+    public virtual Advert? Advert { get; set; }
 }

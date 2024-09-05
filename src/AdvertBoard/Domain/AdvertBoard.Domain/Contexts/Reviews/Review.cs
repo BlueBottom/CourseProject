@@ -1,6 +1,7 @@
 ﻿using AdvertBoard.Domain.Base;
+using AdvertBoard.Domain.Contexts.Users;
 
-namespace AdvertBoard.Domain.Entities;
+namespace AdvertBoard.Domain.Contexts.Reviews;
 
 /// <summary>
 /// Отзыв о пользователе.
@@ -10,8 +11,8 @@ public class Review : BaseEntity
     /// <summary>
     /// Содержимое.
     /// </summary>
-    public string Content { get; set; }
-    
+    public string Content { get; set; } = null!;
+
     /// <summary>
     /// Идентификатор на пользователя, оставившего отзыв.
     /// </summary>
@@ -20,7 +21,7 @@ public class Review : BaseEntity
     /// <summary>
     /// Пользователь, оставивший отзыв.
     /// </summary>
-    public User OwnerUser { get; set; }
+    public virtual User? OwnerUser { get; set; }
     
     /// <summary>
     /// Пользователь, которому оставили отзыв.
@@ -30,5 +31,5 @@ public class Review : BaseEntity
     /// <summary>
     /// Идентификатор на пользователя, которому оставили отзыв.
     /// </summary>
-    public User ReceiverUser { get; set; }
+    public virtual User? ReceiverUser { get; set; }
 }

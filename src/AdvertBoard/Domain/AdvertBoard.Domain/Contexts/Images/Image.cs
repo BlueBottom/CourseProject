@@ -1,6 +1,7 @@
 ﻿using AdvertBoard.Domain.Base;
+using AdvertBoard.Domain.Contexts.Adverts;
 
-namespace AdvertBoard.Domain.Entities;
+namespace AdvertBoard.Domain.Contexts.Images;
 
 /// <summary>
 /// Изображение.
@@ -10,12 +11,12 @@ public class Image : BaseEntity
     /// <summary>
     /// Наименование.
     /// </summary>
-    public string Title { get; set; }
+    public string? Title { get; set; }
     
     /// <summary>
     /// Содержимое.
     /// </summary>
-    public Byte[] Content { get; set; }
+    public byte[] Content { get; set; } = null!;
 
     /// <summary>
     /// Идентификатор объявления.
@@ -25,5 +26,5 @@ public class Image : BaseEntity
     /// <summary>
     /// Объявление.
     /// </summary>
-    public Advert Advert { get; set; }
+    public virtual Advert? Advert { get; set; }
 }

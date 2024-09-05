@@ -1,6 +1,7 @@
 ﻿using AdvertBoard.Domain.Base;
+using AdvertBoard.Domain.Contexts.Adverts;
 
-namespace AdvertBoard.Domain.Entities;
+namespace AdvertBoard.Domain.Contexts.Categories;
 
 /// <summary>
 /// Категория.
@@ -10,25 +11,25 @@ public class Category : BaseEntity
     /// <summary>
     /// Наименование.
     /// </summary>
-    public string Title { get; set; }
-    
-    /// <summary>
-    /// Родительская категория.
-    /// </summary>
-    public Guid ParentId { get; set; }
+    public string Title { get; set; } = null!;
 
     /// <summary>
     /// Родительская категория.
     /// </summary>
-    public Category Parent { get; set; }
+    public Guid? ParentId { get; set; }
+
+    /// <summary>
+    /// Родительская категория.
+    /// </summary>
+    public virtual Category? Parent { get; set; }
     
     /// <summary>
     /// Дочерние категории.
     /// </summary>
-    public ICollection<Category> Childs { get; set; }
+    public virtual ICollection<Category>? Childs { get; set; }
 
     /// <summary>
     /// Объяления.
     /// </summary>
-    public ICollection<Advert> Adverts { get; set; }
+    public virtual ICollection<Advert>? Adverts { get; set; }
 }
