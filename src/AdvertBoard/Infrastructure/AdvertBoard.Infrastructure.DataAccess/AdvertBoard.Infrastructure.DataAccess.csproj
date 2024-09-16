@@ -7,13 +7,16 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="AutoMapper" Version="13.0.1" />
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.8" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="8.0.8" />
       <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4" />
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\Application\AdvertBoard.Application.AppServices\AdvertBoard.Application.AppServices.csproj" />
       <ProjectReference Include="..\..\Domain\AdvertBoard.Domain\AdvertBoard.Domain.csproj" />
+      <ProjectReference Include="..\AdvertBoard.Infrastructure\AdvertBoard.Infrastructure.csproj" />
     </ItemGroup>
 
 </Project>

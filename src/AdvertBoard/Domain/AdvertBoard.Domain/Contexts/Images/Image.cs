@@ -9,11 +9,6 @@ namespace AdvertBoard.Domain.Contexts.Images;
 public class Image : BaseEntity
 {
     /// <summary>
-    /// Наименование.
-    /// </summary>
-    public string? Title { get; set; }
-    
-    /// <summary>
     /// Содержимое.
     /// </summary>
     public byte[] Content { get; set; } = null!;

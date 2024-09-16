@@ -15,6 +15,8 @@ public class CommentConfiguration : IEntityTypeConfiguration<Comment>
         // Конфигурация свойств.
         builder.HasKey(x => x.Id);
 
+        builder.Property(x => x.Id).ValueGeneratedOnAdd();
+
         builder.Property(x => x.Content)
             .HasMaxLength(400)
             .IsRequired();

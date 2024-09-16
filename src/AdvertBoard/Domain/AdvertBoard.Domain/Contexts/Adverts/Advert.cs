@@ -33,9 +33,14 @@ public class Advert : BaseEntity
     public AdvertStatus Status { get; set; }
     
     /// <summary>
-    /// Город.
+    /// Регион.
     /// </summary>
-    public string Location { get; set; } = null!;
+    public int Location { get; set; }
+    
+    /// <summary>
+    /// Точный адрес объявления.
+    /// </summary>
+    public string? Address { get; set; }
     
     /// <summary>
     /// Номер телефона.

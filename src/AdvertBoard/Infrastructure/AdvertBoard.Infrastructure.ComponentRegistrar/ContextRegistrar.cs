@@ -25,6 +25,7 @@ public static class ContextRegistrar
             sp.GetRequiredService<IDbContextOptionsConfigurator<AdvertBoardDbContext>>()
                 .Configure((DbContextOptionsBuilder<AdvertBoardDbContext>)options)
             );
+        serviceCollection.AddScoped<DbContext>(sp => sp.GetRequiredService<AdvertBoardDbContext>());
         return serviceCollection;
     }
 }

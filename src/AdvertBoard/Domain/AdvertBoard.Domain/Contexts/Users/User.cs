@@ -31,6 +31,11 @@ public class User : BaseEntity
     public string Email { get; set; } = null!;
 
     /// <summary>
+    /// Рейтинг пользователя.
+    /// </summary>
+    public decimal? Rating { get; set; }
+    
+    /// <summary>
     /// Пароль.
     /// </summary>
     public string Password { get; set; } = null!;

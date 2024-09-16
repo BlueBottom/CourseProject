@@ -15,8 +15,15 @@ public class ReviewConfiguration : IEntityTypeConfiguration<Review>
         // Конфигурация свойств.
         builder.HasKey(x => x.Id);
 
-        builder.Property(x => x.Content)
+        builder.Property(x => x.Id).ValueGeneratedOnAdd();
+
+        builder
+            .Property(x => x.Content)
             .HasMaxLength(400)
+            .IsRequired();
+
+        builder
+            .Property(x => x.Rating)
             .IsRequired();
         
         builder

@@ -14,6 +14,8 @@ public class AdvertConfiguration : IEntityTypeConfiguration<Advert>
     {
         //Конфигурация свойств.
         builder.HasKey(x => x.Id);
+
+        builder.Property(x => x.Id).ValueGeneratedOnAdd();
         
         builder
             .Property(x => x.Title)
@@ -36,8 +38,12 @@ public class AdvertConfiguration : IEntityTypeConfiguration<Advert>
 
         builder
             .Property(x => x.Location)
-            .HasMaxLength(30)
             .IsRequired();
+
+        builder
+            .Property(x => x.Address)
+            .HasMaxLength(250)
+            .IsRequired(false);
 
         builder.Property(x => x.Phone)
             .HasMaxLength(11)
@@ -45,7 +51,7 @@ public class AdvertConfiguration : IEntityTypeConfiguration<Advert>
         
         builder
             .Property(x => x.CreatedAt)
-            .HasConversion(d => d, d => DateTime.SpecifyKind(d, DateTimeKind.Utc))
+            .HasConversion(d => DateTime.SpecifyKind(d, DateTimeKind.Utc), d => d)
             .IsRequired();
             
         // Конфигурация отношений.

@@ -1,4 +1,5 @@
-﻿using AdvertBoard.Domain.Base;
+﻿using AdvertBoard.Contracts.Enums;
+using AdvertBoard.Domain.Base;
 using AdvertBoard.Domain.Contexts.Users;
 
 namespace AdvertBoard.Domain.Contexts.Reviews;
@@ -12,6 +13,11 @@ public class Review : BaseEntity
     /// Содержимое.
     /// </summary>
     public string Content { get; set; } = null!;
+    
+    /// <summary>
+    /// Оценка пользователя.
+    /// </summary>
+    public ReviewRating Rating { get; set; }
 
     /// <summary>
     /// Идентификатор на пользователя, оставившего отзыв.

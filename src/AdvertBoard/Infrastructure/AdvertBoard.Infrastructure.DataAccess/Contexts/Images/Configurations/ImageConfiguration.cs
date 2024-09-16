@@ -15,14 +15,11 @@ public class ImageConfiguration : IEntityTypeConfiguration<Image>
         // Конфигурация свойств.
         builder.HasKey(x => x.Id);
 
+        builder.Property(x => x.Id).ValueGeneratedOnAdd();
+
         builder
             .Property(x => x.Content)
             .IsRequired();
-
-        builder
-            .Property(x => x.Title)
-            .HasMaxLength(20)
-            .IsRequired(false);
         
         builder
             .Property(x => x.CreatedAt)

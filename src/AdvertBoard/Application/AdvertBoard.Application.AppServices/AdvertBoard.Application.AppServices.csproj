@@ -6,4 +6,13 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\Contracts\AdvertBoard.Contracts\AdvertBoard.Contracts.csproj" />
+      <ProjectReference Include="..\..\Domain\AdvertBoard.Domain\AdvertBoard.Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="AutoMapper" Version="13.0.1" />
+    </ItemGroup>
+
 </Project>

@@ -15,6 +15,8 @@ public class UserConfiguration: IEntityTypeConfiguration<User>
         // Конфигурация свойств.
         builder.HasKey(x => x.Id);
 
+        builder.Property(x => x.Id).ValueGeneratedOnAdd();
+
         builder
             .Property(x => x.Name)
             .HasMaxLength(25)
@@ -34,6 +36,10 @@ public class UserConfiguration: IEntityTypeConfiguration<User>
             .Property(x => x.Phone)
             .HasMaxLength(11)
             .IsRequired();
+
+        builder
+            .Property(x => x.Rating)
+            .IsRequired(false);
         
         builder
             .Property(x => x.CreatedAt)
