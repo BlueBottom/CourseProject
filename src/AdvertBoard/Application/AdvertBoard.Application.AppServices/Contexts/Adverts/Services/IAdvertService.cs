@@ -15,14 +15,15 @@ public interface IAdvertService
     /// <returns>Каталог укороченный моделей объявления.</returns>
     Task<IEnumerable<ShortAdvertDto>> GetAllAsync(GetAllAdvertsDto getAllAdvertsDto,
         CancellationToken cancellationToken);
-    
+
     /// <summary>
     /// Добавляет объявление.
     /// </summary>
     /// <param name="createAdvertDto"></param>
+    /// <param name="userId"></param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Идентификатор объявления.</returns>
-    Task<Guid> AddAsync(CreateAdvertDto createAdvertDto, CancellationToken cancellationToken);
+    Task<Guid> AddAsync(CreateAdvertDto createAdvertDto, Guid userId, CancellationToken cancellationToken);
    
     /// <summary>
     /// Обновлляет объявление.

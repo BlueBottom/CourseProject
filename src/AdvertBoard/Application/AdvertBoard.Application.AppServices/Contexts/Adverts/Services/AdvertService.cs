@@ -35,9 +35,9 @@ public class AdvertService : IAdvertService
     }
 
     /// <inheritdoc/>
-    public Task<Guid> AddAsync(CreateAdvertDto createAdvertDto, CancellationToken cancellationToken)
+    public Task<Guid> AddAsync(CreateAdvertDto createAdvertDto, Guid userId, CancellationToken cancellationToken)
     {
-        return _advertRepository.AddAsync(createAdvertDto, cancellationToken);
+        return _advertRepository.AddAsync(createAdvertDto, userId, cancellationToken);
     }
 
     /// <inheritdoc/>
