@@ -4,6 +4,9 @@ using AdvertBoard.Domain.Contexts.Adverts;
 
 namespace AdvertBoard.Application.AppServices.Contexts.Adverts.Builders;
 
+/// <summary>
+/// Создает спецификацию.
+/// </summary>
 public interface IAdvertSpecificationBuilder
 {
     /// <summary>

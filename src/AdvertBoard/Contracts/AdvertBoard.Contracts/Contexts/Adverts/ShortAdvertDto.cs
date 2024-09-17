@@ -28,7 +28,7 @@ public class ShortAdvertDto
     public AdvertStatus Status { get; set; }
     
     /// <summary>
-    /// Город.
+    /// Регион.
     /// </summary>
     public int Location { get; set; }
     

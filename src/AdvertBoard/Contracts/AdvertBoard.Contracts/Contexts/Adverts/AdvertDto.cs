@@ -5,6 +5,9 @@ using AdvertBoard.Contracts.Enums;
 
 namespace AdvertBoard.Contracts.Contexts.Adverts;
 
+/// <summary>
+/// Модель объявления.
+/// </summary>
 public class AdvertDto
 {
     /// <summary>
@@ -61,11 +64,6 @@ public class AdvertDto
     /// Идентификатор категории.
     /// </summary>
     public Guid CategoryId { get; set; }
-    
-    /// <summary>
-    /// Категория, в которой находится объявление.
-    /// </summary>
-    public virtual ShortCategoryDto Category { get; set; }
     
     /// <summary>
     /// Изображения объявления.

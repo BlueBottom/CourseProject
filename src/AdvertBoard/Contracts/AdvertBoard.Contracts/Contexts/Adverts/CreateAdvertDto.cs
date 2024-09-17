@@ -3,7 +3,7 @@
 namespace AdvertBoard.Contracts.Contexts.Adverts;
 
 /// <summary>
-/// Запрос на создание объявления. 
+/// Модель для создания объявления. 
 /// </summary>
 public class CreateAdvertDto
 {
@@ -23,19 +23,19 @@ public class CreateAdvertDto
     public decimal Price { get; set; }
     
     /// <summary>
-    /// Город.
+    /// Регион.
     /// </summary>
     public string Location { get; set; } = null!;
+    
+    /// <summary>
+    /// Адрес.
+    /// </summary>
+    public string? Address { get; set; }
     
     /// <summary>
     /// Номер телефона.
     /// </summary>
     public string? Phone { get; set; }
-    
-    /// <summary>
-    /// Изображения.
-    /// </summary>
-    public IEnumerable<IFormFile>? Images { get; set; }
     
     /// <summary>
     /// Идентификатор категории.

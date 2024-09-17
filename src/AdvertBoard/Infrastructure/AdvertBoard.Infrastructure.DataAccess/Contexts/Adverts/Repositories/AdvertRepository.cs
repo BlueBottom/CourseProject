@@ -20,7 +20,8 @@ public class AdvertRepository : IAdvertRepository
         _mapper = mapper;
     }
 
-    public async Task<IEnumerable<ShortAdvertDto>> GetAllAsync(ISpecification<Advert> specification, CancellationToken cancellationToken)
+    public async Task<IEnumerable<ShortAdvertDto>> GetAllAsync(ISpecification<Advert> specification,
+        CancellationToken cancellationToken)
     {
         return await _repository
             .GetAll()
@@ -29,26 +30,39 @@ public class AdvertRepository : IAdvertRepository
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<Guid> AddAsync(CreateAdvertDto dto, CancellationToken cancellationToken)
+    public async Task<Guid> AddAsync(CreateAdvertDto createAdvertDto, CancellationToken cancellationToken)
     {
-        var advert = _mapper.Map<CreateAdvertDto, Advert>(dto);
+        var advert = _mapper.Map<CreateAdvertDto, Advert>(createAdvertDto);
+        // TODO: перенести userid 
         advert.UserId = new Guid("850aab5b-2ce3-4561-bf68-0166fa448d44");
         await _repository.AddAsync(advert, cancellationToken);
         return advert.Id;
     }
 
-    public Task<Guid> UpdateAsync(UpdateAdvertDto dto, CancellationToken cancellationToken)
+    public async Task<Guid> UpdateAsync(Guid id, UpdateAdvertDto updateAdvertDto, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var advert = await _repository.GetByIdAsync(id, cancellationToken);
+        // TODO: Добавить нормальное исключение
+        if (advert is null) throw new Exception();
+        _mapper.Map(updateAdvertDto, advert);
+        await _repository.UpdateAsync(advert, cancellationToken);
+        return advert.Id;
     }
 
-    public Task<AdvertDto> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    public async Task<AdvertDto> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var dto = await _repository.GetByIdAsync(id, cancellationToken);
+        // TODO: Добавить нормальное исключение
+        if (dto is null) throw new Exception();
+        return _mapper.Map<Advert, AdvertDto>(dto);
     }
 
-    public Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken)
+    public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var advert = await _repository.GetByIdAsync(id, cancellationToken);
+        // TODO: Добавить нормальное исключение
+        if (advert is null) throw new Exception();
+        await _repository.DeleteAsync(advert, cancellationToken);
+        return true;
     }
 }

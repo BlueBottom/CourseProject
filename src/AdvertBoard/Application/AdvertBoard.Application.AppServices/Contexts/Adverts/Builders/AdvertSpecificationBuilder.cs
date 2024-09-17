@@ -5,8 +5,10 @@ using AdvertBoard.Domain.Contexts.Adverts;
 
 namespace AdvertBoard.Application.AppServices.Contexts.Adverts.Builders;
 
+/// <inheritdoc/>
 public class AdvertSpecificationBuilder : IAdvertSpecificationBuilder
 {
+    /// <inheritdoc/>
     public ISpecification<Advert> Build(GetAllAdvertsDto dto)
     {
         ISpecification<Advert> specification = Specification<Advert>.True;

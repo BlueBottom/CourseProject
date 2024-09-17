@@ -1,7 +1,7 @@
 ﻿namespace AdvertBoard.Contracts.Contexts.Images;
 
 /// <summary>
-/// Изображение.
+/// Модель изображения.
 /// </summary>
 public class ImageDto
 {
@@ -13,5 +13,5 @@ public class ImageDto
     /// <summary>
     /// Содержимое.
     /// </summary>
-    public byte[]? Content { get; set; } = null!;
+    public byte[] Content { get; set; } = null!;
 }

@@ -11,5 +11,7 @@ public class UserMapProfile : Profile
         CreateMap<UserDto, User>(MemberList.None);
         
         CreateMap<ShortUserDto, User>(MemberList.None);
+
+        CreateMap<User, ShortUserDto>(MemberList.None);
     }
 }
