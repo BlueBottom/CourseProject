@@ -39,7 +39,7 @@ public class CategoryConfiguration : IEntityTypeConfiguration<Category>
         // Категории.      
         builder
             .HasOne(x => x.Parent)
-            .WithMany(x => x.Childs)
+            .WithMany(x => x.Children)
             .HasForeignKey(x => x.ParentId)
             .OnDelete(DeleteBehavior.Cascade)
             .IsRequired(false);
