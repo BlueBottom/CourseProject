@@ -4,6 +4,8 @@ using System.Text;
 using AdvertBoard.Application.AppServices.Contexts.Users.Repositories;
 using AdvertBoard.Application.AppServices.Helpers;
 using AdvertBoard.Contracts.Contexts.Users;
+using AdvertBoard.Domain.Contexts.Users;
+using AutoMapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
@@ -14,11 +16,13 @@ public class AuthenticationService : IAuthenticationService
 {
     private readonly IUserRepository _userRepository;
     private readonly IConfiguration _configuration;
+    private readonly IMapper _mapper;
 
-    public AuthenticationService(IUserRepository userRepository, IConfiguration configuration)
+    public AuthenticationService(IUserRepository userRepository, IConfiguration configuration, IMapper mapper)
     {
         _userRepository = userRepository;
         _configuration = configuration;
+        _mapper = mapper;
     }
 
     /// <inheritdoc/>
@@ -30,8 +34,9 @@ public class AuthenticationService : IAuthenticationService
         if (await _userRepository.FindUser(x => x.Phone == registerUserDto.Phone, cancellationToken) is not null)
             throw new Exception();
 
+        var user = _mapper.Map<RegisterUserDto, User>(registerUserDto);
         var password = CryptoHelper.GetBase64Hash(registerUserDto.Password);
-        return await _userRepository.AddUser(registerUserDto, password, cancellationToken);
+        return await _userRepository.AddUser(user, password, cancellationToken);
     }
 
     /// <inheritdoc/>

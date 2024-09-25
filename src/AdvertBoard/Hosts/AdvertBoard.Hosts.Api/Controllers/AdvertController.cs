@@ -31,7 +31,7 @@ public class AdvertController : ControllerBase
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Каталог с укороченными моделями объявлений.</returns>
     [HttpPost("search")]
-    public async Task<IActionResult> GetAllAsync(GetAllAdvertsDto getAllAdvertsDto, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetAllAsync([FromForm] GetAllAdvertsDto getAllAdvertsDto, CancellationToken cancellationToken)
     {
         var result = await _advertService.GetAllAsync(getAllAdvertsDto, cancellationToken);
         return Ok(result);
@@ -48,12 +48,7 @@ public class AdvertController : ControllerBase
     public async Task<IActionResult> AddAsync([FromForm] CreateAdvertDto createAdvertDto,
         CancellationToken cancellationToken)
     {
-        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-        if (userIdClaim == null || !Guid.TryParse(userIdClaim.Value, out Guid userId))
-        {
-            return Unauthorized("Пользователь не авторизован.");
-        }
-        var result = await _advertService.AddAsync(createAdvertDto, userId, cancellationToken);
+        var result = await _advertService.AddAsync(createAdvertDto, cancellationToken);
         return Ok(result);
     }
 

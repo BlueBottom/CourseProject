@@ -9,38 +9,38 @@ namespace AdvertBoard.Application.AppServices.Contexts.Adverts.Builders;
 public class AdvertSpecificationBuilder : IAdvertSpecificationBuilder
 {
     /// <inheritdoc/>
-    public ISpecification<Advert> Build(GetAllAdvertsDto dto)
+    public ISpecification<Advert> Build(GetAllAdvertsDto getAllAdvertsDto)
     {
         ISpecification<Advert> specification = Specification<Advert>.True;
 
-        if (!dto.ShowNonActive)
+        if (!getAllAdvertsDto.ShowNonActive)
         {
-            specification = specification.And(new ActiveAdvertSpecification(dto.ShowNonActive));
+            specification = specification.And(new ActiveAdvertSpecification(getAllAdvertsDto.ShowNonActive));
         }
 
-        if (dto.CategoryId.HasValue)
+        if (getAllAdvertsDto.CategoryId.HasValue)
         {
-            specification = specification.And(new CategoryAdvertSpecification(dto.CategoryId.Value));
+            specification = specification.And(new CategoryAdvertSpecification(getAllAdvertsDto.CategoryId.Value));
         }
 
-        if (dto.Location.HasValue)
+        if (getAllAdvertsDto.Location.HasValue)
         {
-            specification = specification.And(new LocationSpecification(dto.Location.Value));
+            specification = specification.And(new LocationSpecification(getAllAdvertsDto.Location.Value));
         }
 
-        if (dto.MaxPrice.HasValue)
+        if (getAllAdvertsDto.MaxPrice.HasValue)
         {
-            specification = specification.And(new MaxPriceSpecification(dto.MaxPrice.Value));
+            specification = specification.And(new MaxPriceSpecification(getAllAdvertsDto.MaxPrice.Value));
         }
 
-        if (dto.MinPrice.HasValue)
+        if (getAllAdvertsDto.MinPrice.HasValue)
         {
-            specification = specification.And(new MinPriceSpecification(dto.MinPrice.Value));
+            specification = specification.And(new MinPriceSpecification(getAllAdvertsDto.MinPrice.Value));
         }
 
-        if (!string.IsNullOrWhiteSpace(dto.SearchString))
+        if (!string.IsNullOrWhiteSpace(getAllAdvertsDto.SearchString))
         {
-            specification = specification.And(new SearchStringSpecification(dto.SearchString));
+            specification = specification.And(new SearchStringSpecification(getAllAdvertsDto.SearchString));
         }
 
         return specification;

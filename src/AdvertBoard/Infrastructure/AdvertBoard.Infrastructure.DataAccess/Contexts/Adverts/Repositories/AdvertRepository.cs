@@ -30,21 +30,18 @@ public class AdvertRepository : IAdvertRepository
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<Guid> AddAsync(CreateAdvertDto createAdvertDto, Guid userId, CancellationToken cancellationToken)
+    public async Task<Guid> AddAsync(Advert advert, CancellationToken cancellationToken)
     {
-        var advert = _mapper.Map<CreateAdvertDto, Advert>(createAdvertDto);
-        //TODO: перенести userid 
-        advert.UserId = userId;
         await _repository.AddAsync(advert, cancellationToken);
         return advert.Id;
     }
 
-    public async Task<Guid> UpdateAsync(Guid id, UpdateAdvertDto updateAdvertDto, CancellationToken cancellationToken)
+    public async Task<Guid> UpdateAsync(Guid id, Advert updatedAdvert, CancellationToken cancellationToken)
     {
         var advert = await _repository.GetByIdAsync(id, cancellationToken);
         //TODO: Добавить нормальное исключение
         if (advert is null) throw new Exception();
-        _mapper.Map(updateAdvertDto, advert);
+        _mapper.Map(advert, updatedAdvert);
         await _repository.UpdateAsync(advert, cancellationToken);
         return advert.Id;
     }

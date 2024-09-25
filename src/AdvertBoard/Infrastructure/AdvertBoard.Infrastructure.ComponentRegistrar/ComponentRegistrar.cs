@@ -11,6 +11,7 @@ using AdvertBoard.Application.AppServices.Contexts.Images.Repositories;
 using AdvertBoard.Application.AppServices.Contexts.Images.Services;
 using AdvertBoard.Application.AppServices.Contexts.Reviews.Repositories;
 using AdvertBoard.Application.AppServices.Contexts.Reviews.Services;
+using AdvertBoard.Application.AppServices.Contexts.Users.Builders;
 using AdvertBoard.Application.AppServices.Contexts.Users.Repositories;
 using AdvertBoard.Application.AppServices.Contexts.Users.Services;
 using AdvertBoard.Infrastructure.ComponentRegistrar.MapProfiles;
@@ -23,8 +24,10 @@ using AdvertBoard.Infrastructure.DataAccess.Contexts.Users.Repositories;
 using AdvertBoard.Infrastructure.Repository;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.IdentityModel.Tokens;
 
 namespace AdvertBoard.Infrastructure.ComponentRegistrar;
@@ -75,6 +78,7 @@ public static class ComponentRegistrar
     private static IServiceCollection AddBuilders(this IServiceCollection serviceCollection)
     {
         serviceCollection.AddScoped<IAdvertSpecificationBuilder, AdvertSpecificationBuilder>();
+        serviceCollection.AddScoped<IUserSpecificationBuilder, UserSpecificationBuilder>();
 
         return serviceCollection;
     }
@@ -102,6 +106,8 @@ public static class ComponentRegistrar
     public static IServiceCollection AddAuthenticationWithJwtToken(this IServiceCollection serviceCollection,
         IConfiguration configuration)
     {
+        serviceCollection.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+        
         serviceCollection.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {

@@ -1,5 +1,6 @@
 ﻿using AdvertBoard.Application.AppServices.Contexts.Authentication.Services;
 using AdvertBoard.Contracts.Contexts.Users;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AdvertBoard.Hosts.Api.Controllers;
@@ -8,6 +9,7 @@ namespace AdvertBoard.Hosts.Api.Controllers;
 /// Контроллер для работы с сервисом аутентификации.
 /// </summary>
 [ApiController]
+[AllowAnonymous]
 [Route("[controller]")]
 public class AuthenticationController : ControllerBase
 {
@@ -29,7 +31,7 @@ public class AuthenticationController : ControllerBase
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Идентификатор пользователя.</returns>
     [HttpPost("register")]
-    public async Task<IActionResult> RegisterAsync(RegisterUserDto registerUserDto, CancellationToken cancellationToken)
+    public async Task<IActionResult> RegisterAsync([FromForm] RegisterUserDto registerUserDto, CancellationToken cancellationToken)
     {
         var result = await _authenticationService.RegisterAsync(registerUserDto, cancellationToken);
         return Ok(result);
@@ -42,7 +44,7 @@ public class AuthenticationController : ControllerBase
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>JWT токен.</returns>
     [HttpPost("login")]
-    public async Task<IActionResult> LoginAsync(LoginUserDto loginUserDto, CancellationToken cancellationToken)
+    public async Task<IActionResult> LoginAsync([FromForm] LoginUserDto loginUserDto, CancellationToken cancellationToken)
     {
         var result = await _authenticationService.LoginAsync(loginUserDto, cancellationToken);
         return Ok(result);

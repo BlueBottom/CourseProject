@@ -1,9 +1,11 @@
-﻿namespace AdvertBoard.Contracts.Contexts.Adverts;
+﻿using AdvertBoard.Contracts.Shared;
+
+namespace AdvertBoard.Contracts.Contexts.Adverts;
 
 /// <summary>
 /// Модель отображения доски объялений с фильтрами.
 /// </summary>
-public class GetAllAdvertsDto
+public class GetAllAdvertsDto : PaginationRequest
 {
     /// <summary>
     /// Номер страницы.

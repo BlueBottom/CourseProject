@@ -21,20 +21,19 @@ public interface IAdvertRepository
     /// <summary>
     /// Добавляет объявление.
     /// </summary>
-    /// <param name="createAdvertDto"></param>
-    /// <param name="userId"></param>
+    /// <param name="advert"></param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Идентификатор объявления.</returns>
-    Task<Guid> AddAsync(CreateAdvertDto createAdvertDto, Guid userId, CancellationToken cancellationToken);
+    Task<Guid> AddAsync(Advert advert, CancellationToken cancellationToken);
 
     /// <summary>
     /// Обновлляет объявление.
     /// </summary>
     /// <param name="id">Идентификатор.</param>
-    /// <param name="updateAdvertDto"></param>
+    /// <param name="advert"></param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Идентификатор объявления.</returns>
-    Task<Guid> UpdateAsync(Guid id, UpdateAdvertDto updateAdvertDto, CancellationToken cancellationToken);
+    Task<Guid> UpdateAsync(Guid id, Advert advert, CancellationToken cancellationToken);
     
     /// <summary>
     /// Получает объявление по идентификатору.

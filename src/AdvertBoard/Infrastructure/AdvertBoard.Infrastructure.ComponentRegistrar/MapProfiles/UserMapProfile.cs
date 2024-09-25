@@ -8,7 +8,14 @@ public class UserMapProfile : Profile
 {
     public UserMapProfile()
     {
-        CreateMap<UserDto, User>(MemberList.None);
+        CreateMap<User, User>(MemberList.None)
+            .ForMember(x => x.Password, map => map.Ignore())
+            .ForMember(x => x.CreatedAt, map => map.Ignore());
+            // .ForMember(x => x.Rating, map => map.Ignore());
+        
+        CreateMap<UpdateUserDto, User>(MemberList.None);
+
+        CreateMap<User, UserDto>(MemberList.None);
 
         CreateMap<ShortUserDto, User>(MemberList.None);
 

@@ -28,9 +28,8 @@ public class ImageRepository : IImageRepository
             .FirstOrDefaultAsync(cancellationToken);
     }
 
-    public async Task<Guid> AddAsync(CreateImageDto createImageDto, CancellationToken cancellationToken)
+    public async Task<Guid> AddAsync(Image image, CancellationToken cancellationToken)
     {
-        var image = _mapper.Map<CreateImageDto, Image>(createImageDto);
         await _repository.AddAsync(image, cancellationToken);
         return image.Id;
     }

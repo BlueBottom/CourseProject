@@ -1,5 +1,6 @@
 ﻿using AdvertBoard.Application.AppServices.Contexts.Images.Repositories;
 using AdvertBoard.Contracts.Contexts.Images;
+using AdvertBoard.Domain.Contexts.Images;
 using AutoMapper;
 
 namespace AdvertBoard.Application.AppServices.Contexts.Images.Services;
@@ -30,7 +31,8 @@ public class ImageService : IImageService
     /// <inheritdoc/>
     public Task<Guid> AddAsync(CreateImageDto createImageDto, CancellationToken cancellationToken)
     {
-        return _imageRepository.AddAsync(createImageDto, cancellationToken);
+        var image = _mapper.Map<CreateImageDto, Image>(createImageDto);
+        return _imageRepository.AddAsync(image, cancellationToken);
     }
 
     /// <inheritdoc/>

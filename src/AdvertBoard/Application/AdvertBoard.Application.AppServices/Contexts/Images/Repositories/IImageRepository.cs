@@ -16,10 +16,10 @@ public interface IImageRepository
     /// <summary>
     /// Добавляет изображение к объявлению.
     /// </summary>
-    /// <param name="createImageDto"></param>
+    /// <param name="image"></param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Идентификатор изображения.</returns>
-    public Task<Guid> AddAsync(CreateImageDto createImageDto, CancellationToken cancellationToken);
+    public Task<Guid> AddAsync(Image image, CancellationToken cancellationToken);
     
     /// <summary>
     /// Удаляет изображение.

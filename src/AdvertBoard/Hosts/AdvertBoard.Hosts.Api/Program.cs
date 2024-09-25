@@ -1,7 +1,9 @@
+using System.IdentityModel.Tokens.Jwt;
 using AdvertBoard.Contracts.Contexts.Adverts;
 using AdvertBoard.Contracts.Contexts.Images;
 using AdvertBoard.Hosts.Api.Controllers;
 using AdvertBoard.Infrastructure.ComponentRegistrar;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,6 +32,34 @@ builder.Services.AddSwaggerGen(options =>
             options.IncludeXmlComments(xmlPath);
         }
     }
+    
+    options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new ()
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = """
+                      JWT Authorization header using the Bearer scheme. 
+                      Enter 'Bearer' [space] and then your token in the text input below.
+                      Example: Bearer 1safsfsdfdfd
+                      """,
+    });
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = JwtBearerDefaults.AuthenticationScheme,
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
 });
 builder.Services.AddDependencies();
 builder.Services.AddDatabase(builder.Configuration);
@@ -56,6 +86,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UsePathBase("/api");
 app.UseHttpsRedirection();
 app.UseCors("AllowSpecificOrigin");
 app.UseAuthentication();

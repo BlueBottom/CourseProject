@@ -1,0 +1,26 @@
+﻿services:
+  advertboard.hosts.api:
+    image: advertboard.hosts.api
+    build:
+      context: .
+      dockerfile: src/AdvertBoard/Hosts/AdvertBoard.Hosts.Api/Dockerfile
+
+  advertboard.hosts.dbmigrator:
+    image: advertboard.hosts.dbmigrator
+    build:
+      context: .
+      dockerfile: src/AdvertBoard/Hosts/AdvertBoard.Hosts.DbMigrator/Dockerfile
+      
+  postgres:
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+
+volumes:
+  pg-data:
+
