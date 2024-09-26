@@ -39,10 +39,11 @@ public interface IUserRepository
     /// <summary>
     /// Обновляет данные о пользователе.
     /// </summary>
+    /// <param name="userId"></param>
     /// <param name="updatedUser">Обновленный пользователь.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Идентификатор.</returns>
-    Task<Guid> UpdateAsync(User updatedUser, CancellationToken cancellationToken);
+    Task<Guid> UpdateAsync(Guid userId, User updatedUser, CancellationToken cancellationToken);
     
     /// <summary>
     /// Удаляет пользователя.

@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using AdvertBoard.Application.AppServices.Authorization.Handlers;
 using AdvertBoard.Application.AppServices.Contexts.Adverts.Builders;
 using AdvertBoard.Application.AppServices.Contexts.Adverts.Repositories;
 using AdvertBoard.Application.AppServices.Contexts.Adverts.Services;
@@ -24,6 +25,7 @@ using AdvertBoard.Infrastructure.DataAccess.Contexts.Users.Repositories;
 using AdvertBoard.Infrastructure.Repository;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -58,6 +60,11 @@ public static class ComponentRegistrar
         serviceCollection.AddScoped<ICategoryService, CategoryService>();
         serviceCollection.AddScoped<IAuthenticationService, AuthenticationService>();
 
+        //Handlers для работы с ресурсной авторизацией.
+        serviceCollection.AddScoped<IAuthorizationHandler, IsAdvertOwnerHandler>();
+        serviceCollection.AddScoped<IAuthorizationHandler, IsCurrentUserHandler>();
+        serviceCollection.AddScoped<IAuthorizationHandler, IsAdminHandler>();
+        
         return serviceCollection;
     }
 

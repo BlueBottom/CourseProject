@@ -14,7 +14,7 @@ public interface IUserService
     /// <param name="id">Идентификатор.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Модель пользователя.</returns>
-    public Task<UserDto> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+    Task<UserDto> GetByIdAsync(Guid id, CancellationToken cancellationToken);
 
     /// <summary>
     /// Обновляет информацию пользователя.
@@ -22,14 +22,15 @@ public interface IUserService
     /// <param name="updateUserDto">Модель обновления пользователя.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Идентификатор.</returns>
-    public Task<Guid> UpdateAsync(UpdateUserDto updateUserDto, CancellationToken cancellationToken);
+    Task<Guid> UpdateAsync(Guid userId, UpdateUserDto updateUserDto, CancellationToken cancellationToken);
 
     /// <summary>
     /// Удаляет пользователя.
     /// </summary>
+    /// <param name="userId"></param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Статус действия типа <see cref="bool"/>.</returns>
-    public Task<bool> DeleteAsync(CancellationToken cancellationToken);
+    Task<bool> DeleteAsync(Guid userId, CancellationToken cancellationToken);
 
     /// <summary>
     /// Получает пользователей по фильтру.

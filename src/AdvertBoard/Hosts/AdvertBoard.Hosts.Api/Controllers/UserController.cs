@@ -28,14 +28,16 @@ public class UserController : ControllerBase
     /// <summary>
     /// Обновляет данные пользователя.
     /// </summary>
+    /// <param name="userId"></param>
     /// <param name="updateUserDto">Модель обновления пользователя.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Идентификатор.</returns>
     [Authorize]
     [HttpPut]
-    public async Task<IActionResult> UpdateAsync([FromForm] UpdateUserDto updateUserDto, CancellationToken cancellationToken)
+    public async Task<IActionResult> UpdateAsync(Guid userId, [FromForm] UpdateUserDto updateUserDto,
+        CancellationToken cancellationToken)
     {
-        var result = await _userService.UpdateAsync(updateUserDto, cancellationToken);
+        var result = await _userService.UpdateAsync(userId, updateUserDto, cancellationToken);
         return Ok(result);
     }
 
@@ -46,9 +48,9 @@ public class UserController : ControllerBase
     /// <returns><see cref="NoContentResult"/></returns>
     [Authorize]
     [HttpDelete]
-    public async Task<IActionResult> DeleteAsync(CancellationToken cancellationToken)
+    public async Task<IActionResult> DeleteAsync(Guid userId, CancellationToken cancellationToken)
     {
-        var result = await _userService.DeleteAsync(cancellationToken);
+        var result = await _userService.DeleteAsync(userId, cancellationToken);
         return NoContent();
     }
 
@@ -71,7 +73,7 @@ public class UserController : ControllerBase
     /// <param name="getAllUsersDto">Модель получения пользователей.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Коллекцию укороченных моделей пользователя.</returns>
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     [HttpPost("search")]
     public async Task<IActionResult> GetAllAsync([FromForm] GetAllUsersDto getAllUsersDto,
         CancellationToken cancellationToken)

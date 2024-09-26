@@ -1,9 +1,11 @@
 ﻿using System.Security.Claims;
+using AdvertBoard.Application.AppServices.Authorization.Requirements;
 using AdvertBoard.Application.AppServices.Contexts.Adverts.Builders;
 using AdvertBoard.Application.AppServices.Contexts.Adverts.Repositories;
 using AdvertBoard.Contracts.Contexts.Adverts;
 using AdvertBoard.Domain.Contexts.Adverts;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 
 namespace AdvertBoard.Application.AppServices.Contexts.Adverts.Services;
@@ -15,6 +17,7 @@ public class AdvertService : IAdvertService
     private readonly IMapper _mapper;
     private readonly IAdvertSpecificationBuilder _advertSpecificationBuilder;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IAuthorizationService _authorizationService;
 
     /// <summary>
     /// Инициализирует экземпляр класса.
@@ -22,18 +25,23 @@ public class AdvertService : IAdvertService
     /// <param name="advertRepository">Репозиторий.</param>
     /// <param name="mapper">Маппер.</param>
     /// <param name="advertSpecificationBuilder">Спецификация.</param>
-    public AdvertService(IAdvertRepository advertRepository, IMapper mapper, IAdvertSpecificationBuilder advertSpecificationBuilder, IHttpContextAccessor httpContextAccessor)
+    /// <param name="httpContextAccessor">Сервия для доступа к <see cref="HttpContext"/>.</param>
+    /// <param name="authorizationService">Сервис для реализации requirements.</param>
+    public AdvertService(IAdvertRepository advertRepository, IMapper mapper,
+        IAdvertSpecificationBuilder advertSpecificationBuilder, IHttpContextAccessor httpContextAccessor,
+        IAuthorizationService authorizationService)
     {
         _advertRepository = advertRepository;
         _mapper = mapper;
         _advertSpecificationBuilder = advertSpecificationBuilder;
         _httpContextAccessor = httpContextAccessor;
+        _authorizationService = authorizationService;
     }
 
     /// <inheritdoc/>
     public Task<IEnumerable<ShortAdvertDto>> GetAllAsync(GetAllAdvertsDto getAllAdvertsDto,
         CancellationToken cancellationToken)
-    {   
+    {
         var specification = _advertSpecificationBuilder.Build(getAllAdvertsDto);
 
         return _advertRepository.GetAllAsync(specification, cancellationToken);
@@ -45,7 +53,7 @@ public class AdvertService : IAdvertService
         var advert = _mapper.Map<CreateAdvertDto, Advert>(createAdvertDto);
         var claims = _httpContextAccessor.HttpContext.User.Claims;
         var claimId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-        
+
         if (string.IsNullOrWhiteSpace(claimId))
         {
             return null;
@@ -53,16 +61,21 @@ public class AdvertService : IAdvertService
 
         var userId = Guid.Parse(claimId);
 
-        advert.UserId = userId; 
+        advert.UserId = userId;
         return _advertRepository.AddAsync(advert, cancellationToken);
     }
 
     /// <inheritdoc/>
-    public Task<Guid> UpdateAsync(Guid id, UpdateAdvertDto updateAdvertDto, CancellationToken cancellationToken)
+    public async Task<Guid> UpdateAsync(Guid id, UpdateAdvertDto updateAdvertDto, CancellationToken cancellationToken)
     {
+        var existingAdvert = await _advertRepository.GetByIdAsync(id, cancellationToken);
+        var authResult = await _authorizationService.AuthorizeAsync(_httpContextAccessor.HttpContext.User, existingAdvert,
+            new ResourceOwnerRequirement());
+        //TODO: исключение
+        if (!authResult.Succeeded) throw new Exception("нет доступа");
         var advert = _mapper.Map<UpdateAdvertDto, Advert>(updateAdvertDto);
-        
-        return _advertRepository.UpdateAsync(id, advert, cancellationToken);
+
+        return await _advertRepository.UpdateAsync(id, advert, cancellationToken);
     }
 
     /// <inheritdoc/>
@@ -72,8 +85,13 @@ public class AdvertService : IAdvertService
     }
 
     /// <inheritdoc/>
-    public Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken)
+    public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken)
     {
-        return _advertRepository.DeleteAsync(id, cancellationToken);
+        var existingAdvert = await _advertRepository.GetByIdAsync(id, cancellationToken);
+        var authResult = await _authorizationService.AuthorizeAsync(_httpContextAccessor.HttpContext.User, existingAdvert,
+            new ResourceOwnerRequirement());
+        //TODO: исключение
+        if (!authResult.Succeeded) throw new Exception("нет доступа");
+        return await _advertRepository.DeleteAsync(id, cancellationToken);
     }
 }

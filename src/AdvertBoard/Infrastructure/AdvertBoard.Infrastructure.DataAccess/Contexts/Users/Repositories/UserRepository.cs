@@ -54,17 +54,17 @@ public class UserRepository : IUserRepository
     }
 
     /// <inheritdoc/>
-    public async Task<Guid> UpdateAsync(User updatedUser, CancellationToken cancellationToken)
+    public async Task<Guid> UpdateAsync(Guid userId, User updatedUser, CancellationToken cancellationToken)
     {
-        var user = await _repository.GetByIdAsync(updatedUser.Id, cancellationToken);
+        var user = await _repository.GetByIdAsync(userId, cancellationToken);
         // TODO: исключение.
         if (user is null) throw new Exception();
         var checkUser = await FindUser(x => x.Email == updatedUser.Email, cancellationToken);
         //TODO: исключение - пользователь с таким email уже существует.
-        if (checkUser is not null && checkUser.Id != updatedUser.Id) throw new Exception();
+        if (checkUser is not null && checkUser.Id != userId) throw new Exception();
         checkUser = await FindUser(x => x.Phone == updatedUser.Phone, cancellationToken);
         //TODO: исключение - пользователь с таким телефоном уже существует.
-        if (checkUser is not null && checkUser.Id != updatedUser.Id) throw new Exception();
+        if (checkUser is not null && checkUser.Id != userId) throw new Exception();
         _mapper.Map<User, User>(updatedUser, user);
         
         await _repository.UpdateAsync(user, cancellationToken);

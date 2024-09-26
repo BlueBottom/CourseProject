@@ -8,7 +8,12 @@ public class ImageDto
     /// <summary>
     /// Идентификатор.
     /// </summary>
-    public Guid? Id { get; set; }
+    public Guid Id { get; set; }
+    
+    /// <summary>
+    /// Идентификатор объявления.
+    /// </summary>
+    public Guid AdvertId { get; set; }
     
     /// <summary>
     /// Содержимое.

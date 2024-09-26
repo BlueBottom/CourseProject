@@ -1,4 +1,5 @@
-﻿using AdvertBoard.Domain.Contexts.Users;
+﻿using AdvertBoard.Contracts.Enums;
+using AdvertBoard.Domain.Contexts.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -7,7 +8,7 @@ namespace AdvertBoard.Infrastructure.DataAccess.Contexts.Users.Configurations;
 /// <summary>
 /// Конфигурация типа <see cref="User"/>.
 /// </summary>
-public class UserConfiguration: IEntityTypeConfiguration<User>
+public class UserConfiguration : IEntityTypeConfiguration<User>
 {
     /// <inheritdoc/>
     public void Configure(EntityTypeBuilder<User> builder)
@@ -37,6 +38,10 @@ public class UserConfiguration: IEntityTypeConfiguration<User>
             .HasMaxLength(11)
             .IsRequired();
 
+        builder
+            .Property(x => x.RoleId)
+            .HasDefaultValue(UserRole.User);
+        
         builder
             .Property(x => x.Rating)
             .IsRequired(false);
@@ -77,6 +82,13 @@ public class UserConfiguration: IEntityTypeConfiguration<User>
             .WithOne(x => x.User)
             .HasForeignKey(x => x.UserId)
             .OnDelete(DeleteBehavior.Cascade)
+            .IsRequired();
+
+        // Роль.
+        builder
+            .HasOne<Role>()
+            .WithMany()
+            .HasForeignKey(x => x.RoleId)
             .IsRequired();
     }
 }

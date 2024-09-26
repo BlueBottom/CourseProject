@@ -1,4 +1,5 @@
-﻿using AdvertBoard.Domain.Base;
+﻿using AdvertBoard.Contracts.Enums;
+using AdvertBoard.Domain.Base;
 using AdvertBoard.Domain.Contexts.Adverts;
 using AdvertBoard.Domain.Contexts.Comments;
 using AdvertBoard.Domain.Contexts.Reviews;
@@ -29,6 +30,11 @@ public class User : BaseEntity
     /// Электронный почтовый адрес.
     /// </summary>
     public string Email { get; set; } = null!;
+
+    /// <summary>
+    /// Внешний ключ на сущность <see cref="Role"/>.
+    /// </summary>
+    public UserRole RoleId { get; set; } 
 
     /// <summary>
     /// Рейтинг пользователя.

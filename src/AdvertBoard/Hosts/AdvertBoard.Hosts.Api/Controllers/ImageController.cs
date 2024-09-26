@@ -10,7 +10,7 @@ namespace AdvertBoard.Hosts.Api.Controllers;
 /// Контроллер для работы с изображениями.
 /// </summary>
 [ApiController]
-[Route("api/adverts/{advertId:guid}/images")]
+[Route("[controller]")]
 public class ImageController : ControllerBase
 {
     private readonly IImageService _imageService;

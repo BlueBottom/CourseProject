@@ -18,6 +18,12 @@ public class AuthenticationService : IAuthenticationService
     private readonly IConfiguration _configuration;
     private readonly IMapper _mapper;
 
+    /// <summary>
+    /// Инициализирует экземпляр класса <see cref="AuthenticationService"/>.
+    /// </summary>
+    /// <param name="userRepository">Репозиторий для работы с пользователями.</param>
+    /// <param name="configuration">Конфигурация.</param>
+    /// <param name="mapper">Маппер.</param>
     public AuthenticationService(IUserRepository userRepository, IConfiguration configuration, IMapper mapper)
     {
         _userRepository = userRepository;
@@ -53,7 +59,8 @@ public class AuthenticationService : IAuthenticationService
         var claims = new List<Claim>
         {
             new Claim(ClaimTypes.NameIdentifier, existingUser.Id.ToString()),
-            new Claim(ClaimTypes.Name, existingUser.Name)
+            new Claim(ClaimTypes.Name, existingUser.Name),
+            new Claim(ClaimTypes.Role, existingUser.RoleId.ToString())
         };
 
         var secretKey = _configuration["Jwt:Key"];
