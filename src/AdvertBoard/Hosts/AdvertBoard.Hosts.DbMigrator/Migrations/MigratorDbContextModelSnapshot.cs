@@ -94,6 +94,9 @@ namespace AdvertBoard.Hosts.DbMigrator.Migrations
 
                     b.HasIndex("ParentId");
 
+                    b.HasIndex("Title")
+                        .IsUnique();
+
                     b.ToTable("Category");
                 });
 

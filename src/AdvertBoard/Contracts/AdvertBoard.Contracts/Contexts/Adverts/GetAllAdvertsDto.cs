@@ -8,16 +8,6 @@ namespace AdvertBoard.Contracts.Contexts.Adverts;
 public class GetAllAdvertsDto : PaginationRequest
 {
     /// <summary>
-    /// Номер страницы.
-    /// </summary>
-    public int PageNumber { get; set; }
-
-    /// <summary>
-    /// Количество объявлений на страницу.
-    /// </summary>
-    public int BatchSize { get; set; } = 20;
-    
-    /// <summary>
     /// Строка поиска.
     /// </summary>
     public string? SearchString { get; set; }
@@ -43,7 +33,7 @@ public class GetAllAdvertsDto : PaginationRequest
     public bool ShowNonActive { get; set; } = false;
     
     /// <summary>
-    /// Идентификатор категории.
+    /// Идентификаторы категории.
     /// </summary>
-    public Guid? CategoryId { get; set; }
+    public IEnumerable<Guid>? CategoryIds { get; set; }
 }

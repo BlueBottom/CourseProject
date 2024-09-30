@@ -1,5 +1,8 @@
 ﻿namespace AdvertBoard.Contracts.Shared;
 
+/// <summary>
+/// Модель запроса для пагинации.
+/// </summary>
 public class PaginationRequest
 {
     /// <summary>

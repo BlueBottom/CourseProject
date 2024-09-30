@@ -25,7 +25,7 @@ public class AdvertService : IAdvertService
     /// <param name="advertRepository">Репозиторий.</param>
     /// <param name="mapper">Маппер.</param>
     /// <param name="advertSpecificationBuilder">Спецификация.</param>
-    /// <param name="httpContextAccessor">Сервия для доступа к <see cref="HttpContext"/>.</param>
+    /// <param name="httpContextAccessor">Разрешает доступ к <see cref="HttpContext"/>.</param>
     /// <param name="authorizationService">Сервис для реализации requirements.</param>
     public AdvertService(IAdvertRepository advertRepository, IMapper mapper,
         IAdvertSpecificationBuilder advertSpecificationBuilder, IHttpContextAccessor httpContextAccessor,
@@ -39,12 +39,12 @@ public class AdvertService : IAdvertService
     }
 
     /// <inheritdoc/>
-    public Task<IEnumerable<ShortAdvertDto>> GetAllAsync(GetAllAdvertsDto getAllAdvertsDto,
+    public async Task<IEnumerable<ShortAdvertDto>> GetByFilterAsync(GetAllAdvertsDto getAllAdvertsDto,
         CancellationToken cancellationToken)
     {
-        var specification = _advertSpecificationBuilder.Build(getAllAdvertsDto);
+        var specification = await _advertSpecificationBuilder.Build(getAllAdvertsDto);
 
-        return _advertRepository.GetAllAsync(specification, cancellationToken);
+        return await _advertRepository.GetByFilterAsync(specification, cancellationToken);
     }
 
     /// <inheritdoc/>

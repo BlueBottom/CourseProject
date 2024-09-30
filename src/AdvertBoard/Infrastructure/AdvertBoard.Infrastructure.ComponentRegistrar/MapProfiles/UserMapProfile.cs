@@ -11,7 +11,6 @@ public class UserMapProfile : Profile
         CreateMap<User, User>(MemberList.None)
             .ForMember(x => x.Password, map => map.Ignore())
             .ForMember(x => x.CreatedAt, map => map.Ignore());
-            // .ForMember(x => x.Rating, map => map.Ignore());
         
         CreateMap<UpdateUserDto, User>(MemberList.None);
 

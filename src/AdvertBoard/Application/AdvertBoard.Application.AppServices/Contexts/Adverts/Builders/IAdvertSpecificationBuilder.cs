@@ -14,5 +14,5 @@ public interface IAdvertSpecificationBuilder
     /// </summary>
     /// <param name="getAllAdvertsDto"></param>
     /// <returns>Спецификация.</returns>
-    ISpecification<Advert> Build(GetAllAdvertsDto getAllAdvertsDto);
+    Task<ISpecification<Advert>> Build(GetAllAdvertsDto getAllAdvertsDto);
 }

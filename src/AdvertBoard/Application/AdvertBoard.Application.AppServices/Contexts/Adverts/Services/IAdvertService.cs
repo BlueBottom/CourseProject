@@ -13,7 +13,7 @@ public interface IAdvertService
     /// <param name="getAllAdvertsDto">Модель полученя данных.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Каталог укороченный моделей объявления.</returns>
-    Task<IEnumerable<ShortAdvertDto>> GetAllAsync(GetAllAdvertsDto getAllAdvertsDto,
+    Task<IEnumerable<ShortAdvertDto>> GetByFilterAsync(GetAllAdvertsDto getAllAdvertsDto,
         CancellationToken cancellationToken);
 
     /// <summary>

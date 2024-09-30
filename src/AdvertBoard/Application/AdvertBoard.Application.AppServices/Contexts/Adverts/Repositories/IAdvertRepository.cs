@@ -15,7 +15,7 @@ public interface IAdvertRepository
     /// <param name="specification">Спецификация.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Каталог укороченных моделей объявления.</returns>
-    Task<IEnumerable<ShortAdvertDto>> GetAllAsync(ISpecification<Advert> specification,
+    Task<IEnumerable<ShortAdvertDto>> GetByFilterAsync(ISpecification<Advert> specification,
         CancellationToken cancellationToken);
 
     /// <summary>

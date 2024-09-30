@@ -1,9 +1,9 @@
 ﻿namespace AdvertBoard.Contracts.Contexts.Categories;
 
 /// <summary>
-/// Укороченная модель категории.
+/// Категория.
 /// </summary>
-public class ShortCategoryDto
+public class CategoryHierarchyDto
 {
     /// <summary>
     /// Идентификатор сущности.
@@ -19,4 +19,9 @@ public class ShortCategoryDto
     /// Наименование.
     /// </summary>
     public string Title { get; set; } = null!;
+    
+    /// <summary>
+    /// Дочерние категории.
+    /// </summary>
+    public IEnumerable<CategoryHierarchyDto>? Children { get; set; }
 }

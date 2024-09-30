@@ -5,21 +5,22 @@ using AdvertBoard.Domain.Contexts.Adverts;
 namespace AdvertBoard.Application.AppServices.Contexts.Adverts.Specifications;
 
 /// <summary>
-/// Спецификация категории.
+/// Спецификация поиска объявлений по категориям.
 /// </summary>
 public class CategoryAdvertSpecification : Specification<Advert>
 {
-    private readonly Guid _categoryId;
+    private readonly IEnumerable<Guid> _categoryIds;
 
     /// <summary>
     /// Инициализирует экземпляр класса.
     /// </summary>
-    /// <param name="categoryId">Идентификатор категории.</param>
-    public CategoryAdvertSpecification(Guid categoryId)
+    /// <param name="categoryIds">Идентификатор категории.</param>
+    public CategoryAdvertSpecification(IEnumerable<Guid> categoryIds)
     {
-        _categoryId = categoryId;
+        _categoryIds = categoryIds;
     }
 
     /// <inheritdoc/>
-    public override Expression<Func<Advert, bool>> PredicateExpression => advert => advert.CategoryId == _categoryId;
+    public override Expression<Func<Advert, bool>> PredicateExpression => advert => 
+        _categoryIds.Contains(advert.CategoryId);
 }

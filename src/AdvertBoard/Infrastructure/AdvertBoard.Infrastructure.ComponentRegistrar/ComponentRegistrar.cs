@@ -23,6 +23,7 @@ using AdvertBoard.Infrastructure.DataAccess.Contexts.Images.Repositories;
 using AdvertBoard.Infrastructure.DataAccess.Contexts.Reviews.Repositories;
 using AdvertBoard.Infrastructure.DataAccess.Contexts.Users.Repositories;
 using AdvertBoard.Infrastructure.Repository;
+using AdvertBoard.Infrastructure.Repository.Relational;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -78,6 +79,7 @@ public static class ComponentRegistrar
         serviceCollection.AddScoped<ICategoryRepository, CategoryRepository>();
 
         serviceCollection.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+        serviceCollection.AddScoped(typeof(IRelationalRepository<>), typeof(RelationalRepository<>));
 
         return serviceCollection;
     }
@@ -96,6 +98,7 @@ public static class ComponentRegistrar
             cfg.AddProfile<AdvertMapProfile>();
             cfg.AddProfile<UserMapProfile>();
             cfg.AddProfile<ImageMapProfile>();
+            cfg.AddProfile<CategoryMapProfile>();
         });
         config.AssertConfigurationIsValid();
 
