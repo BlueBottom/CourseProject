@@ -1,5 +1,6 @@
 ﻿using AdvertBoard.Application.AppServices.Contexts.Categories.Services;
 using AdvertBoard.Contracts.Contexts.Categories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AdvertBoard.Hosts.Api.Controllers;
@@ -28,6 +29,7 @@ public class CategoryController : ControllerBase
     /// <param name="createCategoryDto">Модель запроса на создание категории.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Идентификатор.</returns>
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> AddAsync(CreateCategoryDto createCategoryDto, CancellationToken cancellationToken)
     {
@@ -80,6 +82,7 @@ public class CategoryController : ControllerBase
     /// <param name="updateCategoryDto">Модель запроса на обновление категории.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Идентификатор.</returns>
+    [Authorize(Roles = "Admin")]
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> UpdateAsync(Guid id, UpdateCategoryDto updateCategoryDto,
         CancellationToken cancellationToken)
@@ -94,6 +97,7 @@ public class CategoryController : ControllerBase
     /// <param name="id">Идентификатоор.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns><see cref="NoContentResult"/></returns>
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteAsync(Guid id, CancellationToken cancellationToken)
     {
