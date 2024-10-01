@@ -40,4 +40,12 @@ public interface IUserService
     /// <returns>Коллекцию укороченных моделей пользователя.</returns>
     Task<PageResponse<ShortUserDto>> GetAllAsync(GetAllUsersDto getAllUsersDto,
         CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Обновляет рейтинг пользователя на основе отзывов.
+    /// </summary>
+    /// <param name="id">Идентификатор.</param>
+    /// <param name="rating">Рейтинг.</param>
+    /// <param name="cancellationToken">Токен отмены.</param>
+    Task UpdateRatingAsync(Guid id, decimal? rating, CancellationToken cancellationToken);
 }

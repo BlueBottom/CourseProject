@@ -63,4 +63,12 @@ public interface IUserRepository
     Task<PageResponse<ShortUserDto>> GetAllAsync(ISpecification<User> specification,
         PaginationRequest paginationRequest,
         CancellationToken cancellationToken);
+    
+    /// <summary>
+    /// Обновляет рейтинг пользователя на основе его отзывов.
+    /// </summary>
+    /// <param name="id">Идентификатор.</param>
+    /// <param name="rating">Рейтинг.</param>
+    /// <param name="cancellationToken">Токен  отмены.</param>
+    Task UpdateRatingAsync(Guid id, decimal? rating, CancellationToken cancellationToken);
 }

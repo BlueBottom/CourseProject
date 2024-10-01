@@ -3,30 +3,25 @@
 namespace AdvertBoard.Contracts.Contexts.Reviews;
 
 /// <summary>
-/// Отзыв о пользователе.
+/// Укороченная модель отзыва о пользователе.
 /// </summary>
-public class ReviewDto
+public class ShortReviewDto
 {
     /// <summary>
     /// Идентификатор.
     /// </summary>
-    public Guid Id { get; set; }
+     public Guid Id { get; set; }
     
     /// <summary>
     /// Содержимое.
     /// </summary>
     public string? Content { get; set; }
-
+    
     /// <summary>
     /// Идентификатор на пользователя, оставившего отзыв.
     /// </summary>
-    public Guid OwnerUserId { get; set; }
-    
-    /// <summary>
-    /// Пользователь, которому оставили отзыв.
-    /// </summary>
-    public Guid ReceiverUserId { get; set; }
-    
+    public ShortUserDto OwnerUser { get; set; } = null!;
+
     /// <summary>
     /// Оценка пользователя.
     /// </summary>

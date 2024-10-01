@@ -64,6 +64,7 @@ public static class ComponentRegistrar
         //Handlers для работы с ресурсной авторизацией.
         serviceCollection.AddScoped<IAuthorizationHandler, IsAdvertOwnerHandler>();
         serviceCollection.AddScoped<IAuthorizationHandler, IsCurrentUserHandler>();
+        serviceCollection.AddScoped<IAuthorizationHandler, IsReviewOwnerHandler>();
         serviceCollection.AddScoped<IAuthorizationHandler, IsAdminHandler>();
         
         return serviceCollection;
@@ -99,6 +100,7 @@ public static class ComponentRegistrar
             cfg.AddProfile<UserMapProfile>();
             cfg.AddProfile<ImageMapProfile>();
             cfg.AddProfile<CategoryMapProfile>();
+            cfg.AddProfile<ReviewMapProfile>();
         });
         config.AssertConfigurationIsValid();
 

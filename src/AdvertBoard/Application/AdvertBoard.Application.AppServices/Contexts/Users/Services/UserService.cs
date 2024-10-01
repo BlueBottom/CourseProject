@@ -84,4 +84,10 @@ public class UserService : IUserService
         
         return _userRepository.GetAllAsync(specification, paginationRequest, cancellationToken);
     }
+
+    /// <inheritdoc/>
+    public Task UpdateRatingAsync(Guid id, decimal? rating, CancellationToken cancellationToken)
+    {
+        return _userRepository.UpdateRatingAsync(id, rating, cancellationToken);
+    }
 }

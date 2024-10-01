@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using System.Diagnostics.SymbolStore;
+using System.Linq.Expressions;
 using AdvertBoard.Application.AppServices.Contexts.Users.Repositories;
 using AdvertBoard.Application.AppServices.Specifications;
 using AdvertBoard.Contracts.Contexts.Users;
@@ -102,5 +103,16 @@ public class UserRepository : IUserRepository
         
         result.Response = paginationQuery;
         return result;
+    }
+
+    /// <inheritdoc/>
+    public async Task UpdateRatingAsync(Guid id, decimal? rating, CancellationToken cancellationToken)
+    {
+        var user = await _repository.GetByIdAsync(id, cancellationToken);
+        //TODO: нормальное исключение.
+        if (user is null) throw new Exception();
+        
+        user.Rating = rating;
+        await _repository.UpdateAsync(user, cancellationToken);
     }
 }
