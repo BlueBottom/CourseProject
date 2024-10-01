@@ -33,7 +33,7 @@ public class AdvertController : ControllerBase
     [HttpPost("search")]
     public async Task<IActionResult> GetAllAsync([FromForm] GetAllAdvertsDto getAllAdvertsDto, CancellationToken cancellationToken)
     {
-        var result = await _advertService.GetByFilterAsync(getAllAdvertsDto, cancellationToken);
+        var result = await _advertService.GetByFilterWithPaginationAsync(getAllAdvertsDto, cancellationToken);
         return Ok(result);
     }
 

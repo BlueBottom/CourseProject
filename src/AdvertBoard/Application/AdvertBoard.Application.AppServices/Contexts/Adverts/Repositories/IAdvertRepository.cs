@@ -1,5 +1,6 @@
 ﻿using AdvertBoard.Application.AppServices.Specifications;
 using AdvertBoard.Contracts.Contexts.Adverts;
+using AdvertBoard.Contracts.Shared;
 using AdvertBoard.Domain.Contexts.Adverts;
 
 namespace AdvertBoard.Application.AppServices.Contexts.Adverts.Repositories;
@@ -12,10 +13,12 @@ public interface IAdvertRepository
     /// <summary>
     /// Получает все объявления с использования спецификаций.
     /// </summary>
+    /// <param name="paginationRequest"></param>
     /// <param name="specification">Спецификация.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
-    /// <returns>Каталог укороченных моделей объявления.</returns>
-    Task<IEnumerable<ShortAdvertDto>> GetByFilterAsync(ISpecification<Advert> specification,
+    /// <returns>Коллекцию укороченных моделей объявления с пагинацией.</returns>
+    Task<PageResponse<ShortAdvertDto>> GetByFilterWithPAginationAsync(PaginationRequest paginationRequest,
+        ISpecification<Advert> specification,
         CancellationToken cancellationToken);
 
     /// <summary>

@@ -1,6 +1,7 @@
 ﻿using AdvertBoard.Application.AppServices.Contexts.Adverts.Repositories;
 using AdvertBoard.Application.AppServices.Specifications;
 using AdvertBoard.Contracts.Contexts.Adverts;
+using AdvertBoard.Contracts.Shared;
 using AdvertBoard.Domain.Contexts.Adverts;
 using AdvertBoard.Infrastructure.Repository;
 using AutoMapper;
@@ -27,14 +28,27 @@ public class AdvertRepository : IAdvertRepository
     }
 
     /// <inheritdoc/>
-    public async Task<IEnumerable<ShortAdvertDto>> GetByFilterAsync(ISpecification<Advert> specification,
+    public async Task<PageResponse<ShortAdvertDto>> GetByFilterWithPAginationAsync(PaginationRequest paginationRequest,
+        ISpecification<Advert> specification,
         CancellationToken cancellationToken)
     {
-        return await _repository
-            .GetAll()
+        var result = new PageResponse<ShortAdvertDto>();
+        
+        var query = _repository.GetAll();
+        
+        var elementsCount = await query.CountAsync(cancellationToken);
+        result.TotalPages = result.TotalPages = (int)Math.Ceiling((double)elementsCount / paginationRequest.BatchSize);
+
+        var paginationQuery = await query
             .Where(specification.PredicateExpression)
+            .OrderBy(advert => advert.Id)
+            .Skip(paginationRequest.BatchSize * (paginationRequest.PageNumber - 1))
+            .Take(paginationRequest.BatchSize)
             .ProjectTo<ShortAdvertDto>(_mapper.ConfigurationProvider)
-            .ToListAsync(cancellationToken);
+            .ToArrayAsync(cancellationToken);
+        
+        result.Response = paginationQuery;
+        return result;
     }
 
     /// <inheritdoc/>

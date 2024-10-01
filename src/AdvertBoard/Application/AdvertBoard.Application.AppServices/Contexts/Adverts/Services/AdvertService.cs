@@ -3,6 +3,7 @@ using AdvertBoard.Application.AppServices.Authorization.Requirements;
 using AdvertBoard.Application.AppServices.Contexts.Adverts.Builders;
 using AdvertBoard.Application.AppServices.Contexts.Adverts.Repositories;
 using AdvertBoard.Contracts.Contexts.Adverts;
+using AdvertBoard.Contracts.Shared;
 using AdvertBoard.Domain.Contexts.Adverts;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -39,12 +40,18 @@ public class AdvertService : IAdvertService
     }
 
     /// <inheritdoc/>
-    public async Task<IEnumerable<ShortAdvertDto>> GetByFilterAsync(GetAllAdvertsDto getAllAdvertsDto,
+    public async Task<PageResponse<ShortAdvertDto>> GetByFilterWithPaginationAsync(GetAllAdvertsDto getAllAdvertsDto,
         CancellationToken cancellationToken)
     {
         var specification = await _advertSpecificationBuilder.Build(getAllAdvertsDto);
+        
+        var paginationRequest = new PaginationRequest
+        {
+            BatchSize = getAllAdvertsDto.BatchSize,
+            PageNumber = getAllAdvertsDto.PageNumber
+        };
 
-        return await _advertRepository.GetByFilterAsync(specification, cancellationToken);
+        return await _advertRepository.GetByFilterWithPAginationAsync(paginationRequest, specification, cancellationToken);
     }
 
     /// <inheritdoc/>

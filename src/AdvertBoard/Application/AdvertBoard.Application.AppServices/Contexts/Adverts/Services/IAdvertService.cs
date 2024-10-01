@@ -1,4 +1,5 @@
 ﻿using AdvertBoard.Contracts.Contexts.Adverts;
+using AdvertBoard.Contracts.Shared;
 
 namespace AdvertBoard.Application.AppServices.Contexts.Adverts.Services;
 
@@ -12,8 +13,8 @@ public interface IAdvertService
     /// </summary>
     /// <param name="getAllAdvertsDto">Модель полученя данных.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
-    /// <returns>Каталог укороченный моделей объявления.</returns>
-    Task<IEnumerable<ShortAdvertDto>> GetByFilterAsync(GetAllAdvertsDto getAllAdvertsDto,
+    /// <returns>Коллекцию укороченных моделей объявления с пагинацией.</returns>
+    Task<PageResponse<ShortAdvertDto>> GetByFilterWithPaginationAsync(GetAllAdvertsDto getAllAdvertsDto,
         CancellationToken cancellationToken);
 
     /// <summary>
