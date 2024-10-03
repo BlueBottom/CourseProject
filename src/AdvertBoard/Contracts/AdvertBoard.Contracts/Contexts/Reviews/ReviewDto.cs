@@ -8,9 +8,14 @@ namespace AdvertBoard.Contracts.Contexts.Reviews;
 public class ReviewDto
 {
     /// <summary>
+    /// Идентификатор.
+    /// </summary>
+    public Guid Id { get; set; }
+    
+    /// <summary>
     /// Содержимое.
     /// </summary>
-    public string Content { get; set; } = null!;
+    public string? Content { get; set; }
 
     /// <summary>
     /// Идентификатор на пользователя, оставившего отзыв.
@@ -18,17 +23,12 @@ public class ReviewDto
     public Guid OwnerUserId { get; set; }
     
     /// <summary>
-    /// Пользователь, оставивший отзыв.
-    /// </summary>
-    public virtual UserDto? OwnerUser { get; set; }
-    
-    /// <summary>
     /// Пользователь, которому оставили отзыв.
     /// </summary>
     public Guid ReceiverUserId { get; set; }
     
     /// <summary>
-    /// Идентификатор на пользователя, которому оставили отзыв.
+    /// Оценка пользователя.
     /// </summary>
-    public virtual UserDto? ReceiverUser { get; set; }
+    public int Rating { get; set; }
 }

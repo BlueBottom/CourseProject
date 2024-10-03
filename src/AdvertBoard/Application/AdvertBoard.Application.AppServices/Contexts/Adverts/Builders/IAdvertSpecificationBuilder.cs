@@ -12,7 +12,7 @@ public interface IAdvertSpecificationBuilder
     /// <summary>
     /// Строит спецификацию по запросу.
     /// </summary>
-    /// <param name="dto">Запрос.</param>
+    /// <param name="getAllAdvertsDto"></param>
     /// <returns>Спецификация.</returns>
-    ISpecification<Advert> Build(GetAllAdvertsDto dto);
+    Task<ISpecification<Advert>> Build(GetAllAdvertsDto getAllAdvertsDto);
 }

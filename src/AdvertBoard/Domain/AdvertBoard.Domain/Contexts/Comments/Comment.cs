@@ -25,6 +25,16 @@ public class Comment : BaseEntity
     public virtual User? User { get; set; }
     
     /// <summary>
+    /// Идентификатор родительского комментария.
+    /// </summary>
+    public Guid? ParentId { get; set; }
+    
+    /// <summary>
+    /// Родительский комментарий.
+    /// </summary>
+    public virtual Comment? Parent { get; set; }
+    
+    /// <summary>
     /// Идентификатор объявления.
     /// </summary>
     public Guid AdvertId { get; set; }
@@ -33,4 +43,14 @@ public class Comment : BaseEntity
     /// Объявление.
     /// </summary>
     public virtual Advert? Advert { get; set; }
+    
+    /// <summary>
+    /// Дата последнего редактирования.
+    /// </summary>
+    public DateTime? EditedAt { get; set; }
+    
+    /// <summary>
+    /// Дочерние комменнтарии.
+    /// </summary>
+    public virtual ICollection<Comment>? Children { get; set; }
 }

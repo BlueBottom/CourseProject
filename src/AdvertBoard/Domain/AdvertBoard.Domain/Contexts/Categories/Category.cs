@@ -26,7 +26,7 @@ public class Category : BaseEntity
     /// <summary>
     /// Дочерние категории.
     /// </summary>
-    public virtual ICollection<Category>? Childs { get; set; }
+    public virtual ICollection<Category>? Children { get; set; }
 
     /// <summary>
     /// Объяления.

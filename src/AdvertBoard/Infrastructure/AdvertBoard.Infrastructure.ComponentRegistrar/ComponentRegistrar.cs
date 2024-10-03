@@ -1,6 +1,9 @@
-﻿using AdvertBoard.Application.AppServices.Contexts.Adverts.Builders;
+﻿using System.Text;
+using AdvertBoard.Application.AppServices.Authorization.Handlers;
+using AdvertBoard.Application.AppServices.Contexts.Adverts.Builders;
 using AdvertBoard.Application.AppServices.Contexts.Adverts.Repositories;
 using AdvertBoard.Application.AppServices.Contexts.Adverts.Services;
+using AdvertBoard.Application.AppServices.Contexts.Authentication.Services;
 using AdvertBoard.Application.AppServices.Contexts.Categories.Repositories;
 using AdvertBoard.Application.AppServices.Contexts.Categories.Services;
 using AdvertBoard.Application.AppServices.Contexts.Comments.Repositories;
@@ -9,6 +12,7 @@ using AdvertBoard.Application.AppServices.Contexts.Images.Repositories;
 using AdvertBoard.Application.AppServices.Contexts.Images.Services;
 using AdvertBoard.Application.AppServices.Contexts.Reviews.Repositories;
 using AdvertBoard.Application.AppServices.Contexts.Reviews.Services;
+using AdvertBoard.Application.AppServices.Contexts.Users.Builders;
 using AdvertBoard.Application.AppServices.Contexts.Users.Repositories;
 using AdvertBoard.Application.AppServices.Contexts.Users.Services;
 using AdvertBoard.Infrastructure.ComponentRegistrar.MapProfiles;
@@ -19,13 +23,25 @@ using AdvertBoard.Infrastructure.DataAccess.Contexts.Images.Repositories;
 using AdvertBoard.Infrastructure.DataAccess.Contexts.Reviews.Repositories;
 using AdvertBoard.Infrastructure.DataAccess.Contexts.Users.Repositories;
 using AdvertBoard.Infrastructure.Repository;
+using AdvertBoard.Infrastructure.Repository.Relational;
 using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.IdentityModel.Tokens;
 
 namespace AdvertBoard.Infrastructure.ComponentRegistrar;
 
 public static class ComponentRegistrar
 {
+    /// <summary>
+    /// Добавляет методы расширения.
+    /// </summary>
+    /// <param name="serviceCollection">Коллекция сервисов.</param>
+    /// <returns>Ioc.</returns>
     public static IServiceCollection AddDependencies(this IServiceCollection serviceCollection)
     {
         return serviceCollection
@@ -43,7 +59,15 @@ public static class ComponentRegistrar
         serviceCollection.AddScoped<IReviewService, ReviewService>();
         serviceCollection.AddScoped<ICommentService, CommentService>();
         serviceCollection.AddScoped<ICategoryService, CategoryService>();
+        serviceCollection.AddScoped<IAuthenticationService, AuthenticationService>();
 
+        //Handlers для работы с ресурсной авторизацией.
+        serviceCollection.AddScoped<IAuthorizationHandler, IsAdvertOwnerHandler>();
+        serviceCollection.AddScoped<IAuthorizationHandler, IsCurrentUserHandler>();
+        serviceCollection.AddScoped<IAuthorizationHandler, IsReviewOwnerHandler>();
+        serviceCollection.AddScoped<IAuthorizationHandler, IsCommentOwner>();
+        serviceCollection.AddScoped<IAuthorizationHandler, IsAdminHandler>();
+        
         return serviceCollection;
     }
 
@@ -57,6 +81,7 @@ public static class ComponentRegistrar
         serviceCollection.AddScoped<ICategoryRepository, CategoryRepository>();
 
         serviceCollection.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+        serviceCollection.AddScoped(typeof(IRelationalRepository<>), typeof(RelationalRepository<>));
 
         return serviceCollection;
     }
@@ -64,6 +89,7 @@ public static class ComponentRegistrar
     private static IServiceCollection AddBuilders(this IServiceCollection serviceCollection)
     {
         serviceCollection.AddScoped<IAdvertSpecificationBuilder, AdvertSpecificationBuilder>();
+        serviceCollection.AddScoped<IUserSpecificationBuilder, UserSpecificationBuilder>();
 
         return serviceCollection;
     }
@@ -74,10 +100,49 @@ public static class ComponentRegistrar
             cfg.AddProfile<AdvertMapProfile>();
             cfg.AddProfile<UserMapProfile>();
             cfg.AddProfile<ImageMapProfile>();
+            cfg.AddProfile<CategoryMapProfile>();
+            cfg.AddProfile<ReviewMapProfile>();
+            cfg.AddProfile<CommentMapProfile>();
         });
         config.AssertConfigurationIsValid();
 
         serviceCollection.AddSingleton<IMapper>(new Mapper(config));
+
+        return serviceCollection;
+    }
+    
+    /// <summary>
+    /// Настраивает аутентификацию.
+    /// </summary>
+    /// <param name="serviceCollection">Коллекция сервисов.</param>
+    /// <param name="configuration">Конфигурация.</param>
+    /// <returns>Коллекцию сервисов.</returns>
+    public static IServiceCollection AddAuthenticationWithJwtToken(this IServiceCollection serviceCollection,
+        IConfiguration configuration)
+    {
+        serviceCollection.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+        
+        serviceCollection.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    // указывает, будет ли валидироваться издатель при валидации токена
+                    ValidateIssuer = true,
+                    // строка, представляющая издателя
+                    ValidIssuer = configuration["Jwt:Issuer"],
+                    // будет ли валидироваться потребитель токена
+                    ValidateAudience = true,
+                    // установка потребителя токена
+                    ValidAudience = configuration["Jwt:Audience"],
+                    // будет ли валидироваться время существования
+                    ValidateLifetime = true,
+                    // установка ключа безопасности
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!)),
+                    // валидация ключа безопасности
+                    ValidateIssuerSigningKey = true,
+                };
+            });
 
         return serviceCollection;
     }

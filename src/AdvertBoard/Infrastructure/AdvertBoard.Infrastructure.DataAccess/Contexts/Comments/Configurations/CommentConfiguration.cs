@@ -15,9 +15,12 @@ public class CommentConfiguration : IEntityTypeConfiguration<Comment>
         // Конфигурация свойств.
         builder.HasKey(x => x.Id);
 
-        builder.Property(x => x.Id).ValueGeneratedOnAdd();
+        builder
+            .Property(x => x.Id)
+            .ValueGeneratedOnAdd();
 
-        builder.Property(x => x.Content)
+        builder
+            .Property(x => x.Content)
             .HasMaxLength(400)
             .IsRequired();
         
@@ -42,5 +45,13 @@ public class CommentConfiguration : IEntityTypeConfiguration<Comment>
             .HasForeignKey(x => x.UserId)
             .OnDelete(DeleteBehavior.Cascade)
             .IsRequired();
+        
+        //Комментарии.
+        builder
+            .HasOne(x => x.Parent)
+            .WithMany(x => x.Children)
+            .HasForeignKey(x => x.ParentId)
+            .OnDelete(DeleteBehavior.Cascade)
+            .IsRequired(false);
     }
 }

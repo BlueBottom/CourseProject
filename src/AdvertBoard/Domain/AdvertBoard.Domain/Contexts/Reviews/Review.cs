@@ -17,7 +17,7 @@ public class Review : BaseEntity
     /// <summary>
     /// Оценка пользователя.
     /// </summary>
-    public ReviewRating Rating { get; set; }
+    public int Rating { get; set; }
 
     /// <summary>
     /// Идентификатор на пользователя, оставившего отзыв.

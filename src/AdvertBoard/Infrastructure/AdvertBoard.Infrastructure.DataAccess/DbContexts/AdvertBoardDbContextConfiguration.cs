@@ -37,5 +37,7 @@ public class AdvertBoardDbContextConfiguration : IDbContextOptionsConfigurator<A
         options.UseNpgsql(connectionString);
         options.UseLoggerFactory(_loggerFactory);
         options.UseLazyLoadingProxies();
+        options.EnableSensitiveDataLogging();
+        options.EnableDetailedErrors();
     }
 }

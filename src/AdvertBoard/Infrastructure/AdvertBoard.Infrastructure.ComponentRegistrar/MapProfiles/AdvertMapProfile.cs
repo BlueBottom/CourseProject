@@ -16,6 +16,9 @@ public class AdvertMapProfile : Profile
             .ForMember(x => x.CategoryId, map => map.MapFrom(s => s.CategoryId));
             
         CreateMap<AdvertDto, Advert>(MemberList.None);
+
+        CreateMap<Advert, Advert>(MemberList.None)
+            .ForMember(x => x.CreatedAt, map => map.Ignore());
         
         CreateMap<Advert, ShortAdvertDto>(MemberList.None)
             .ForMember(x => x.ImageId, map => map.MapFrom(x => x.Images.Select(a => a.Id).First()));

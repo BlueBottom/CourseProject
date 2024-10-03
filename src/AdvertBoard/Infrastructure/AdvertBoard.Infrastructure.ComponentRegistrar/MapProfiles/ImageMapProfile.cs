@@ -9,7 +9,8 @@ public class ImageMapProfile : Profile
     public ImageMapProfile()
     {
         CreateMap<CreateImageDto, Image>(MemberList.None)
-            .ForMember(x => x.Content, map => map.MapFrom(s => s.File));
+            .ForMember(x => x.Content, map => map.MapFrom(s => s.File))
+            .ForMember(x => x.CreatedAt, map => map.MapFrom(s => DateTime.UtcNow));
 
         CreateMap<Image, ImageDto>(MemberList.None);
     }

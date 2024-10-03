@@ -1,5 +1,6 @@
 ﻿using AdvertBoard.Application.AppServices.Specifications;
 using AdvertBoard.Contracts.Contexts.Adverts;
+using AdvertBoard.Contracts.Shared;
 using AdvertBoard.Domain.Contexts.Adverts;
 
 namespace AdvertBoard.Application.AppServices.Contexts.Adverts.Repositories;
@@ -12,28 +13,30 @@ public interface IAdvertRepository
     /// <summary>
     /// Получает все объявления с использования спецификаций.
     /// </summary>
+    /// <param name="paginationRequest"></param>
     /// <param name="specification">Спецификация.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
-    /// <returns>Каталог укороченных моделей объявления.</returns>
-    Task<IEnumerable<ShortAdvertDto>> GetAllAsync(ISpecification<Advert> specification,
+    /// <returns>Коллекцию укороченных моделей объявления с пагинацией.</returns>
+    Task<PageResponse<ShortAdvertDto>> GetByFilterWithPAginationAsync(PaginationRequest paginationRequest,
+        ISpecification<Advert> specification,
         CancellationToken cancellationToken);
 
     /// <summary>
     /// Добавляет объявление.
     /// </summary>
-    /// <param name="createAdvertDto"></param>
+    /// <param name="advert"></param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Идентификатор объявления.</returns>
-    Task<Guid> AddAsync(CreateAdvertDto createAdvertDto, CancellationToken cancellationToken);
+    Task<Guid> AddAsync(Advert advert, CancellationToken cancellationToken);
 
     /// <summary>
     /// Обновлляет объявление.
     /// </summary>
     /// <param name="id">Идентификатор.</param>
-    /// <param name="updateAdvertDto"></param>
+    /// <param name="advert"></param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Идентификатор объявления.</returns>
-    Task<Guid> UpdateAsync(Guid id, UpdateAdvertDto updateAdvertDto, CancellationToken cancellationToken);
+    Task<Guid> UpdateAsync(Guid id, Advert advert, CancellationToken cancellationToken);
     
     /// <summary>
     /// Получает объявление по идентификатору.

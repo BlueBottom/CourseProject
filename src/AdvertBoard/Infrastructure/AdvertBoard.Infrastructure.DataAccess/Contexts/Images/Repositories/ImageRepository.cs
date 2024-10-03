@@ -8,33 +8,44 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AdvertBoard.Infrastructure.DataAccess.Contexts.Images.Repositories;
 
+/// <inheritdoc/>
 public class ImageRepository : IImageRepository
 {
     private readonly IRepository<Image> _repository;
     private readonly IMapper _mapper;
 
+    /// <summary>
+    /// Инициализирует экземпляр класса <see cref="ImageRepository"/>.
+    /// </summary>
+    /// <param name="repository">Глупый репозиторий.</param>
+    /// <param name="mapper">Маппер.</param>
     public ImageRepository(IRepository<Image> repository, IMapper mapper)
     {
         _repository = repository;
         _mapper = mapper;
     }
 
-    public Task<ImageDto?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    /// <inheritdoc/>
+    public async Task<ImageDto> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
-        return _repository
+        var image = await _repository
             .GetAll()
             .Where(i => i.Id == id)
             .ProjectTo<ImageDto>(_mapper.ConfigurationProvider)
             .FirstOrDefaultAsync(cancellationToken);
+        //TODO: исключение
+        if (image is null) throw new Exception();
+        return image;
     }
 
-    public async Task<Guid> AddAsync(CreateImageDto createImageDto, CancellationToken cancellationToken)
+    /// <inheritdoc/>
+    public async Task<Guid> AddAsync(Image image, CancellationToken cancellationToken)
     {
-        var image = _mapper.Map<CreateImageDto, Image>(createImageDto);
         await _repository.AddAsync(image, cancellationToken);
         return image.Id;
     }
 
+    /// <inheritdoc/>
     public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken)
     {
         var image = await _repository.GetByIdAsync(id, cancellationToken);

@@ -21,6 +21,10 @@ public class CategoryConfiguration : IEntityTypeConfiguration<Category>
             .Property(x => x.Title)
             .HasMaxLength(25)
             .IsRequired();
+
+        builder
+            .HasIndex(x => x.Title)
+            .IsUnique();
         
         builder
             .Property(x => x.CreatedAt)
@@ -39,7 +43,7 @@ public class CategoryConfiguration : IEntityTypeConfiguration<Category>
         // Категории.      
         builder
             .HasOne(x => x.Parent)
-            .WithMany(x => x.Childs)
+            .WithMany(x => x.Children)
             .HasForeignKey(x => x.ParentId)
             .OnDelete(DeleteBehavior.Cascade)
             .IsRequired(false);
