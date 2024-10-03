@@ -49,5 +49,8 @@ public class Comment : BaseEntity
     /// </summary>
     public DateTime? EditedAt { get; set; }
     
+    /// <summary>
+    /// Дочерние комменнтарии.
+    /// </summary>
     public virtual ICollection<Comment>? Children { get; set; }
 }

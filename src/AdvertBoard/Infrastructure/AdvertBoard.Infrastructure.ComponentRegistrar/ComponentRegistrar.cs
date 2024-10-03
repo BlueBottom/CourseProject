@@ -65,6 +65,7 @@ public static class ComponentRegistrar
         serviceCollection.AddScoped<IAuthorizationHandler, IsAdvertOwnerHandler>();
         serviceCollection.AddScoped<IAuthorizationHandler, IsCurrentUserHandler>();
         serviceCollection.AddScoped<IAuthorizationHandler, IsReviewOwnerHandler>();
+        serviceCollection.AddScoped<IAuthorizationHandler, IsCommentOwner>();
         serviceCollection.AddScoped<IAuthorizationHandler, IsAdminHandler>();
         
         return serviceCollection;
@@ -101,6 +102,7 @@ public static class ComponentRegistrar
             cfg.AddProfile<ImageMapProfile>();
             cfg.AddProfile<CategoryMapProfile>();
             cfg.AddProfile<ReviewMapProfile>();
+            cfg.AddProfile<CommentMapProfile>();
         });
         config.AssertConfigurationIsValid();
 
@@ -114,7 +116,7 @@ public static class ComponentRegistrar
     /// </summary>
     /// <param name="serviceCollection">Коллекция сервисов.</param>
     /// <param name="configuration">Конфигурация.</param>
-    /// <returns></returns>
+    /// <returns>Коллекцию сервисов.</returns>
     public static IServiceCollection AddAuthenticationWithJwtToken(this IServiceCollection serviceCollection,
         IConfiguration configuration)
     {

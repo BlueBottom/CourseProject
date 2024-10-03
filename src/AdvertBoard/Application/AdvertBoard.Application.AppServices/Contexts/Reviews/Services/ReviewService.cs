@@ -54,7 +54,6 @@ public class ReviewService : IReviewService
     /// <inheritdoc/>
     public async Task<Guid> AddAsync(CreateReviewDto createReviewDto, CancellationToken cancellationToken)
     {
-        var review = _mapper.Map<CreateReviewDto, Review>(createReviewDto);
         var claims = _httpContextAccessor.HttpContext.User.Claims;
         var claimId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
@@ -63,7 +62,9 @@ public class ReviewService : IReviewService
             //TODO: исключение
             throw new Exception();
         }
-
+        
+        var review = _mapper.Map<CreateReviewDto, Review>(createReviewDto);
+        
         var userId = Guid.Parse(claimId);
         review.OwnerUserId = userId;
 

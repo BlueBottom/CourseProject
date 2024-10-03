@@ -39,6 +39,7 @@ public class ReviewRepository : IReviewRepository
         
         var paginationQuery = await query
             .OrderBy(x => x.CreatedAt)
+            .Where(x => x.ReceiverUserId == getAllReviewsDto.UserId)
             .Skip(getAllReviewsDto.BatchSize * (getAllReviewsDto.PageNumber - 1))
             .Take(getAllReviewsDto.BatchSize)
             .ProjectTo<ShortReviewDto>(_mapper.ConfigurationProvider)
