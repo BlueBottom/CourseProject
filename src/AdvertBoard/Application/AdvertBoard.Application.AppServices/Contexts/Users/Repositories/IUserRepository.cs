@@ -60,7 +60,7 @@ public interface IUserRepository
     /// <param name="paginationRequest">Модель запроса пагинации.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Каталог укороченных моделей пользователя.</returns>
-    Task<PageResponse<ShortUserDto>> GetAllAsync(ISpecification<User> specification,
+    Task<PageResponse<ShortUserDto>> GetAllByFilterWithPaginationAsync(ISpecification<User> specification,
         PaginationRequest paginationRequest,
         CancellationToken cancellationToken);
     

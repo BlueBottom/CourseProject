@@ -2,6 +2,7 @@
 using AdvertBoard.Application.AppServices.Authorization.Requirements;
 using AdvertBoard.Application.AppServices.Contexts.Reviews.Repositories;
 using AdvertBoard.Application.AppServices.Contexts.Users.Services;
+using AdvertBoard.Application.AppServices.Exceptions;
 using AdvertBoard.Contracts.Contexts.Reviews;
 using AdvertBoard.Contracts.Shared;
 using AdvertBoard.Domain.Contexts.Reviews;
@@ -57,11 +58,7 @@ public class ReviewService : IReviewService
         var claims = _httpContextAccessor.HttpContext.User.Claims;
         var claimId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
-        if (string.IsNullOrWhiteSpace(claimId))
-        {
-            //TODO: исключение
-            throw new Exception();
-        }
+        if (string.IsNullOrWhiteSpace(claimId)) throw new ForbiddenException();
         
         var review = _mapper.Map<CreateReviewDto, Review>(createReviewDto);
         
@@ -81,8 +78,7 @@ public class ReviewService : IReviewService
         var authResult = await _authorizationService.AuthorizeAsync(_httpContextAccessor.HttpContext.User,
             existingReview,
             new ResourceOwnerRequirement());
-        //TODO: исключение
-        if (!authResult.Succeeded) throw new Exception();
+        if (!authResult.Succeeded) throw new ForbiddenException();
         
         var result = await _reviewRepository.UpdateAsync(id, updateReviewDto, cancellationToken);
         await UpdateRating(existingReview.ReceiverUserId, cancellationToken);
@@ -97,8 +93,7 @@ public class ReviewService : IReviewService
         var authResult = await _authorizationService.AuthorizeAsync(_httpContextAccessor.HttpContext.User,
             existingReview,
             new ResourceOwnerRequirement());
-        //TODO: исключение
-        if (!authResult.Succeeded) throw new Exception();
+        if (!authResult.Succeeded) throw new ForbiddenException();
         
         var result = await _reviewRepository.DeleteAsync(id, cancellationToken);
         await UpdateRating(existingReview.ReceiverUserId, cancellationToken);

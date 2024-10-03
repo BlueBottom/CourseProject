@@ -1,6 +1,7 @@
 ﻿using AdvertBoard.Application.AppServices.Authorization.Requirements;
 using AdvertBoard.Application.AppServices.Contexts.Adverts.Services;
 using AdvertBoard.Application.AppServices.Contexts.Images.Repositories;
+using AdvertBoard.Application.AppServices.Exceptions;
 using AdvertBoard.Contracts.Contexts.Images;
 using AdvertBoard.Domain.Contexts.Images;
 using AutoMapper;
@@ -53,9 +54,9 @@ public class ImageService : IImageService
         var authResult = await _authorizationService.AuthorizeAsync(_httpContextAccessor.HttpContext.User,
             existingAdvert,
             new ResourceOwnerRequirement());
-        //TODO: исключение
-        if (!authResult.Succeeded) throw new Exception("нет доступа");
+        if (!authResult.Succeeded) throw new ForbiddenException();
         var image = _mapper.Map<CreateImageDto, Image>(createImageDto);
+        
         return await _imageRepository.AddAsync(image, cancellationToken);
     }
 
@@ -67,8 +68,8 @@ public class ImageService : IImageService
         var authResult = await _authorizationService.AuthorizeAsync(_httpContextAccessor.HttpContext.User,
             existingAdvert,
             new ResourceOwnerRequirement());
-        //TODO: исключение
-        if (!authResult.Succeeded) throw new Exception("нет доступа");
+        if (!authResult.Succeeded) throw new ForbiddenException();
+        
         return await _imageRepository.DeleteAsync(id, cancellationToken);
     }
 }

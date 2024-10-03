@@ -1,6 +1,7 @@
 ﻿using AdvertBoard.Application.AppServices.Authorization.Requirements;
 using AdvertBoard.Application.AppServices.Contexts.Users.Builders;
 using AdvertBoard.Application.AppServices.Contexts.Users.Repositories;
+using AdvertBoard.Application.AppServices.Exceptions;
 using AdvertBoard.Contracts.Contexts.Users;
 using AdvertBoard.Contracts.Shared;
 using AdvertBoard.Domain.Contexts.Users;
@@ -47,14 +48,15 @@ public class UserService : IUserService
     public async Task<Guid> UpdateAsync(Guid userId, UpdateUserDto updateUserDto, CancellationToken cancellationToken)
     {
         var existingUser = await _userRepository.GetByIdAsync(userId, cancellationToken);
-        //TODO: Исключение
-        if (existingUser is null) throw new Exception();
+        if (existingUser is null) throw new EntityNotFoundException("Пользователь не был найден.");
+        
         var authResult = await _authorizationService.AuthorizeAsync(_httpContextAccessor.HttpContext.User, existingUser,
                 new ResourceOwnerRequirement());
-        //TODO: исключение
-        if (!authResult.Succeeded) throw new Exception("нет доступа");
+        if (!authResult.Succeeded) throw new ForbiddenException();
+        
         var user = _mapper.Map<UpdateUserDto, User>(updateUserDto);
         user.Id = userId;
+        
         return await _userRepository.UpdateAsync(userId, user, cancellationToken);
     }
 
@@ -62,16 +64,17 @@ public class UserService : IUserService
     public async Task<bool> DeleteAsync(Guid userId, CancellationToken cancellationToken)
     {
         var existingUser = await _userRepository.GetByIdAsync(userId, cancellationToken);
-        //TODO: Исключение
-        if (existingUser is null) throw new Exception();
+        if (existingUser is null) throw new EntityNotFoundException("Пользователь не был найден.");
+        
         var authResult = await _authorizationService.AuthorizeAsync(_httpContextAccessor.HttpContext.User, existingUser,
                 new ResourceOwnerRequirement());
-        if (!authResult.Succeeded) throw new Exception("нет доступа");
+        if (!authResult.Succeeded) throw new ForbiddenException();
+        
         return await _userRepository.DeleteAsync(userId, cancellationToken);
     }
 
     /// <inheritdoc/>
-    public Task<PageResponse<ShortUserDto>> GetAllAsync(GetAllUsersDto getAllUsersDto,
+    public Task<PageResponse<ShortUserDto>> GetAllByFilterWithPaginationAsync(GetAllUsersDto getAllUsersDto,
         CancellationToken cancellationToken)
     {
         var specification = _specificationBuilder.Build(getAllUsersDto);
@@ -82,7 +85,7 @@ public class UserService : IUserService
             PageNumber = getAllUsersDto.PageNumber
         };
         
-        return _userRepository.GetAllAsync(specification, paginationRequest, cancellationToken);
+        return _userRepository.GetAllByFilterWithPaginationAsync(specification, paginationRequest, cancellationToken);
     }
 
     /// <inheritdoc/>

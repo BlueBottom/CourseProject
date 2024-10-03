@@ -1,4 +1,5 @@
 ﻿using AdvertBoard.Application.AppServices.Contexts.Reviews.Repositories;
+using AdvertBoard.Application.AppServices.Exceptions;
 using AdvertBoard.Contracts.Contexts.Reviews;
 using AdvertBoard.Contracts.Shared;
 using AdvertBoard.Domain.Contexts.Reviews;
@@ -53,8 +54,8 @@ public class ReviewRepository : IReviewRepository
     public async Task<ReviewDto> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         var review =  await _repository.GetByIdAsync(id, cancellationToken);
-        //TODO: исключение.
-        if (review is null) throw new Exception();
+        if (review is null) throw new EntityNotFoundException("Отзыв не был найден.");
+        
         return _mapper.Map<Review, ReviewDto>(review);
     }
 
@@ -69,8 +70,7 @@ public class ReviewRepository : IReviewRepository
     public async Task<Guid> UpdateAsync(Guid id, UpdateReviewDto updatedReviewDto, CancellationToken cancellationToken)
     {
         var review = await _repository.GetByIdAsync(id, cancellationToken);
-        //TODO: исключение.
-        if (review is null) throw new Exception();
+        if (review is null) throw new EntityNotFoundException("Отзыв не был найден.");
         
         _mapper.Map<UpdateReviewDto, Review>(updatedReviewDto, review);
         await _repository.UpdateAsync(review, cancellationToken);
@@ -81,9 +81,9 @@ public class ReviewRepository : IReviewRepository
     public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken)
     {
         var review = await _repository.GetByIdAsync(id, cancellationToken);
-        //TODO: исключение.
-        if (review is null) throw new Exception();
+        if (review is null) throw new EntityNotFoundException("Отзыв не был найден.");
         await _repository.DeleteAsync(review, cancellationToken);
+        
         return true;
 
     }

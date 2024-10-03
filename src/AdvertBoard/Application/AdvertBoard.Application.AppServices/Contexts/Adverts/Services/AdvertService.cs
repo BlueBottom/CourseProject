@@ -2,6 +2,7 @@
 using AdvertBoard.Application.AppServices.Authorization.Requirements;
 using AdvertBoard.Application.AppServices.Contexts.Adverts.Builders;
 using AdvertBoard.Application.AppServices.Contexts.Adverts.Repositories;
+using AdvertBoard.Application.AppServices.Exceptions;
 using AdvertBoard.Contracts.Contexts.Adverts;
 using AdvertBoard.Contracts.Shared;
 using AdvertBoard.Domain.Contexts.Adverts;
@@ -51,7 +52,7 @@ public class AdvertService : IAdvertService
             PageNumber = getAllAdvertsDto.PageNumber
         };
 
-        return await _advertRepository.GetByFilterWithPAginationAsync(paginationRequest, specification, cancellationToken);
+        return await _advertRepository.GetByFilterWithPaginationAsync(paginationRequest, specification, cancellationToken);
     }
 
     /// <inheritdoc/>
@@ -61,14 +62,11 @@ public class AdvertService : IAdvertService
         var claims = _httpContextAccessor.HttpContext.User.Claims;
         var claimId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
-        if (string.IsNullOrWhiteSpace(claimId))
-        {
-            return null;
-        }
+        if (string.IsNullOrWhiteSpace(claimId)) throw new ForbiddenException();
 
         var userId = Guid.Parse(claimId);
-
         advert.UserId = userId;
+        
         return _advertRepository.AddAsync(advert, cancellationToken);
     }
 
@@ -78,8 +76,7 @@ public class AdvertService : IAdvertService
         var existingAdvert = await _advertRepository.GetByIdAsync(id, cancellationToken);
         var authResult = await _authorizationService.AuthorizeAsync(_httpContextAccessor.HttpContext.User, existingAdvert,
             new ResourceOwnerRequirement());
-        //TODO: исключение
-        if (!authResult.Succeeded) throw new Exception("нет доступа");
+        if (!authResult.Succeeded) throw new ForbiddenException();
         var advert = _mapper.Map<UpdateAdvertDto, Advert>(updateAdvertDto);
 
         return await _advertRepository.UpdateAsync(id, advert, cancellationToken);
@@ -97,8 +94,8 @@ public class AdvertService : IAdvertService
         var existingAdvert = await _advertRepository.GetByIdAsync(id, cancellationToken);
         var authResult = await _authorizationService.AuthorizeAsync(_httpContextAccessor.HttpContext.User, existingAdvert,
             new ResourceOwnerRequirement());
-        //TODO: исключение
-        if (!authResult.Succeeded) throw new Exception("нет доступа");
+        if (!authResult.Succeeded) throw new ForbiddenException();
+        
         return await _advertRepository.DeleteAsync(id, cancellationToken);
     }
 }

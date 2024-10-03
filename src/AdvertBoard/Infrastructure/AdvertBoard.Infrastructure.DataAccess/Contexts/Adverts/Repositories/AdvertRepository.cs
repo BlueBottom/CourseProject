@@ -1,4 +1,5 @@
 ﻿using AdvertBoard.Application.AppServices.Contexts.Adverts.Repositories;
+using AdvertBoard.Application.AppServices.Exceptions;
 using AdvertBoard.Application.AppServices.Specifications;
 using AdvertBoard.Contracts.Contexts.Adverts;
 using AdvertBoard.Contracts.Shared;
@@ -28,7 +29,7 @@ public class AdvertRepository : IAdvertRepository
     }
 
     /// <inheritdoc/>
-    public async Task<PageResponse<ShortAdvertDto>> GetByFilterWithPAginationAsync(PaginationRequest paginationRequest,
+    public async Task<PageResponse<ShortAdvertDto>> GetByFilterWithPaginationAsync(PaginationRequest paginationRequest,
         ISpecification<Advert> specification,
         CancellationToken cancellationToken)
     {
@@ -62,8 +63,7 @@ public class AdvertRepository : IAdvertRepository
     public async Task<Guid> UpdateAsync(Guid id, Advert updatedAdvert, CancellationToken cancellationToken)
     {
         var advert = await _repository.GetByIdAsync(id, cancellationToken);
-        //TODO: Добавить нормальное исключение
-        if (advert is null) throw new Exception();
+        if (advert is null) throw new EntityNotFoundException("Объявление не было найдено.");
         _mapper.Map(updatedAdvert, advert);
         await _repository.UpdateAsync(advert, cancellationToken);
         return advert.Id;
@@ -73,8 +73,7 @@ public class AdvertRepository : IAdvertRepository
     public async Task<AdvertDto> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         var dto = await _repository.GetByIdAsync(id, cancellationToken);
-        //TODO: Добавить нормальное исключение
-        if (dto is null) throw new Exception();
+        if (dto is null) throw new EntityNotFoundException("Объявление не было найдено.");
         return _mapper.Map<Advert, AdvertDto>(dto);
     }
 
@@ -82,8 +81,7 @@ public class AdvertRepository : IAdvertRepository
     public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken)
     {
         var advert = await _repository.GetByIdAsync(id, cancellationToken);
-        //TODO: Добавить нормальное исключение
-        if (advert is null) throw new Exception();
+        if (advert is null) throw new EntityNotFoundException("Объявление не было найдено.");
         await _repository.DeleteAsync(advert, cancellationToken);
         return true;
     }
