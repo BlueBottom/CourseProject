@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.SymbolStore;
 using System.Linq.Expressions;
 using AdvertBoard.Application.AppServices.Contexts.Users.Repositories;
+using AdvertBoard.Application.AppServices.Exceptions;
 using AdvertBoard.Application.AppServices.Specifications;
 using AdvertBoard.Contracts.Contexts.Users;
 using AdvertBoard.Contracts.Shared;
@@ -49,8 +50,8 @@ public class UserRepository : IUserRepository
     public async Task<UserDto> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         var user = await _repository.GetByIdAsync(id, cancellationToken);
-        //TODO: нормальное исключение
-        if (user is null) throw new Exception();
+        if (user is null) throw new EntityNotFoundException("Пользователь не был найден.");
+        
         return _mapper.Map<User, UserDto>(user);
     }
 
@@ -58,8 +59,8 @@ public class UserRepository : IUserRepository
     public async Task<Guid> UpdateAsync(Guid userId, User updatedUser, CancellationToken cancellationToken)
     {
         var user = await _repository.GetByIdAsync(userId, cancellationToken);
-        // TODO: исключение.
-        if (user is null) throw new Exception();
+        
+        if (user is null) throw new EntityNotFoundException("Пользователь не был найден.");
         var checkUser = await FindUser(x => x.Email == updatedUser.Email, cancellationToken);
         //TODO: исключение - пользователь с таким email уже существует.
         if (checkUser is not null && checkUser.Id != userId) throw new Exception();
@@ -76,14 +77,14 @@ public class UserRepository : IUserRepository
     public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken)
     {
         var user = await _repository.GetByIdAsync(id, cancellationToken);
-        //TODO: нормальное исключение.
-        if (user is null) throw new Exception();
+        if (user is null) throw new EntityNotFoundException("Пользователь не был найден.");
         await _repository.DeleteAsync(user, cancellationToken);
+        
         return true;
     }
 
     /// <inheritdoc/>
-    public async Task<PageResponse<ShortUserDto>> GetAllAsync(ISpecification<User> specification,
+    public async Task<PageResponse<ShortUserDto>> GetAllByFilterWithPaginationAsync(ISpecification<User> specification,
         PaginationRequest paginationRequest, CancellationToken cancellationToken)
     {
         var result = new PageResponse<ShortUserDto>();
@@ -109,8 +110,7 @@ public class UserRepository : IUserRepository
     public async Task UpdateRatingAsync(Guid id, decimal? rating, CancellationToken cancellationToken)
     {
         var user = await _repository.GetByIdAsync(id, cancellationToken);
-        //TODO: нормальное исключение.
-        if (user is null) throw new Exception();
+        if (user is null) throw new EntityNotFoundException("Пользователь не был найден.");;
         
         user.Rating = rating;
         await _repository.UpdateAsync(user, cancellationToken);

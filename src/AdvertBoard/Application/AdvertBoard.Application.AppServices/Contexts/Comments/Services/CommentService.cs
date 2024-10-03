@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using AdvertBoard.Application.AppServices.Authorization.Requirements;
 using AdvertBoard.Application.AppServices.Contexts.Comments.Repositories;
+using AdvertBoard.Application.AppServices.Exceptions;
 using AdvertBoard.Contracts.Contexts.Comments;
 using AdvertBoard.Contracts.Shared;
 using AdvertBoard.Domain.Contexts.Comments;
@@ -40,11 +41,7 @@ public class CommentService : ICommentService
         var claims = _httpContextAccessor.HttpContext.User.Claims;
         var claimId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
-        if (string.IsNullOrWhiteSpace(claimId))
-        {
-            //TODO: исключение
-            throw new Exception();
-        }
+        if (string.IsNullOrWhiteSpace(claimId)) throw new ForbiddenException();
 
         var userId = Guid.Parse(claimId);
         var comment = _mapper.Map<CreateCommentDto, Comment>(createCommentDto);
@@ -73,8 +70,7 @@ public class CommentService : ICommentService
         var authResult = await _authorizationService.AuthorizeAsync(_httpContextAccessor.HttpContext.User,
             existingReview,
             new ResourceOwnerRequirement());
-        //TODO: исключение
-        if (!authResult.Succeeded) throw new Exception();
+        if (!authResult.Succeeded) throw new ForbiddenException();
 
         return await _commentRepository.UpdateAsync(id, updateCommentDto, cancellationToken);
     }
@@ -86,8 +82,7 @@ public class CommentService : ICommentService
         var authResult = await _authorizationService.AuthorizeAsync(_httpContextAccessor.HttpContext.User,
             existingReview,
             new ResourceOwnerRequirement());
-        //TODO: исключение
-        if (!authResult.Succeeded) throw new Exception();
+        if (!authResult.Succeeded) throw new ForbiddenException();
 
         return await _commentRepository.DeleteAsync(id, cancellationToken);
     }

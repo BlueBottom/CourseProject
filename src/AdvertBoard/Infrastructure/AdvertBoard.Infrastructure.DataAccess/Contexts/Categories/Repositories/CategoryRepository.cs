@@ -1,5 +1,5 @@
-﻿using System.Diagnostics.SymbolStore;
-using AdvertBoard.Application.AppServices.Contexts.Categories.Repositories;
+﻿using AdvertBoard.Application.AppServices.Contexts.Categories.Repositories;
+using AdvertBoard.Application.AppServices.Exceptions;
 using AdvertBoard.Contracts.Contexts.Categories;
 using AdvertBoard.Domain.Contexts.Categories;
 using AdvertBoard.Infrastructure.Repository.Relational;
@@ -55,6 +55,9 @@ public class CategoryRepository : ICategoryRepository
             .GetBySql(sql, id)
             .AsNoTrackingWithIdentityResolution()
             .ToArrayAsync(cancellationToken);
+
+        if (query.Length == 0) throw new EntityNotFoundException("Категория не была найдена.");
+        
         return _mapper.Map<CategoryHierarchyDto>(query.FirstOrDefault());
     }
 
@@ -72,8 +75,8 @@ public class CategoryRepository : ICategoryRepository
     public async Task<ShortCategoryDto> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         var category = await _repository.GetByIdAsync(id, cancellationToken);
-        //TODO: исключение.
-        if (category is null) throw new Exception();
+        if (category is null) throw new EntityNotFoundException("Категория не была найдена.");
+        
         return _mapper.Map<Category, ShortCategoryDto>(category);
     }
 
@@ -81,10 +84,10 @@ public class CategoryRepository : ICategoryRepository
     public async Task<Guid> UpdateAsync(Guid id, Category updatedCategory, CancellationToken cancellationToken)
     {
         var category = await _repository.GetByIdAsync(id, cancellationToken);
-        //TODO: исключение.
-        if (category is null) throw new Exception();
+        if (category is null) throw new EntityNotFoundException("Категория не была найдена.");
         _mapper.Map(updatedCategory, category);
         await _repository.UpdateAsync(category, cancellationToken);
+        
         return category.Id;
     }
 
@@ -92,9 +95,9 @@ public class CategoryRepository : ICategoryRepository
     public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken)
     {
         var category = await _repository.GetByIdAsync(id, cancellationToken);
-        //TODO: исключение.
-        if (category is null) throw new Exception();
+        if (category is null) throw new EntityNotFoundException("Категория не была найдена.");
         await _repository.DeleteAsync(category, cancellationToken);
+        
         return true;
     }
 
@@ -123,6 +126,9 @@ public class CategoryRepository : ICategoryRepository
             .GetBySql(sql, values)
             .Select(c => c.Id)
             .ToArrayAsync(cancellationToken);
+        
+        if (query.Length == 0) throw new EntityNotFoundException("Категория не была найдена.");
+        
         return query;
     }
 }

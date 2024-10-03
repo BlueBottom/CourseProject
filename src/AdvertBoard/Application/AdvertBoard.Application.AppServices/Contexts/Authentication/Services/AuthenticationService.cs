@@ -34,7 +34,7 @@ public class AuthenticationService : IAuthenticationService
     /// <inheritdoc/>
     public async Task<Guid> RegisterAsync(RegisterUserDto registerUserDto, CancellationToken cancellationToken)
     {
-        //TODO: Нормальное исключение.
+        //TODO: Вынести в ValidationService 
         if (await _userRepository.FindUser(x => x.Email == registerUserDto.Email, cancellationToken) is not null)
             throw new Exception();
         if (await _userRepository.FindUser(x => x.Phone == registerUserDto.Phone, cancellationToken) is not null)
@@ -49,11 +49,11 @@ public class AuthenticationService : IAuthenticationService
     public async Task<string> LoginAsync(LoginUserDto loginUserDto, CancellationToken cancellationToken)
     {
         var existingUser = await _userRepository.FindUser(x => x.Email == loginUserDto.Email, cancellationToken);
-        // TODO: исключение.
+        // TODO: вынести в ValidationService.
         if (existingUser is null) throw new Exception();
 
         var password = CryptoHelper.GetBase64Hash(loginUserDto.Password);
-        //TODO: исключение.
+        //TODO: вынести в ValidationService.
         if (!existingUser.Password.Equals(password)) throw new Exception();
         
         var claims = new List<Claim>

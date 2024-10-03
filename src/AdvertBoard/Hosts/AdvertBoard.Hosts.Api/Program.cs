@@ -2,6 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using AdvertBoard.Contracts.Contexts.Adverts;
 using AdvertBoard.Contracts.Contexts.Images;
 using AdvertBoard.Hosts.Api.Controllers;
+using AdvertBoard.Hosts.Api.Middlewares;
 using AdvertBoard.Infrastructure.ComponentRegistrar;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
@@ -63,7 +64,7 @@ builder.Services.AddSwaggerGen(options =>
 });
 builder.Services.AddDependencies();
 builder.Services.AddDatabase(builder.Configuration);
-// TODO: перенести в ComponentRegistrar
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigin",
@@ -85,6 +86,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UsePathBase("/api");
 app.UseHttpsRedirection();

@@ -17,7 +17,7 @@ public interface IAdvertRepository
     /// <param name="specification">Спецификация.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Коллекцию укороченных моделей объявления с пагинацией.</returns>
-    Task<PageResponse<ShortAdvertDto>> GetByFilterWithPAginationAsync(PaginationRequest paginationRequest,
+    Task<PageResponse<ShortAdvertDto>> GetByFilterWithPaginationAsync(PaginationRequest paginationRequest,
         ISpecification<Advert> specification,
         CancellationToken cancellationToken);
 

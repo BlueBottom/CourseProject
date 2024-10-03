@@ -1,4 +1,5 @@
 ﻿using AdvertBoard.Application.AppServices.Contexts.Images.Repositories;
+using AdvertBoard.Application.AppServices.Exceptions;
 using AdvertBoard.Contracts.Contexts.Images;
 using AdvertBoard.Domain.Contexts.Images;
 using AdvertBoard.Infrastructure.Repository;
@@ -33,8 +34,8 @@ public class ImageRepository : IImageRepository
             .Where(i => i.Id == id)
             .ProjectTo<ImageDto>(_mapper.ConfigurationProvider)
             .FirstOrDefaultAsync(cancellationToken);
-        //TODO: исключение
-        if (image is null) throw new Exception();
+        
+        if (image is null) throw new EntityNotFoundException("Изображение не было найдено.");
         return image;
     }
 
@@ -49,9 +50,10 @@ public class ImageRepository : IImageRepository
     public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken)
     {
         var image = await _repository.GetByIdAsync(id, cancellationToken);
-        // TODO: Сделать нормальное исключение.
-        if (image is null) throw new Exception();
+        
+        if (image is null) throw new EntityNotFoundException("Изображение не было найдено.");
         await _repository.DeleteAsync(image, cancellationToken);
+        
         return true;
     }
 }

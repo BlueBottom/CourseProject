@@ -78,7 +78,7 @@ public class UserController : ControllerBase
     public async Task<IActionResult> GetAllAsync([FromForm] GetAllUsersDto getAllUsersDto,
         CancellationToken cancellationToken)
     {
-        var result = await _userService.GetAllAsync(getAllUsersDto, cancellationToken);
+        var result = await _userService.GetAllByFilterWithPaginationAsync(getAllUsersDto, cancellationToken);
         return Ok(result);
     }
 }

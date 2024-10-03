@@ -38,7 +38,7 @@ public interface IUserService
     /// <param name="getAllUsersDto">Модель получения пользователей.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Коллекцию укороченных моделей пользователя.</returns>
-    Task<PageResponse<ShortUserDto>> GetAllAsync(GetAllUsersDto getAllUsersDto,
+    Task<PageResponse<ShortUserDto>> GetAllByFilterWithPaginationAsync(GetAllUsersDto getAllUsersDto,
         CancellationToken cancellationToken);
 
     /// <summary>

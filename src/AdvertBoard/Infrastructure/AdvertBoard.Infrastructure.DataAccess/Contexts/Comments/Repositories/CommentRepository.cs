@@ -1,4 +1,5 @@
 ﻿using AdvertBoard.Application.AppServices.Contexts.Comments.Repositories;
+using AdvertBoard.Application.AppServices.Exceptions;
 using AdvertBoard.Contracts.Contexts.Comments;
 using AdvertBoard.Contracts.Shared;
 using AdvertBoard.Domain.Contexts.Comments;
@@ -43,6 +44,7 @@ public class CommentRepository : ICommentRepository
         var elementsCount = await query.CountAsync(cancellationToken);
         result.TotalPages = result.TotalPages = (int)Math.Ceiling((double)elementsCount / getAllCommentsDto.BatchSize);
 
+        //TODO: валидация поля  AdvertId на наличие в базе.
         var paginationQuery = await query
             .OrderBy(x => x.CreatedAt)
             .Where(x => x.AdvertId == getAllCommentsDto.AdvertId)
@@ -59,8 +61,8 @@ public class CommentRepository : ICommentRepository
     public async Task<CommentDto> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         var comment = await _repository.GetByIdAsync(id, cancellationToken);
-        //TODO: исключение.
-        if (comment is null) throw new Exception();
+        if (comment is null) throw new EntityNotFoundException("Комментарий не был найден");
+        
         return _mapper.Map<Comment, CommentDto>(comment);
     }
 
@@ -68,11 +70,10 @@ public class CommentRepository : ICommentRepository
     public async Task<Guid> UpdateAsync(Guid id, UpdateCommentDto updateCommentDto, CancellationToken cancellationToken)
     {
         var comment = await _repository.GetByIdAsync(id, cancellationToken);
-        //TODO: исключение.
-        if (comment is null) throw new Exception();
-
+        if (comment is null) throw new EntityNotFoundException("Комментарий не был найден");
         _mapper.Map<UpdateCommentDto, Comment>(updateCommentDto, comment);
         await _repository.UpdateAsync(comment, cancellationToken);
+        
         return comment.Id;
     }
 
@@ -80,10 +81,9 @@ public class CommentRepository : ICommentRepository
     public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken)
     {
         var comment = await _repository.GetByIdAsync(id, cancellationToken);
-        //TODO: исключение.
-        if (comment is null) throw new Exception();
-        
+        if (comment is null) throw new EntityNotFoundException("Комментарий не был найден");
         await _repository.DeleteAsync(comment, cancellationToken);
+        
         return true;
     }
 
