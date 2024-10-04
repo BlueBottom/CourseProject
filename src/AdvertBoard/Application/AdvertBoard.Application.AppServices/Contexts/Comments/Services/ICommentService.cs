@@ -1,5 +1,5 @@
-﻿using AdvertBoard.Contracts.Contexts.Comments;
-using AdvertBoard.Contracts.Shared;
+﻿using AdvertBoard.Contracts.Common;
+using AdvertBoard.Contracts.Contexts.Comments;
 
 namespace AdvertBoard.Application.AppServices.Contexts.Comments.Services;
 

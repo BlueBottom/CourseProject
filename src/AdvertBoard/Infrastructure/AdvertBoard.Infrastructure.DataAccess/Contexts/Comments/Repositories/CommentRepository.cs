@@ -1,7 +1,7 @@
 ﻿using AdvertBoard.Application.AppServices.Contexts.Comments.Repositories;
 using AdvertBoard.Application.AppServices.Exceptions;
+using AdvertBoard.Contracts.Common;
 using AdvertBoard.Contracts.Contexts.Comments;
-using AdvertBoard.Contracts.Shared;
 using AdvertBoard.Domain.Contexts.Comments;
 using AdvertBoard.Infrastructure.Repository.Relational;
 using AutoMapper;

@@ -1,11 +1,11 @@
 ﻿using AdvertBoard.Contracts.Enums;
 
-namespace AdvertBoard.Contracts.Contexts.Adverts;
+namespace AdvertBoard.Contracts.Contexts.Adverts.Responses;
 
 /// <summary>
 /// Укороченная модель объявления.
 /// </summary>
-public class ShortAdvertDto
+public class ShortAdvertResponse
 {
     /// <summary>
     /// Идентификатор.

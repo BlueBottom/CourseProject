@@ -63,4 +63,12 @@ public interface ICategoryRepository
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Коллекцию всех дочерних идентификаторов.</returns>
     Task<IEnumerable<Guid>> GetHierarchyIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Проверяет наличие категории в БД.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="cancellationToken">Токен отмены.</param>
+    /// <returns>Наличие категории в БД.</returns>
+    Task<bool> IsCategoryExists(Guid id, CancellationToken cancellationToken);
 }

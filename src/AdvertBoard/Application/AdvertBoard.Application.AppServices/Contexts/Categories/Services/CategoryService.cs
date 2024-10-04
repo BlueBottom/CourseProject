@@ -66,4 +66,10 @@ public class CategoryService : ICategoryService
     {
         return _categoryRepository.DeleteAsync(id, cancellationToken);
     }
+
+    /// <inheritdoc/>
+    public Task<bool> IsCategoryExists(Guid id, CancellationToken cancellationToken)
+    {
+        return _categoryRepository.IsCategoryExists(id, cancellationToken);
+    }
 }

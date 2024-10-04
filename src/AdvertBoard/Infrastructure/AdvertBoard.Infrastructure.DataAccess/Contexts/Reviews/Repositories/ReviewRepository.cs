@@ -1,7 +1,7 @@
 ﻿using AdvertBoard.Application.AppServices.Contexts.Reviews.Repositories;
 using AdvertBoard.Application.AppServices.Exceptions;
+using AdvertBoard.Contracts.Common;
 using AdvertBoard.Contracts.Contexts.Reviews;
-using AdvertBoard.Contracts.Shared;
 using AdvertBoard.Domain.Contexts.Reviews;
 using AdvertBoard.Infrastructure.Repository;
 using AutoMapper;

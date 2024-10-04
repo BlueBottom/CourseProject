@@ -1,6 +1,5 @@
-﻿using System.Security.Claims;
-using AdvertBoard.Application.AppServices.Contexts.Adverts.Services;
-using AdvertBoard.Contracts.Contexts.Adverts;
+﻿using AdvertBoard.Application.AppServices.Contexts.Adverts.Services;
+using AdvertBoard.Contracts.Contexts.Adverts.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,34 +20,34 @@ public class AdvertController : ControllerBase
     /// <param name="advertService">Сервис для работы с объявлениями.</param>
     public AdvertController(IAdvertService advertService)
     {
-        _advertService = advertService; 
+        _advertService = advertService;
     }
 
     /// <summary>
     /// Получает каталог с укороченными моделями объявлений.
     /// </summary>
-    /// <param name="getAllAdvertsDto">Модель получения объявлений.</param>
+    /// <param name="getAdvertsByFilterRequest">Модель получения объявлений.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Каталог с укороченными моделями объявлений.</returns>
     [HttpPost("search")]
-    public async Task<IActionResult> GetAllAsync([FromForm] GetAllAdvertsDto getAllAdvertsDto, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetAllAsync([FromForm] GetAdvertsByFilterRequest getAdvertsByFilterRequest, CancellationToken cancellationToken)
     {
-        var result = await _advertService.GetByFilterWithPaginationAsync(getAllAdvertsDto, cancellationToken);
+        var result = await _advertService.GetByFilterWithPaginationAsync(getAdvertsByFilterRequest, cancellationToken);
         return Ok(result);
     }
 
     /// <summary>
     /// Добавляет объявление.
     /// </summary>
-    /// <param name="createAdvertDto">Модель создания объявления.</param>
+    /// <param name="createAdvertRequest">Модель создания объявления.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Идентификатор.</returns>
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> AddAsync([FromForm] CreateAdvertDto createAdvertDto,
+    public async Task<IActionResult> AddAsync([FromForm] CreateAdvertRequest createAdvertRequest,
         CancellationToken cancellationToken)
-    {
-        var result = await _advertService.AddAsync(createAdvertDto, cancellationToken);
+    { 
+        var result = await _advertService.AddAsync(createAdvertRequest, cancellationToken);
         return Ok(result);
     }
 
@@ -69,15 +68,15 @@ public class AdvertController : ControllerBase
     /// Обновляет данные в объявлении.
     /// </summary>
     /// <param name="id">Идентификатор.</param>
-    /// <param name="updateAdvertDto">Модель обновления объвления.</param>
+    /// <param name="updateAdvertRequest">Модель обновления объвления.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Идентификатор.</returns>
     [HttpPut("{id:guid}")]
     [Authorize]
-    public async Task<IActionResult> UpdateAsync(Guid id, [FromForm] UpdateAdvertDto updateAdvertDto,
+    public async Task<IActionResult> UpdateAsync(Guid id, [FromForm] UpdateAdvertRequest updateAdvertRequest,
         CancellationToken cancellationToken)
     {
-        var result = await _advertService.UpdateAsync(id, updateAdvertDto, cancellationToken);
+        var result = await _advertService.UpdateAsync(id, updateAdvertRequest, cancellationToken);
         return Ok(result);
     }
 

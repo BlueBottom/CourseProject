@@ -1,6 +1,7 @@
 ﻿using AdvertBoard.Application.AppServices.Specifications;
+using AdvertBoard.Contracts.Common;
 using AdvertBoard.Contracts.Contexts.Adverts;
-using AdvertBoard.Contracts.Shared;
+using AdvertBoard.Contracts.Contexts.Adverts.Responses;
 using AdvertBoard.Domain.Contexts.Adverts;
 
 namespace AdvertBoard.Application.AppServices.Contexts.Adverts.Repositories;
@@ -17,7 +18,7 @@ public interface IAdvertRepository
     /// <param name="specification">Спецификация.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Коллекцию укороченных моделей объявления с пагинацией.</returns>
-    Task<PageResponse<ShortAdvertDto>> GetByFilterWithPaginationAsync(PaginationRequest paginationRequest,
+    Task<PageResponse<ShortAdvertResponse>> GetByFilterWithPaginationAsync(PaginationRequest paginationRequest,
         ISpecification<Advert> specification,
         CancellationToken cancellationToken);
 
@@ -44,7 +45,7 @@ public interface IAdvertRepository
     /// <param name="id">Идентификатор.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Модель объявления.</returns>
-    Task<AdvertDto> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+    Task<AdvertResponse> GetByIdAsync(Guid id, CancellationToken cancellationToken);
     
     /// <summary>
     /// Удаляет объявление по идентификатору.

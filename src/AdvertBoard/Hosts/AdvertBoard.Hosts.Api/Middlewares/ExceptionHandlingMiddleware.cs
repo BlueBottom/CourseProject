@@ -1,7 +1,8 @@
 ﻿using System.Net;
 using System.Text.Json;
 using AdvertBoard.Application.AppServices.Exceptions;
-using AdvertBoard.Contracts.Shared;
+using AdvertBoard.Contracts.Common;
+using FluentValidation;
 
 namespace AdvertBoard.Hosts.Api.Middlewares;
 
@@ -55,7 +56,7 @@ public class ExceptionHandlingMiddleware
 
     private object CreateApiError(Exception exception, HttpContext context, IHostEnvironment environment)
     {
-        if (environment.IsDevelopment())
+        if (!environment.IsDevelopment())
         {
             return new ApiError
             {
@@ -75,11 +76,28 @@ public class ExceptionHandlingMiddleware
                 Message = humanReadableException.Message,
                 TraceId = context.TraceIdentifier,
             },
-            EntityNotFoundException => new ApiError
+            ForbiddenException forbiddenException => new ApiError()
             {
-                Code = ((int)HttpStatusCode.NotFound).ToString(),
-                Message = "Сущность не была найдена.",
+                Code = context.Response.StatusCode.ToString(),
+                Message = forbiddenException.Message,
+                TraceId = context.TraceIdentifier
+            },
+            EntityNotFoundException entityNotFoundException => new ApiError
+            {
+                Code = context.Response.StatusCode.ToString(),
+                Message = entityNotFoundException.Message,
                 TraceId = context.TraceIdentifier,
+            },
+            ValidationException validationException => new ValidationApiError()
+            {
+                Message = validationException.Message,
+                Description = string.Join("\n", validationException.Errors.Select(s => $"{s.PropertyName}: {s.ErrorMessage}")),
+                Code = context.Response.StatusCode.ToString(),
+                Errors = validationException.Errors
+                    .GroupBy(
+                        x => x.PropertyName, 
+                        x => x.ErrorMessage)
+                    .ToDictionary(k => k.Key, v => v.ToArray())
             },
             _ => new ApiError
             {
@@ -96,6 +114,7 @@ public class ExceptionHandlingMiddleware
         {
             EntityNotFoundException => HttpStatusCode.NotFound,
             ForbiddenException => HttpStatusCode.Forbidden,
+            ValidationException => HttpStatusCode.BadRequest,
             _ => HttpStatusCode.InternalServerError,
         };
     }

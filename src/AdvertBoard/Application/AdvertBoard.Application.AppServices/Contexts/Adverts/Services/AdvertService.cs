@@ -3,10 +3,14 @@ using AdvertBoard.Application.AppServices.Authorization.Requirements;
 using AdvertBoard.Application.AppServices.Contexts.Adverts.Builders;
 using AdvertBoard.Application.AppServices.Contexts.Adverts.Repositories;
 using AdvertBoard.Application.AppServices.Exceptions;
+using AdvertBoard.Application.AppServices.Services;
+using AdvertBoard.Contracts.Common;
 using AdvertBoard.Contracts.Contexts.Adverts;
-using AdvertBoard.Contracts.Shared;
+using AdvertBoard.Contracts.Contexts.Adverts.Requests;
+using AdvertBoard.Contracts.Contexts.Adverts.Responses;
 using AdvertBoard.Domain.Contexts.Adverts;
 using AutoMapper;
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 
@@ -20,6 +24,7 @@ public class AdvertService : IAdvertService
     private readonly IAdvertSpecificationBuilder _advertSpecificationBuilder;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IAuthorizationService _authorizationService;
+    private readonly BusinessLogicAbstractValidator<CreateAdvertRequest> _createAdvertValidator;
 
     /// <summary>
     /// Инициализирует экземпляр класса.
@@ -29,61 +34,61 @@ public class AdvertService : IAdvertService
     /// <param name="advertSpecificationBuilder">Спецификация.</param>
     /// <param name="httpContextAccessor">Разрешает доступ к <see cref="HttpContext"/>.</param>
     /// <param name="authorizationService">Сервис для реализации requirements.</param>
-    public AdvertService(IAdvertRepository advertRepository, IMapper mapper,
-        IAdvertSpecificationBuilder advertSpecificationBuilder, IHttpContextAccessor httpContextAccessor,
-        IAuthorizationService authorizationService)
+    public AdvertService(
+        IAdvertRepository advertRepository, 
+        IMapper mapper,
+        IAdvertSpecificationBuilder advertSpecificationBuilder, 
+        IHttpContextAccessor httpContextAccessor,
+        IAuthorizationService authorizationService, 
+        BusinessLogicAbstractValidator<CreateAdvertRequest> createAdvertValidator)
     {
         _advertRepository = advertRepository;
         _mapper = mapper;
         _advertSpecificationBuilder = advertSpecificationBuilder;
         _httpContextAccessor = httpContextAccessor;
         _authorizationService = authorizationService;
+        _createAdvertValidator = createAdvertValidator;
     }
 
     /// <inheritdoc/>
-    public async Task<PageResponse<ShortAdvertDto>> GetByFilterWithPaginationAsync(GetAllAdvertsDto getAllAdvertsDto,
+    public async Task<PageResponse<ShortAdvertResponse>> GetByFilterWithPaginationAsync(GetAdvertsByFilterRequest getAdvertsByFilterRequest,
         CancellationToken cancellationToken)
     {
-        var specification = await _advertSpecificationBuilder.Build(getAllAdvertsDto);
+        var specification = await _advertSpecificationBuilder.Build(getAdvertsByFilterRequest);
         
         var paginationRequest = new PaginationRequest
         {
-            BatchSize = getAllAdvertsDto.BatchSize,
-            PageNumber = getAllAdvertsDto.PageNumber
+            BatchSize = getAdvertsByFilterRequest.BatchSize,
+            PageNumber = getAdvertsByFilterRequest.PageNumber
         };
 
         return await _advertRepository.GetByFilterWithPaginationAsync(paginationRequest, specification, cancellationToken);
     }
 
     /// <inheritdoc/>
-    public Task<Guid> AddAsync(CreateAdvertDto createAdvertDto, CancellationToken cancellationToken)
+    public async Task<Guid> AddAsync(CreateAdvertRequest createAdvertRequest, CancellationToken cancellationToken)
     {
-        var advert = _mapper.Map<CreateAdvertDto, Advert>(createAdvertDto);
-        var claims = _httpContextAccessor.HttpContext.User.Claims;
-        var claimId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-
-        if (string.IsNullOrWhiteSpace(claimId)) throw new ForbiddenException();
-
-        var userId = Guid.Parse(claimId);
-        advert.UserId = userId;
+        await _createAdvertValidator.ValidateAndThrowAsync(createAdvertRequest, cancellationToken);
         
-        return _advertRepository.AddAsync(advert, cancellationToken);
+        var advert = _mapper.Map<CreateAdvertRequest, Advert>(createAdvertRequest);
+        
+        advert.UserId = GetUserId();
+        
+        return await _advertRepository.AddAsync(advert, cancellationToken);
     }
 
     /// <inheritdoc/>
-    public async Task<Guid> UpdateAsync(Guid id, UpdateAdvertDto updateAdvertDto, CancellationToken cancellationToken)
+    public async Task<Guid> UpdateAsync(Guid id, UpdateAdvertRequest updateAdvertRequest, CancellationToken cancellationToken)
     {
-        var existingAdvert = await _advertRepository.GetByIdAsync(id, cancellationToken);
-        var authResult = await _authorizationService.AuthorizeAsync(_httpContextAccessor.HttpContext.User, existingAdvert,
-            new ResourceOwnerRequirement());
-        if (!authResult.Succeeded) throw new ForbiddenException();
-        var advert = _mapper.Map<UpdateAdvertDto, Advert>(updateAdvertDto);
+        await EnsureResourceAuthorize(id, cancellationToken);
+        
+        var advert = _mapper.Map<UpdateAdvertRequest, Advert>(updateAdvertRequest);
 
         return await _advertRepository.UpdateAsync(id, advert, cancellationToken);
     }
 
     /// <inheritdoc/>
-    public Task<AdvertDto> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    public Task<AdvertResponse> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         return _advertRepository.GetByIdAsync(id, cancellationToken);
     }
@@ -91,11 +96,30 @@ public class AdvertService : IAdvertService
     /// <inheritdoc/>
     public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken)
     {
-        var existingAdvert = await _advertRepository.GetByIdAsync(id, cancellationToken);
-        var authResult = await _authorizationService.AuthorizeAsync(_httpContextAccessor.HttpContext.User, existingAdvert,
-            new ResourceOwnerRequirement());
-        if (!authResult.Succeeded) throw new ForbiddenException();
-        
+        await EnsureResourceAuthorize(id, cancellationToken);
+
         return await _advertRepository.DeleteAsync(id, cancellationToken);
+    }
+
+    private async Task EnsureResourceAuthorize(Guid resourceId, CancellationToken cancellationToken)
+    {
+        var existingAdvert = await _advertRepository.GetByIdAsync(resourceId, cancellationToken);
+        var authResult = await _authorizationService.AuthorizeAsync(
+            _httpContextAccessor.HttpContext.User, 
+            existingAdvert,
+            new ResourceOwnerRequirement()
+            );
+        
+        if (!authResult.Succeeded) throw new ForbiddenException();
+    }
+
+    private Guid GetUserId()
+    {
+        var claims = _httpContextAccessor.HttpContext.User.Claims;
+        var claimId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+        if (string.IsNullOrWhiteSpace(claimId)) throw new ForbiddenException();
+
+        return Guid.Parse(claimId);
     }
 }

@@ -1,14 +1,12 @@
-﻿using System.Net.Mime;
-using AdvertBoard.Contracts.Contexts.Categories;
-using AdvertBoard.Contracts.Contexts.Users;
+﻿using AdvertBoard.Contracts.Contexts.Users;
 using AdvertBoard.Contracts.Enums;
 
-namespace AdvertBoard.Contracts.Contexts.Adverts;
+namespace AdvertBoard.Contracts.Contexts.Adverts.Responses;
 
 /// <summary>
 /// Модель объявления.
 /// </summary>
-public class AdvertDto
+public class AdvertResponse
 {
     /// <summary>
     /// Идентификатор.

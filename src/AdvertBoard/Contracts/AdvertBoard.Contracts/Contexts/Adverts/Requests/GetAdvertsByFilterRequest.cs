@@ -1,11 +1,11 @@
-﻿using AdvertBoard.Contracts.Shared;
+﻿using AdvertBoard.Contracts.Common;
 
-namespace AdvertBoard.Contracts.Contexts.Adverts;
+namespace AdvertBoard.Contracts.Contexts.Adverts.Requests;
 
 /// <summary>
 /// Модель отображения доски объялений с фильтрами.
 /// </summary>
-public class GetAllAdvertsDto : PaginationRequest
+public class GetAdvertsByFilterRequest : PaginationRequest
 {
     /// <summary>
     /// Строка поиска.

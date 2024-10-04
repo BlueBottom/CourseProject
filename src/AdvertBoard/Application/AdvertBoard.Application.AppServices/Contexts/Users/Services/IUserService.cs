@@ -1,5 +1,5 @@
-﻿using AdvertBoard.Contracts.Contexts.Users;
-using AdvertBoard.Contracts.Shared;
+﻿using AdvertBoard.Contracts.Common;
+using AdvertBoard.Contracts.Contexts.Users;
 
 namespace AdvertBoard.Application.AppServices.Contexts.Users.Services;
 

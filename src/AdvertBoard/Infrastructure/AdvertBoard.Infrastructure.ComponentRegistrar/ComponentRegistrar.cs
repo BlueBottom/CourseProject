@@ -3,6 +3,8 @@ using AdvertBoard.Application.AppServices.Authorization.Handlers;
 using AdvertBoard.Application.AppServices.Contexts.Adverts.Builders;
 using AdvertBoard.Application.AppServices.Contexts.Adverts.Repositories;
 using AdvertBoard.Application.AppServices.Contexts.Adverts.Services;
+using AdvertBoard.Application.AppServices.Contexts.Adverts.Validators.BusinessLogic;
+using AdvertBoard.Application.AppServices.Contexts.Adverts.Validators.Requests;
 using AdvertBoard.Application.AppServices.Contexts.Authentication.Services;
 using AdvertBoard.Application.AppServices.Contexts.Categories.Repositories;
 using AdvertBoard.Application.AppServices.Contexts.Categories.Services;
@@ -15,6 +17,8 @@ using AdvertBoard.Application.AppServices.Contexts.Reviews.Services;
 using AdvertBoard.Application.AppServices.Contexts.Users.Builders;
 using AdvertBoard.Application.AppServices.Contexts.Users.Repositories;
 using AdvertBoard.Application.AppServices.Contexts.Users.Services;
+using AdvertBoard.Application.AppServices.Services;
+using AdvertBoard.Contracts.Contexts.Adverts.Requests;  
 using AdvertBoard.Infrastructure.ComponentRegistrar.MapProfiles;
 using AdvertBoard.Infrastructure.DataAccess.Contexts.Adverts.Repositories;
 using AdvertBoard.Infrastructure.DataAccess.Contexts.Categories.Repositories;
@@ -25,6 +29,7 @@ using AdvertBoard.Infrastructure.DataAccess.Contexts.Users.Repositories;
 using AdvertBoard.Infrastructure.Repository;
 using AdvertBoard.Infrastructure.Repository.Relational;
 using AutoMapper;
+using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -32,6 +37,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.IdentityModel.Tokens;
+using SharpGrip.FluentValidation.AutoValidation.Mvc.Enums;
+using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 
 namespace AdvertBoard.Infrastructure.ComponentRegistrar;
 
@@ -48,7 +55,8 @@ public static class ComponentRegistrar
             .AddServices()
             .AddRepositories()
             .AddBuilders()
-            .AddMapper();
+            .AddMapper()
+            .AddFluentValidation();
     }
 
     private static IServiceCollection AddServices(this IServiceCollection serviceCollection)
@@ -109,6 +117,28 @@ public static class ComponentRegistrar
         serviceCollection.AddSingleton<IMapper>(new Mapper(config));
 
         return serviceCollection;
+    }
+    
+    /// <summary>
+    /// Подключить пакеты для работы с FluentValidation.
+    /// </summary>
+    private static IServiceCollection AddFluentValidation(this IServiceCollection services)
+    {
+        services.AddValidatorsFromAssemblyContaining<CreateAdvertRequestValidator>(filter: service => 
+            service.ValidatorType.BaseType?.GetGenericTypeDefinition() != typeof(BusinessLogicAbstractValidator<>));
+        services.AddScoped<BusinessLogicAbstractValidator<CreateAdvertRequest>, CreateAdvertValidator>();
+        services.AddFluentValidationAutoValidation(configuration =>
+        {
+            configuration.ValidationStrategy = ValidationStrategy.All;
+            configuration.DisableBuiltInModelValidation = false;
+            configuration.EnableBodyBindingSourceAutomaticValidation = true;
+            configuration.EnableCustomBindingSourceAutomaticValidation = true;
+            configuration.EnableFormBindingSourceAutomaticValidation = true;
+            configuration.EnablePathBindingSourceAutomaticValidation = true;
+            configuration.EnableQueryBindingSourceAutomaticValidation = true;
+        });
+
+        return services;
     }
     
     /// <summary>

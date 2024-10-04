@@ -1,5 +1,5 @@
-﻿using AdvertBoard.Contracts.Contexts.Reviews;
-using AdvertBoard.Contracts.Shared;
+﻿using AdvertBoard.Contracts.Common;
+using AdvertBoard.Contracts.Contexts.Reviews;
 
 namespace AdvertBoard.Application.AppServices.Contexts.Reviews.Services;
 

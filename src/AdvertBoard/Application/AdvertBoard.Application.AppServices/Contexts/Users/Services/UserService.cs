@@ -2,8 +2,8 @@
 using AdvertBoard.Application.AppServices.Contexts.Users.Builders;
 using AdvertBoard.Application.AppServices.Contexts.Users.Repositories;
 using AdvertBoard.Application.AppServices.Exceptions;
+using AdvertBoard.Contracts.Common;
 using AdvertBoard.Contracts.Contexts.Users;
-using AdvertBoard.Contracts.Shared;
 using AdvertBoard.Domain.Contexts.Users;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;

@@ -63,4 +63,12 @@ public interface ICategoryService
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Статус действия типа <see cref="bool"/>.</returns>
     Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Проверяет наличие категории в БД.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="cancellationToken">Токен отмены.</param>
+    /// <returns>Наличие категории в БД.</returns>
+    Task<bool> IsCategoryExists(Guid id, CancellationToken cancellationToken);
 }

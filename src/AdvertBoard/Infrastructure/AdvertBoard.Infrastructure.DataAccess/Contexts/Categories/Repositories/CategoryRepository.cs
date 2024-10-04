@@ -131,4 +131,10 @@ public class CategoryRepository : ICategoryRepository
         
         return query;
     }
+
+    /// <inheritdoc/>
+    public Task<bool> IsCategoryExists(Guid id, CancellationToken cancellationToken)
+    {
+        return _repository.GetAll().AnyAsync(x => x.Id == id, cancellationToken);
+    }
 }

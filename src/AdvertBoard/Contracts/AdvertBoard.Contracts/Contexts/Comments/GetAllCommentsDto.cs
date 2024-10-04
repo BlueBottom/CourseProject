@@ -1,4 +1,4 @@
-﻿using AdvertBoard.Contracts.Shared;
+﻿using AdvertBoard.Contracts.Common;
 
 namespace AdvertBoard.Contracts.Contexts.Comments;
 

@@ -1,5 +1,7 @@
-﻿using AdvertBoard.Contracts.Contexts.Adverts;
-using AdvertBoard.Contracts.Shared;
+﻿using AdvertBoard.Contracts.Common;
+using AdvertBoard.Contracts.Contexts.Adverts;
+using AdvertBoard.Contracts.Contexts.Adverts.Requests;
+using AdvertBoard.Contracts.Contexts.Adverts.Responses;
 
 namespace AdvertBoard.Application.AppServices.Contexts.Adverts.Services;
 
@@ -11,28 +13,28 @@ public interface IAdvertService
     /// <summary>
     /// Получает объявления с использованием фильтов.
     /// </summary>
-    /// <param name="getAllAdvertsDto">Модель полученя данных.</param>
+    /// <param name="getAdvertsByFilterRequest">Модель полученя данных.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Коллекцию укороченных моделей объявления с пагинацией.</returns>
-    Task<PageResponse<ShortAdvertDto>> GetByFilterWithPaginationAsync(GetAllAdvertsDto getAllAdvertsDto,
+    Task<PageResponse<ShortAdvertResponse>> GetByFilterWithPaginationAsync(GetAdvertsByFilterRequest getAdvertsByFilterRequest,
         CancellationToken cancellationToken);
 
     /// <summary>
     /// Добавляет объявление.
     /// </summary>
-    /// <param name="createAdvertDto"></param>
+    /// <param name="createAdvertRequest"></param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Идентификатор объявления.</returns>
-    Task<Guid> AddAsync(CreateAdvertDto createAdvertDto, CancellationToken cancellationToken);
+    Task<Guid> AddAsync(CreateAdvertRequest createAdvertRequest, CancellationToken cancellationToken);
    
     /// <summary>
     /// Обновлляет объявление.
     /// </summary>
     /// <param name="id">Идентификатор.</param>
-    /// <param name="updateAdvertDto"></param>
+    /// <param name="updateAdvertRequest"></param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Идентификатор объявления.</returns>
-    Task<Guid> UpdateAsync(Guid id, UpdateAdvertDto updateAdvertDto, CancellationToken cancellationToken);
+    Task<Guid> UpdateAsync(Guid id, UpdateAdvertRequest updateAdvertRequest, CancellationToken cancellationToken);
    
     /// <summary>
     /// Получает объявление по идентификатору.
@@ -40,7 +42,7 @@ public interface IAdvertService
     /// <param name="id">Идентификатор.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Модель объявления.</returns>
-    Task<AdvertDto> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+    Task<AdvertResponse> GetByIdAsync(Guid id, CancellationToken cancellationToken);
     
     /// <summary>
     /// Удаляет объявление по идентификатору.

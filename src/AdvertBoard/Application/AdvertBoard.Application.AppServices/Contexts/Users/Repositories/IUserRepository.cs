@@ -1,7 +1,7 @@
 ﻿using System.Linq.Expressions;
 using AdvertBoard.Application.AppServices.Specifications;
+using AdvertBoard.Contracts.Common;
 using AdvertBoard.Contracts.Contexts.Users;
-using AdvertBoard.Contracts.Shared;
 using AdvertBoard.Domain.Contexts.Users;
 
 namespace AdvertBoard.Application.AppServices.Contexts.Users.Repositories;

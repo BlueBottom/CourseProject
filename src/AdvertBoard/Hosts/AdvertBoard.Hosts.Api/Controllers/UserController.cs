@@ -1,7 +1,6 @@
 ﻿using System.Security.Claims;
 using AdvertBoard.Application.AppServices.Contexts.Users.Services;
 using AdvertBoard.Contracts.Contexts.Users;
-using AdvertBoard.Contracts.Shared;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

@@ -1,5 +1,6 @@
 ﻿using AdvertBoard.Application.AppServices.Specifications;
 using AdvertBoard.Contracts.Contexts.Adverts;
+using AdvertBoard.Contracts.Contexts.Adverts.Requests;
 using AdvertBoard.Domain.Contexts.Adverts;
 
 namespace AdvertBoard.Application.AppServices.Contexts.Adverts.Builders;
@@ -12,7 +13,7 @@ public interface IAdvertSpecificationBuilder
     /// <summary>
     /// Строит спецификацию по запросу.
     /// </summary>
-    /// <param name="getAllAdvertsDto"></param>
+    /// <param name="getAdvertsByFilterRequest"></param>
     /// <returns>Спецификация.</returns>
-    Task<ISpecification<Advert>> Build(GetAllAdvertsDto getAllAdvertsDto);
+    Task<ISpecification<Advert>> Build(GetAdvertsByFilterRequest getAdvertsByFilterRequest);
 }
