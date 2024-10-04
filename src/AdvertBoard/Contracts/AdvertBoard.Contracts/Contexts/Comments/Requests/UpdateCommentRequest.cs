@@ -1,12 +1,12 @@
-﻿namespace AdvertBoard.Contracts.Contexts.Comments;
+﻿namespace AdvertBoard.Contracts.Contexts.Comments.Requests;
 
 /// <summary>
 /// Модель запроса на создание комментария.
 /// </summary>
-public class UpdateCommentDto
+public class UpdateCommentRequest
 {
     /// <summary>
     /// Содержимое комментария.
     /// </summary>
-    public string Content { get; set; } = null!;
+    public string? Content { get; set; }
 }

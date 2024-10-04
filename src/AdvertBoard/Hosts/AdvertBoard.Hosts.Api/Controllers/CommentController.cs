@@ -1,5 +1,6 @@
 ﻿using AdvertBoard.Application.AppServices.Contexts.Comments.Services;
 using AdvertBoard.Contracts.Contexts.Comments;
+using AdvertBoard.Contracts.Contexts.Comments.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,28 +27,28 @@ public class CommentController : ControllerBase
     /// <summary>
     /// Добавялет комментарий.
     /// </summary>
-    /// <param name="createCommentDto">Модель запрса на создание комментария.</param>
+    /// <param name="createCommentRequest">Модель запрса на создание комментария.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Идентификатор.</returns>
     [Authorize]
     [HttpPost]
-    public async Task<IActionResult> AddAsync([FromForm] CreateCommentDto createCommentDto, CancellationToken cancellationToken)
+    public async Task<IActionResult> AddAsync([FromForm] CreateCommentRequest createCommentRequest, CancellationToken cancellationToken)
     {
-        var result = await _commentService.AddAsync(createCommentDto, cancellationToken);
+        var result = await _commentService.AddAsync(createCommentRequest, cancellationToken);
         return Ok(result);
     }
 
     /// <summary>
     /// Получает комментарии к объявлению.
     /// </summary>
-    /// <param name="getAllCommentsDto">Модель запроса на получение комментариев.</param>
+    /// <param name="getAllCommentsRequest">Модель запроса на получение комментариев.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Коллекцию укороченных моделей комментария с пагинацией.</returns>
     [HttpGet("by-advert")]
-    public async Task<IActionResult> GetAllWithPaginationAsync([FromQuery] GetAllCommentsDto getAllCommentsDto,
+    public async Task<IActionResult> GetAllWithPaginationAsync([FromQuery] GetAllCommentsRequest getAllCommentsRequest,
         CancellationToken cancellationToken)
     {
-        var result = await _commentService.GetAllWithPaginationAsync(getAllCommentsDto, cancellationToken);
+        var result = await _commentService.GetAllWithPaginationAsync(getAllCommentsRequest, cancellationToken);
         return Ok(result);
     }
 
@@ -69,15 +70,15 @@ public class CommentController : ControllerBase
     /// Обновляет комментарий.
     /// </summary>
     /// <param name="id">Идентификатор.</param>
-    /// <param name="updateCommentDto">Модель запроса на обновление комментария.</param>
+    /// <param name="updateCommentRequest">Модель запроса на обновление комментария.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Идентификатор.</returns>
     [Authorize]
     [HttpPut("{id:guid}")]
-    public async Task<IActionResult> UpdateAsync(Guid id, UpdateCommentDto updateCommentDto,
+    public async Task<IActionResult> UpdateAsync(Guid id, UpdateCommentRequest updateCommentRequest,
         CancellationToken cancellationToken)
     {
-        var result = await _commentService.UpdateAsync(id, updateCommentDto, cancellationToken);
+        var result = await _commentService.UpdateAsync(id, updateCommentRequest, cancellationToken);
         return Ok(result);
     }
 

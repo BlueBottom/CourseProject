@@ -54,4 +54,12 @@ public interface IAdvertRepository
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Статус действия в виде <see cref="bool"/>.</returns>
     Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Проверяет наличие объявления в базе данных.
+    /// </summary>
+    /// <param name="id">Идентификатор.</param>
+    /// <param name="cancellationToken">Токен отмены.</param>
+    /// <returns>Наличие объявления в БД.</returns>
+    Task<bool> IsAdvertExists(Guid id, CancellationToken cancellationToken);
 }

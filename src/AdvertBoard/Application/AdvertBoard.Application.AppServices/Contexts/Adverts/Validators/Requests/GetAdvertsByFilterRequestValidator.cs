@@ -1,4 +1,5 @@
-﻿using AdvertBoard.Contracts.Contexts.Adverts.Requests;
+﻿using AdvertBoard.Contracts.Common;
+using AdvertBoard.Contracts.Contexts.Adverts.Requests;
 using FluentValidation;
 
 namespace AdvertBoard.Application.AppServices.Contexts.Adverts.Validators.Requests;
@@ -11,8 +12,9 @@ public class GetAdvertsByFilterRequestValidator : AbstractValidator<GetAdvertsBy
     /// <summary>
     /// Инициализирует экземпляр класса <see cref="GetAdvertsByFilterRequestValidator"/>.
     /// </summary>
-    public GetAdvertsByFilterRequestValidator()
+    public GetAdvertsByFilterRequestValidator(IValidator<PaginationRequest> paginationValidator)
     {
+        Include(paginationValidator);
         RuleFor(x => x.MinPrice)
             .GreaterThanOrEqualTo(0)
             .LessThan(int.MaxValue);

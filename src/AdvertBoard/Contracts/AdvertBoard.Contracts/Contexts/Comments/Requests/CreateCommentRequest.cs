@@ -1,14 +1,14 @@
-﻿namespace AdvertBoard.Contracts.Contexts.Comments;
+﻿namespace AdvertBoard.Contracts.Contexts.Comments.Requests;
 
 /// <summary>
 /// Модель запроса на создание комментария.
 /// </summary>
-public class CreateCommentDto
+public class CreateCommentRequest
 {
     /// <summary>
     /// Идентификатор объявления.
     /// </summary>
-    public Guid AdvertId { get; set; }
+    public Guid? AdvertId { get; set; }
     
     /// <summary>
     /// Идентификатор родительского комментария.
@@ -18,5 +18,5 @@ public class CreateCommentDto
     /// <summary>
     /// Содержимое комментария.
     /// </summary>
-    public string Content { get; set; } = null!;
+    public string? Content { get; set; } = null!;
 }

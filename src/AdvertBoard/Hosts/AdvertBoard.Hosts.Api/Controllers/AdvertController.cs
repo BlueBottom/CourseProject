@@ -9,7 +9,7 @@ namespace AdvertBoard.Hosts.Api.Controllers;
 /// Контроллер для работы с объявлениями.
 /// </summary>
 [ApiController]
-[Route("api/adverts")]
+[Route("[controller]")]
 public class AdvertController : ControllerBase
 {
     private readonly IAdvertService _advertService;

@@ -1,12 +1,11 @@
-﻿using AdvertBoard.Contracts.Contexts.Users;
-using AdvertBoard.Contracts.Contexts.Users.Responses;
+﻿using AdvertBoard.Contracts.Contexts.Users.Responses;
 
-namespace AdvertBoard.Contracts.Contexts.Comments;
+namespace AdvertBoard.Contracts.Contexts.Comments.Responses;
 
 /// <summary>
 /// Комментарий с коллекцией дочерних элементов.
 /// </summary>
-public class CommentHierarchyDto
+public class CommentHierarchyResponse
 {
     /// <summary>
     /// Идентификатор.
@@ -36,5 +35,5 @@ public class CommentHierarchyDto
     /// <summary>
     /// Дочерние комментарии.
     /// </summary>
-    public ICollection<CommentHierarchyDto>? Children { get; set; }
+    public ICollection<CommentHierarchyResponse>? Children { get; set; }
 }

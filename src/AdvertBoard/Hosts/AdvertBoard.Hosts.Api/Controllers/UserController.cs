@@ -11,7 +11,7 @@ namespace AdvertBoard.Hosts.Api.Controllers;
 /// Контроллер для работы с пользователями.
 /// </summary>
 [ApiController]
-[Route("api/[controller]")]
+[Route("[controller]")]
 public class UserController : ControllerBase
 {
     private readonly IUserService _userService;

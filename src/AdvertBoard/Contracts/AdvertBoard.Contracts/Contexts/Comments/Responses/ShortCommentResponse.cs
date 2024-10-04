@@ -1,12 +1,11 @@
-﻿using AdvertBoard.Contracts.Contexts.Users;
-using AdvertBoard.Contracts.Contexts.Users.Responses;
+﻿using AdvertBoard.Contracts.Contexts.Users.Responses;
 
-namespace AdvertBoard.Contracts.Contexts.Comments;
+namespace AdvertBoard.Contracts.Contexts.Comments.Responses;
 
 /// <summary>
 /// Укороченная модель комментария.
 /// </summary>
-public class ShortCommentDto
+public class ShortCommentResponse
 {
     /// <summary>
     /// Идентификатор комментария.

@@ -22,7 +22,7 @@ public class LoginUserValidator : BusinessLogicAbstractValidator<LoginUserReques
         _userService = userService;
 
         RuleFor(x => new { x.Email, x.Password })
-            .MustAsync((args, token) => IsCredsValid(args.Email, args.Password, token))
+            .MustAsync((args, token) => IsCredsValid(args.Email!, args.Password!, token))
             .WithMessage("Пользователь с таким email и паролем не найден.");
     }
 

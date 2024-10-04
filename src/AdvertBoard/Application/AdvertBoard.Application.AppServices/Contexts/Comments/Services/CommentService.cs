@@ -2,10 +2,14 @@
 using AdvertBoard.Application.AppServices.Authorization.Requirements;
 using AdvertBoard.Application.AppServices.Contexts.Comments.Repositories;
 using AdvertBoard.Application.AppServices.Exceptions;
+using AdvertBoard.Application.AppServices.Services;
 using AdvertBoard.Contracts.Common;
 using AdvertBoard.Contracts.Contexts.Comments;
+using AdvertBoard.Contracts.Contexts.Comments.Requests;
+using AdvertBoard.Contracts.Contexts.Comments.Responses;
 using AdvertBoard.Domain.Contexts.Comments;
 using AutoMapper;
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 
@@ -18,6 +22,8 @@ public class CommentService : ICommentService
     private readonly IMapper _mapper;
     private readonly IAuthorizationService _authorizationService;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly BusinessLogicAbstractValidator<CreateCommentRequest> _createCommentValidator;
+    private readonly BusinessLogicAbstractValidator<GetAllCommentsRequest> _getAllCommentsValidator;
 
     /// <summary>
     /// Инициализирует экземпляр класса <see cref="CommentService"/>.
@@ -26,59 +32,74 @@ public class CommentService : ICommentService
     /// <param name="mapper">Маппер.</param>
     /// <param name="authorizationService">Сервис для авторизации по ресурсам.</param>
     /// <param name="httpContextAccessor">Разрешает доступ к HttpContext.</param>
-    public CommentService(ICommentRepository commentRepository, IMapper mapper,
-        IAuthorizationService authorizationService, IHttpContextAccessor httpContextAccessor)
+    /// <param name="createCommentValidator">Валидатор запроса на создание комментария.</param>
+    /// <param name="getAllCommentsValidator">Валидатор запроса на получение комментариев к объявлению.</param>
+    public CommentService(
+        ICommentRepository commentRepository,
+        IMapper mapper,
+        IAuthorizationService authorizationService,
+        IHttpContextAccessor httpContextAccessor,
+        BusinessLogicAbstractValidator<CreateCommentRequest> createCommentValidator,
+        BusinessLogicAbstractValidator<GetAllCommentsRequest> getAllCommentsValidator
+        )
     {
         _commentRepository = commentRepository;
         _mapper = mapper;
         _authorizationService = authorizationService;
         _httpContextAccessor = httpContextAccessor;
+        _createCommentValidator = createCommentValidator;
+        _getAllCommentsValidator = getAllCommentsValidator;
     }
 
     /// <inheritdoc/>
-    public Task<Guid> AddAsync(CreateCommentDto createCommentDto, CancellationToken cancellationToken)
+    public async Task<Guid> AddAsync(CreateCommentRequest createCommentRequest, CancellationToken cancellationToken)
     {
-        var claims = _httpContextAccessor.HttpContext.User.Claims;
-        var claimId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+        await _createCommentValidator.ValidateAndThrowAsync(createCommentRequest, cancellationToken);
 
-        if (string.IsNullOrWhiteSpace(claimId)) throw new ForbiddenException();
+        var comment = _mapper.Map<CreateCommentRequest, Comment>(createCommentRequest);
+        comment.UserId = GetUserId();
 
-        var userId = Guid.Parse(claimId);
-        var comment = _mapper.Map<CreateCommentDto, Comment>(createCommentDto);
-        comment.UserId = userId;
-
-        return _commentRepository.AddAsync(comment, cancellationToken);
+        return await _commentRepository.AddAsync(comment, cancellationToken);
     }
 
     /// <inheritdoc/>
-    public Task<PageResponse<ShortCommentDto>> GetAllWithPaginationAsync(GetAllCommentsDto getAllCommentsDto,
+    public async Task<PageResponse<ShortCommentResponse>> GetAllWithPaginationAsync(
+        GetAllCommentsRequest getAllCommentsRequest,
         CancellationToken cancellationToken)
     {
-        return _commentRepository.GetAllWithPaginationAsync(getAllCommentsDto, cancellationToken);
+        await _getAllCommentsValidator.ValidateAndThrowAsync(getAllCommentsRequest, cancellationToken);
+        
+        return await _commentRepository.GetAllWithPaginationAsync(getAllCommentsRequest, cancellationToken);
     }
 
     /// <inheritdoc/>
-    public Task<CommentDto> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    public Task<CommentResponse> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         return _commentRepository.GetByIdAsync(id, cancellationToken);
     }
 
     /// <inheritdoc/>
-    public async Task<Guid> UpdateAsync(Guid id, UpdateCommentDto updateCommentDto, CancellationToken cancellationToken)
+    public async Task<Guid> UpdateAsync(Guid id, UpdateCommentRequest updateCommentRequest,
+        CancellationToken cancellationToken)
     {
-        var existingReview =  await _commentRepository.GetByIdAsync(id, cancellationToken);
+        await EnsureResourceAuthorize(id, cancellationToken);
+
+        return await _commentRepository.UpdateAsync(id, updateCommentRequest, cancellationToken);
+    }
+
+    private async Task EnsureResourceAuthorize(Guid id, CancellationToken cancellationToken)
+    {
+        var existingReview = await _commentRepository.GetByIdAsync(id, cancellationToken);
         var authResult = await _authorizationService.AuthorizeAsync(_httpContextAccessor.HttpContext.User,
             existingReview,
             new ResourceOwnerRequirement());
         if (!authResult.Succeeded) throw new ForbiddenException();
-
-        return await _commentRepository.UpdateAsync(id, updateCommentDto, cancellationToken);
     }
 
     /// <inheritdoc/>
     public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken)
     {
-        var existingReview =  await _commentRepository.GetByIdAsync(id, cancellationToken);
+        var existingReview = await _commentRepository.GetByIdAsync(id, cancellationToken);
         var authResult = await _authorizationService.AuthorizeAsync(_httpContextAccessor.HttpContext.User,
             existingReview,
             new ResourceOwnerRequirement());
@@ -87,8 +108,18 @@ public class CommentService : ICommentService
         return await _commentRepository.DeleteAsync(id, cancellationToken);
     }
 
-    public Task<CommentHierarchyDto> GetHierarchyByIdAsync(Guid id, CancellationToken cancellationToken)
+    public Task<CommentHierarchyResponse> GetHierarchyByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         return _commentRepository.GetHierarchyByIdAsync(id, cancellationToken);
+    }
+
+    private Guid GetUserId()
+    {
+        var claims = _httpContextAccessor.HttpContext.User.Claims;
+        var claimId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+        if (string.IsNullOrWhiteSpace(claimId)) throw new ForbiddenException();
+
+        return Guid.Parse(claimId);
     }
 }

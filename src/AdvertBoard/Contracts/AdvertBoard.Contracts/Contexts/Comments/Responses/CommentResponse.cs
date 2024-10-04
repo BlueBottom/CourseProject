@@ -1,9 +1,9 @@
-﻿namespace AdvertBoard.Contracts.Contexts.Comments;
+﻿namespace AdvertBoard.Contracts.Contexts.Comments.Responses;
 
 /// <summary>
 /// Комментарий к объявлению.
 /// </summary>
-public class CommentDto
+public class CommentResponse
 {
     /// <summary>
     /// Идентификатор.

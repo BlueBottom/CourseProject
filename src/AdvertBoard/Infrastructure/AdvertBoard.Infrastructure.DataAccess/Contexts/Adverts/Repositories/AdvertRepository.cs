@@ -2,7 +2,6 @@
 using AdvertBoard.Application.AppServices.Exceptions;
 using AdvertBoard.Application.AppServices.Specifications;
 using AdvertBoard.Contracts.Common;
-using AdvertBoard.Contracts.Contexts.Adverts;
 using AdvertBoard.Contracts.Contexts.Adverts.Responses;
 using AdvertBoard.Domain.Contexts.Adverts;
 using AdvertBoard.Infrastructure.Repository;
@@ -85,5 +84,12 @@ public class AdvertRepository : IAdvertRepository
         if (advert is null) throw new EntityNotFoundException("Объявление не было найдено.");
         await _repository.DeleteAsync(advert, cancellationToken);
         return true;
+    }
+
+    //TODO: добавить проверку на активность объявления.
+    /// <inheritdoc/>
+    public Task<bool> IsAdvertExists(Guid id, CancellationToken cancellationToken)
+    {
+        return _repository.GetAll().AnyAsync(x => x.Id == id, cancellationToken);
     }
 }
