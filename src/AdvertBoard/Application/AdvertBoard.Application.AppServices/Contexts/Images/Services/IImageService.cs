@@ -1,4 +1,6 @@
 ﻿using AdvertBoard.Contracts.Contexts.Images;
+using AdvertBoard.Contracts.Contexts.Images.Requests;
+using AdvertBoard.Contracts.Contexts.Images.Responses;
 using Microsoft.AspNetCore.Http;
 
 namespace AdvertBoard.Application.AppServices.Contexts.Images.Services;
@@ -14,15 +16,15 @@ public interface IImageService
     /// <param name="id">Идентификатор.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Содержимое изображения.</returns>
-    public Task<ImageDto> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+    public Task<ImageResponse> GetByIdAsync(Guid id, CancellationToken cancellationToken);
 
     /// <summary>
     /// Добавляет изображение к объявлению.
     /// </summary>
-    /// <param name="createImageDto"></param>
+    /// <param name="createImageRequest"></param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Идентификатор изображения.</returns>
-    public Task<Guid> AddAsync(CreateImageDto createImageDto, CancellationToken cancellationToken);
+    public Task<Guid> AddAsync(CreateImageRequest createImageRequest, CancellationToken cancellationToken);
     
     /// <summary>
     /// Удаляет изображение.

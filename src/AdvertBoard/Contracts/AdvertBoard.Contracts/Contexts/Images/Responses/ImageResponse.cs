@@ -1,9 +1,9 @@
-﻿namespace AdvertBoard.Contracts.Contexts.Images;
+﻿namespace AdvertBoard.Contracts.Contexts.Images.Responses;
 
 /// <summary>
 /// Модель изображения.
 /// </summary>
-public class ImageDto
+public class ImageResponse
 {
     /// <summary>
     /// Идентификатор.

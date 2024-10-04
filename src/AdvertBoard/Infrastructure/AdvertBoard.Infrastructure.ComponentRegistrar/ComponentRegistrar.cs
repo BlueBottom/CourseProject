@@ -15,6 +15,7 @@ using AdvertBoard.Application.AppServices.Contexts.Comments.Services;
 using AdvertBoard.Application.AppServices.Contexts.Comments.Validators.BusinessLogic;
 using AdvertBoard.Application.AppServices.Contexts.Images.Repositories;
 using AdvertBoard.Application.AppServices.Contexts.Images.Services;
+using AdvertBoard.Application.AppServices.Contexts.Images.Validators.BusinessLogic;
 using AdvertBoard.Application.AppServices.Contexts.Reviews.Repositories;
 using AdvertBoard.Application.AppServices.Contexts.Reviews.Services;
 using AdvertBoard.Application.AppServices.Contexts.Users.Builders;
@@ -24,6 +25,7 @@ using AdvertBoard.Application.AppServices.Services;
 using AdvertBoard.Contracts.Contexts.Adverts.Requests;
 using AdvertBoard.Contracts.Contexts.Categories.Requests;
 using AdvertBoard.Contracts.Contexts.Comments.Requests;
+using AdvertBoard.Contracts.Contexts.Images.Requests;
 using AdvertBoard.Contracts.Contexts.Users.Requests;
 using AdvertBoard.Infrastructure.ComponentRegistrar.MapProfiles;
 using AdvertBoard.Infrastructure.DataAccess.Contexts.Adverts.Repositories;
@@ -147,6 +149,9 @@ public static class ComponentRegistrar
         // Валидация бизнес логики комментариев
         services.AddScoped<BusinessLogicAbstractValidator<CreateCommentRequest>, CreateCommentValidator>();
         services.AddScoped<BusinessLogicAbstractValidator<GetAllCommentsRequest>, GetAllCommentsValidator>();
+        
+        // Валидация бизнес логики изображений
+        services.AddScoped<BusinessLogicAbstractValidator<CreateImageRequest>, CreateImageValidator>();
         
         services.AddFluentValidationAutoValidation(configuration =>
         {

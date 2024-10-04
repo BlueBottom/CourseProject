@@ -1,11 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
-
-namespace AdvertBoard.Contracts.Contexts.Images;
+﻿namespace AdvertBoard.Contracts.Contexts.Images.Requests;
 
 /// <summary>
 /// Модель для добавления изображения.
 /// </summary>
-public class CreateImageDto
+public class CreateImageRequest
 {
     /// <summary>
     /// Идентификатор объявления.
