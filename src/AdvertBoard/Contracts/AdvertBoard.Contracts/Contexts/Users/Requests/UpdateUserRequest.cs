@@ -1,11 +1,14 @@
-﻿namespace AdvertBoard.Contracts.Contexts.Users;
+﻿namespace AdvertBoard.Contracts.Contexts.Users.Requests;
 
-public class UpdateUserDto
+/// <summary>
+/// Модель запроса на обновление пользователя.
+/// </summary>
+public class UpdateUserRequest
 {
     /// <summary>
     /// Имя.
     /// </summary>
-    public string Name { get; set; } = null!;
+    public string? Name { get; set; }
 
     /// <summary>
     /// Фамилия.
@@ -15,10 +18,10 @@ public class UpdateUserDto
     /// <summary>
     /// Номер телефона.
     /// </summary>
-    public string Phone { get; set; } = null!;
+    public string? Phone { get; set; }
 
     /// <summary>
     /// Электронный почтовый адрес.
     /// </summary>
-    public string Email { get; set; } = null!;
+    public string? Email { get; set; }
 }

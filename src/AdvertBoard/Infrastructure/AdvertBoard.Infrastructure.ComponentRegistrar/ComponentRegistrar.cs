@@ -6,6 +6,8 @@ using AdvertBoard.Application.AppServices.Contexts.Adverts.Services;
 using AdvertBoard.Application.AppServices.Contexts.Adverts.Validators.BusinessLogic;
 using AdvertBoard.Application.AppServices.Contexts.Adverts.Validators.Requests;
 using AdvertBoard.Application.AppServices.Contexts.Authentication.Services;
+using AdvertBoard.Application.AppServices.Contexts.Authentication.Validators.BusinessLogic;
+using AdvertBoard.Application.AppServices.Contexts.Authentication.Validators.Requests;
 using AdvertBoard.Application.AppServices.Contexts.Categories.Repositories;
 using AdvertBoard.Application.AppServices.Contexts.Categories.Services;
 using AdvertBoard.Application.AppServices.Contexts.Comments.Repositories;
@@ -18,7 +20,8 @@ using AdvertBoard.Application.AppServices.Contexts.Users.Builders;
 using AdvertBoard.Application.AppServices.Contexts.Users.Repositories;
 using AdvertBoard.Application.AppServices.Contexts.Users.Services;
 using AdvertBoard.Application.AppServices.Services;
-using AdvertBoard.Contracts.Contexts.Adverts.Requests;  
+using AdvertBoard.Contracts.Contexts.Adverts.Requests;
+using AdvertBoard.Contracts.Contexts.Users.Requests;
 using AdvertBoard.Infrastructure.ComponentRegistrar.MapProfiles;
 using AdvertBoard.Infrastructure.DataAccess.Contexts.Adverts.Repositories;
 using AdvertBoard.Infrastructure.DataAccess.Contexts.Categories.Repositories;
@@ -127,6 +130,9 @@ public static class ComponentRegistrar
         services.AddValidatorsFromAssemblyContaining<CreateAdvertRequestValidator>(filter: service => 
             service.ValidatorType.BaseType?.GetGenericTypeDefinition() != typeof(BusinessLogicAbstractValidator<>));
         services.AddScoped<BusinessLogicAbstractValidator<CreateAdvertRequest>, CreateAdvertValidator>();
+        
+        services.AddScoped<BusinessLogicAbstractValidator<LoginUserRequest>, LoginUserValidator>();
+        services.AddScoped<BusinessLogicAbstractValidator<RegisterUserRequest>, RegisterUserValidator>();
         services.AddFluentValidationAutoValidation(configuration =>
         {
             configuration.ValidationStrategy = ValidationStrategy.All;

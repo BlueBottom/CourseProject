@@ -1,10 +1,12 @@
 ﻿using System.Diagnostics.SymbolStore;
 using System.Linq.Expressions;
+using AdvertBoard.Application.AppServices.Contexts.Users.Models;
 using AdvertBoard.Application.AppServices.Contexts.Users.Repositories;
 using AdvertBoard.Application.AppServices.Exceptions;
 using AdvertBoard.Application.AppServices.Specifications;
 using AdvertBoard.Contracts.Common;
 using AdvertBoard.Contracts.Contexts.Users;
+using AdvertBoard.Contracts.Contexts.Users.Responses;
 using AdvertBoard.Domain.Contexts.Users;
 using AdvertBoard.Infrastructure.Repository;
 using AutoMapper;
@@ -39,7 +41,22 @@ public class UserRepository : IUserRepository
     }
 
     /// <inheritdoc/>
-    public async Task<Guid> AddUser(User user, string password, CancellationToken cancellationToken)
+    public async Task<UserWithPasswordModel?> FindByEmail(string email, CancellationToken cancellationToken)
+    {
+        return await _repository
+            .GetAllFiltered(x => x.Email == email)
+            .ProjectTo<UserWithPasswordModel>(_mapper.ConfigurationProvider)
+            .FirstOrDefaultAsync(cancellationToken);
+    }
+
+    /// <inheritdoc/>
+    public Task<bool> IsExistByPhone(string phone, CancellationToken cancellationToken)
+    {
+        return _repository.GetAll().AnyAsync(x => x.Phone == phone, cancellationToken: cancellationToken);
+    }
+
+    /// <inheritdoc/>
+    public async Task<Guid> AddAsync(User user, string password, CancellationToken cancellationToken)
     {
         user.Password = password;
         await _repository.AddAsync(user, cancellationToken);
@@ -47,19 +64,19 @@ public class UserRepository : IUserRepository
     }
 
     /// <inheritdoc/>
-    public async Task<UserDto> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    public async Task<UserResponse> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         var user = await _repository.GetByIdAsync(id, cancellationToken);
         if (user is null) throw new EntityNotFoundException("Пользователь не был найден.");
-        
-        return _mapper.Map<User, UserDto>(user);
+
+        return _mapper.Map<User, UserResponse>(user);
     }
 
     /// <inheritdoc/>
     public async Task<Guid> UpdateAsync(Guid userId, User updatedUser, CancellationToken cancellationToken)
     {
         var user = await _repository.GetByIdAsync(userId, cancellationToken);
-        
+
         if (user is null) throw new EntityNotFoundException("Пользователь не был найден.");
         var checkUser = await FindUser(x => x.Email == updatedUser.Email, cancellationToken);
         //TODO: исключение - пользователь с таким email уже существует.
@@ -68,7 +85,7 @@ public class UserRepository : IUserRepository
         //TODO: исключение - пользователь с таким телефоном уже существует.
         if (checkUser is not null && checkUser.Id != userId) throw new Exception();
         _mapper.Map<User, User>(updatedUser, user);
-        
+
         await _repository.UpdateAsync(user, cancellationToken);
         return user.Id;
     }
@@ -79,29 +96,30 @@ public class UserRepository : IUserRepository
         var user = await _repository.GetByIdAsync(id, cancellationToken);
         if (user is null) throw new EntityNotFoundException("Пользователь не был найден.");
         await _repository.DeleteAsync(user, cancellationToken);
-        
+
         return true;
     }
 
     /// <inheritdoc/>
-    public async Task<PageResponse<ShortUserDto>> GetAllByFilterWithPaginationAsync(ISpecification<User> specification,
+    public async Task<PageResponse<ShortUserResponse>> GetAllByFilterWithPaginationAsync(
+        ISpecification<User> specification,
         PaginationRequest paginationRequest, CancellationToken cancellationToken)
     {
-        var result = new PageResponse<ShortUserDto>();
-        
+        var result = new PageResponse<ShortUserResponse>();
+
         var query = _repository.GetAll();
-        
+
         var elementsCount = await query.CountAsync(cancellationToken);
         result.TotalPages = result.TotalPages = (int)Math.Ceiling((double)elementsCount / paginationRequest.BatchSize);
-        
+
         var paginationQuery = await query
             .Where(specification.PredicateExpression)
             .OrderBy(user => user.Id)
             .Skip(paginationRequest.BatchSize * (paginationRequest.PageNumber - 1))
             .Take(paginationRequest.BatchSize)
-            .ProjectTo<ShortUserDto>(_mapper.ConfigurationProvider)
+            .ProjectTo<ShortUserResponse>(_mapper.ConfigurationProvider)
             .ToArrayAsync(cancellationToken);
-        
+
         result.Response = paginationQuery;
         return result;
     }
@@ -110,8 +128,9 @@ public class UserRepository : IUserRepository
     public async Task UpdateRatingAsync(Guid id, decimal? rating, CancellationToken cancellationToken)
     {
         var user = await _repository.GetByIdAsync(id, cancellationToken);
-        if (user is null) throw new EntityNotFoundException("Пользователь не был найден.");;
-        
+        if (user is null) throw new EntityNotFoundException("Пользователь не был найден.");
+        ;
+
         user.Rating = rating;
         await _repository.UpdateAsync(user, cancellationToken);
     }

@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using AdvertBoard.Application.AppServices.Contexts.Users.Services;
 using AdvertBoard.Contracts.Contexts.Users;
+using AdvertBoard.Contracts.Contexts.Users.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,15 +29,15 @@ public class UserController : ControllerBase
     /// Обновляет данные пользователя.
     /// </summary>
     /// <param name="userId"></param>
-    /// <param name="updateUserDto">Модель обновления пользователя.</param>
+    /// <param name="updateUserRequest">Модель обновления пользователя.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Идентификатор.</returns>
     [Authorize]
     [HttpPut]
-    public async Task<IActionResult> UpdateAsync(Guid userId, [FromForm] UpdateUserDto updateUserDto,
+    public async Task<IActionResult> UpdateAsync(Guid userId, [FromForm] UpdateUserRequest updateUserRequest,
         CancellationToken cancellationToken)
     {
-        var result = await _userService.UpdateAsync(userId, updateUserDto, cancellationToken);
+        var result = await _userService.UpdateAsync(userId, updateUserRequest, cancellationToken);
         return Ok(result);
     }
 
@@ -69,15 +70,15 @@ public class UserController : ControllerBase
     /// <summary>
     /// Получает пользователей по фильтру.
     /// </summary>
-    /// <param name="getAllUsersDto">Модель получения пользователей.</param>
+    /// <param name="getAllUsersRequest">Модель получения пользователей.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Коллекцию укороченных моделей пользователя.</returns>
     [Authorize(Roles = "Admin")]
     [HttpPost("search")]
-    public async Task<IActionResult> GetAllAsync([FromForm] GetAllUsersDto getAllUsersDto,
+    public async Task<IActionResult> GetAllAsync([FromForm] GetAllUsersRequest getAllUsersRequest,
         CancellationToken cancellationToken)
     {
-        var result = await _userService.GetAllByFilterWithPaginationAsync(getAllUsersDto, cancellationToken);
+        var result = await _userService.GetAllByFilterWithPaginationAsync(getAllUsersRequest, cancellationToken);
         return Ok(result);
     }
 }

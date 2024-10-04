@@ -1,7 +1,4 @@
-using System.IdentityModel.Tokens.Jwt;
-using AdvertBoard.Contracts.Contexts.Adverts;
 using AdvertBoard.Contracts.Contexts.Adverts.Responses;
-using AdvertBoard.Contracts.Contexts.Images;
 using AdvertBoard.Hosts.Api.Controllers;
 using AdvertBoard.Hosts.Api.Middlewares;
 using AdvertBoard.Infrastructure.ComponentRegistrar;

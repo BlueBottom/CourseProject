@@ -1,4 +1,5 @@
 ﻿using AdvertBoard.Contracts.Contexts.Users;
+using AdvertBoard.Contracts.Contexts.Users.Responses;
 
 namespace AdvertBoard.Contracts.Contexts.Comments;
 
@@ -20,7 +21,7 @@ public class ShortCommentDto
     /// <summary>
     /// Укороченная модель пользователя.
     /// </summary>
-    public ShortUserDto User { get; set; } = null!;
+    public ShortUserResponse User { get; set; } = null!;
     
     /// <summary>
     /// Время создания.

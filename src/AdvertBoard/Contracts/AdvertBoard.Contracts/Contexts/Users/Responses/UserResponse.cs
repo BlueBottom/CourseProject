@@ -1,9 +1,9 @@
-﻿namespace AdvertBoard.Contracts.Contexts.Users;
+﻿namespace AdvertBoard.Contracts.Contexts.Users.Responses;
 
 /// <summary>
 /// Пользователь.
 /// </summary>
-public class UserDto
+public class UserResponse
 {
     /// <summary>
     /// Идентификатор сущности.

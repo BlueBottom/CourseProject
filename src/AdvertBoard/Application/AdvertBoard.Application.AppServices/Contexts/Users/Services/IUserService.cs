@@ -1,5 +1,8 @@
-﻿using AdvertBoard.Contracts.Common;
+﻿using AdvertBoard.Application.AppServices.Contexts.Users.Models;
+using AdvertBoard.Contracts.Common;
 using AdvertBoard.Contracts.Contexts.Users;
+using AdvertBoard.Contracts.Contexts.Users.Requests;
+using AdvertBoard.Contracts.Contexts.Users.Responses;
 
 namespace AdvertBoard.Application.AppServices.Contexts.Users.Services;
 
@@ -14,15 +17,16 @@ public interface IUserService
     /// <param name="id">Идентификатор.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Модель пользователя.</returns>
-    Task<UserDto> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+    Task<UserResponse> GetByIdAsync(Guid id, CancellationToken cancellationToken);
 
     /// <summary>
     /// Обновляет информацию пользователя.
     /// </summary>
-    /// <param name="updateUserDto">Модель обновления пользователя.</param>
+    /// <param name="userId">Идентификатор.</param>
+    /// <param name="updateUserRequest">Модель обновления пользователя.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Идентификатор.</returns>
-    Task<Guid> UpdateAsync(Guid userId, UpdateUserDto updateUserDto, CancellationToken cancellationToken);
+    Task<Guid> UpdateAsync(Guid userId, UpdateUserRequest updateUserRequest, CancellationToken cancellationToken);
 
     /// <summary>
     /// Удаляет пользователя.
@@ -35,10 +39,10 @@ public interface IUserService
     /// <summary>
     /// Получает пользователей по фильтру.
     /// </summary>
-    /// <param name="getAllUsersDto">Модель получения пользователей.</param>
+    /// <param name="getAllUsersRequest">Модель получения пользователей.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Коллекцию укороченных моделей пользователя.</returns>
-    Task<PageResponse<ShortUserDto>> GetAllByFilterWithPaginationAsync(GetAllUsersDto getAllUsersDto,
+    Task<PageResponse<ShortUserResponse>> GetAllByFilterWithPaginationAsync(GetAllUsersRequest getAllUsersRequest,
         CancellationToken cancellationToken);
 
     /// <summary>
@@ -48,4 +52,21 @@ public interface IUserService
     /// <param name="rating">Рейтинг.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     Task UpdateRatingAsync(Guid id, decimal? rating, CancellationToken cancellationToken);
+    
+    
+    /// <summary>
+    /// Проводит поиск пользователя по электронному адресу.
+    /// </summary>
+    /// <param name="email">Адрес жлектронной почты.</param>
+    /// <param name="cancellationToken">Токен отмены.</param>
+    /// <returns>Модель для логина.</returns>
+    public Task<UserWithPasswordModel?> FindByEmail(string email, CancellationToken cancellationToken);
+    
+    /// <summary>
+    /// Проводит поиск пользователя с заданным номером телефона.
+    /// </summary>
+    /// <param name="phone">Номер телефона.</param>
+    /// <param name="cancellationToken">Токен отмены.</param>
+    /// <returns>Наличие телефона в БД.</returns>
+    public Task<bool> IsExistByPhone(string phone, CancellationToken cancellationToken);
 }

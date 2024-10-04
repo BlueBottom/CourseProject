@@ -1,17 +1,17 @@
-﻿namespace AdvertBoard.Contracts.Contexts.Users;
+﻿namespace AdvertBoard.Contracts.Contexts.Users.Requests;
 
 /// <summary>
 /// Модель логина пользователя.
 /// </summary>
-public class LoginUserDto
+public class LoginUserRequest
 {
     /// <summary>
     /// Электронный почтовый адрес.
     /// </summary>
-    public string Email { get; set; } = null!;
+    public string? Email { get; set; }
     
     /// <summary>
     /// Пароль.
     /// </summary>
-    public string Password { get; set; } = null!;
+    public string? Password { get; set; }
 }

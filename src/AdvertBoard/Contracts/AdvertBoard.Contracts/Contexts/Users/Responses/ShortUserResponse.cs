@@ -1,6 +1,9 @@
-﻿namespace AdvertBoard.Contracts.Contexts.Users;
+﻿namespace AdvertBoard.Contracts.Contexts.Users.Responses;
 
-public class ShortUserDto
+/// <summary>
+/// Укороченная модель пользователя.
+/// </summary>
+public class ShortUserResponse
 {
     /// <summary>
     /// Идентификатор сущности.

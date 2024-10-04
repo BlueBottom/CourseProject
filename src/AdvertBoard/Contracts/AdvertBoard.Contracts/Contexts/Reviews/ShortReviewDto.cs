@@ -1,4 +1,5 @@
 ﻿using AdvertBoard.Contracts.Contexts.Users;
+using AdvertBoard.Contracts.Contexts.Users.Responses;
 
 namespace AdvertBoard.Contracts.Contexts.Reviews;
 
@@ -20,7 +21,7 @@ public class ShortReviewDto
     /// <summary>
     /// Идентификатор на пользователя, оставившего отзыв.
     /// </summary>
-    public ShortUserDto OwnerUser { get; set; } = null!;
+    public ShortUserResponse OwnerUser { get; set; } = null!;
 
     /// <summary>
     /// Оценка пользователя.

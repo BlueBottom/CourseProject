@@ -34,6 +34,7 @@ public class AdvertService : IAdvertService
     /// <param name="advertSpecificationBuilder">Спецификация.</param>
     /// <param name="httpContextAccessor">Разрешает доступ к <see cref="HttpContext"/>.</param>
     /// <param name="authorizationService">Сервис для реализации requirements.</param>
+    /// <param name="createAdvertValidator">Валидатор.</param>
     public AdvertService(
         IAdvertRepository advertRepository, 
         IMapper mapper,

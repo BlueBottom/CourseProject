@@ -1,8 +1,11 @@
 ﻿using AdvertBoard.Contracts.Common;
 
-namespace AdvertBoard.Contracts.Contexts.Users;
+namespace AdvertBoard.Contracts.Contexts.Users.Requests;
 
-public class GetAllUsersDto : PaginationRequest
+/// <summary>
+/// Запрос на получение объявлений с возможностью фильтрации.
+/// </summary>
+public class GetAllUsersRequest : PaginationRequest
 {
     /// <summary>
     /// Строка поиска по имени и фамилии.

@@ -3,9 +3,11 @@ using System.Security.Claims;
 using System.Text;
 using AdvertBoard.Application.AppServices.Contexts.Users.Repositories;
 using AdvertBoard.Application.AppServices.Helpers;
-using AdvertBoard.Contracts.Contexts.Users;
+using AdvertBoard.Application.AppServices.Services;
+using AdvertBoard.Contracts.Contexts.Users.Requests;
 using AdvertBoard.Domain.Contexts.Users;
 using AutoMapper;
+using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
@@ -17,6 +19,8 @@ public class AuthenticationService : IAuthenticationService
     private readonly IUserRepository _userRepository;
     private readonly IConfiguration _configuration;
     private readonly IMapper _mapper;
+    private readonly BusinessLogicAbstractValidator<LoginUserRequest> _loginUserValidator;
+    private readonly BusinessLogicAbstractValidator<RegisterUserRequest> _registerUserValidator;
 
     /// <summary>
     /// Инициализирует экземпляр класса <see cref="AuthenticationService"/>.
@@ -24,43 +28,46 @@ public class AuthenticationService : IAuthenticationService
     /// <param name="userRepository">Репозиторий для работы с пользователями.</param>
     /// <param name="configuration">Конфигурация.</param>
     /// <param name="mapper">Маппер.</param>
-    public AuthenticationService(IUserRepository userRepository, IConfiguration configuration, IMapper mapper)
+    /// <param name="loginUserValidator">Валидатор логина.</param>
+    /// <param name="registerUserValidator">Валидатор регистрации.</param>
+    public AuthenticationService(
+        IUserRepository userRepository, 
+        IConfiguration configuration, 
+        IMapper mapper,
+        BusinessLogicAbstractValidator<LoginUserRequest> loginUserValidator, 
+        BusinessLogicAbstractValidator<RegisterUserRequest> registerUserValidator)
     {
         _userRepository = userRepository;
         _configuration = configuration;
         _mapper = mapper;
+        _loginUserValidator = loginUserValidator;
+        _registerUserValidator = registerUserValidator;
     }
 
     /// <inheritdoc/>
-    public async Task<Guid> RegisterAsync(RegisterUserDto registerUserDto, CancellationToken cancellationToken)
+    public async Task<Guid> RegisterAsync(RegisterUserRequest registerUserRequest, CancellationToken cancellationToken)
     {
-        //TODO: Вынести в ValidationService 
-        if (await _userRepository.FindUser(x => x.Email == registerUserDto.Email, cancellationToken) is not null)
-            throw new Exception();
-        if (await _userRepository.FindUser(x => x.Phone == registerUserDto.Phone, cancellationToken) is not null)
-            throw new Exception();
+        await _registerUserValidator.ValidateAndThrowAsync(registerUserRequest, cancellationToken);
 
-        var user = _mapper.Map<RegisterUserDto, User>(registerUserDto);
-        var password = CryptoHelper.GetBase64Hash(registerUserDto.Password);
-        return await _userRepository.AddUser(user, password, cancellationToken);
-    }
-
-    /// <inheritdoc/>
-    public async Task<string> LoginAsync(LoginUserDto loginUserDto, CancellationToken cancellationToken)
-    {
-        var existingUser = await _userRepository.FindUser(x => x.Email == loginUserDto.Email, cancellationToken);
-        // TODO: вынести в ValidationService.
-        if (existingUser is null) throw new Exception();
-
-        var password = CryptoHelper.GetBase64Hash(loginUserDto.Password);
-        //TODO: вынести в ValidationService.
-        if (!existingUser.Password.Equals(password)) throw new Exception();
+        registerUserRequest.Phone = PhoneHelper.NormalizePhoneNumber(registerUserRequest.Phone);
+        var user = _mapper.Map<RegisterUserRequest, User>(registerUserRequest);
+        var password = CryptoHelper.GetBase64Hash(registerUserRequest.Password);
         
+        return await _userRepository.AddAsync(user, password, cancellationToken);
+    }
+
+    /// <inheritdoc/>
+    public async Task<string> LoginAsync(LoginUserRequest loginUserRequest, CancellationToken cancellationToken)
+    {
+        await _loginUserValidator.ValidateAndThrowAsync(loginUserRequest, cancellationToken);
+
+        var existingUser = await _userRepository.FindByEmail(loginUserRequest.Email, cancellationToken);
+
         var claims = new List<Claim>
         {
-            new Claim(ClaimTypes.NameIdentifier, existingUser.Id.ToString()),
-            new Claim(ClaimTypes.Name, existingUser.Name),
-            new Claim(ClaimTypes.Role, existingUser.RoleId.ToString())
+            new Claim(ClaimTypes.NameIdentifier, existingUser?.Id.ToString()!),
+            new Claim(ClaimTypes.Name, existingUser?.Name!),
+            new Claim(ClaimTypes.Role, existingUser?.RoleId.ToString()!)
         };
 
         var secretKey = _configuration["Jwt:Key"];

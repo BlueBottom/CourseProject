@@ -1,5 +1,6 @@
 ﻿using AdvertBoard.Application.AppServices.Specifications;
 using AdvertBoard.Contracts.Contexts.Users;
+using AdvertBoard.Contracts.Contexts.Users.Requests;
 using AdvertBoard.Domain.Contexts.Users;
 
 namespace AdvertBoard.Application.AppServices.Contexts.Users.Builders;
@@ -13,5 +14,5 @@ public interface IUserSpecificationBuilder
     /// Строит спецификацию по модели.
     /// </summary>
     /// <returns>Спецификация.</returns>
-    ISpecification<User> Build(GetAllUsersDto getAllUsersDto);
+    ISpecification<User> Build(GetAllUsersRequest getAllUsersRequest);
 }

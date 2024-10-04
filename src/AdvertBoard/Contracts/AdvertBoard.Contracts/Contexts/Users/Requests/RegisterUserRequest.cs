@@ -1,14 +1,14 @@
-﻿namespace AdvertBoard.Contracts.Contexts.Users;
+﻿namespace AdvertBoard.Contracts.Contexts.Users.Requests;
 
 /// <summary>
 /// Модель регситрации пользователя.
 /// </summary>
-public class RegisterUserDto
+public class RegisterUserRequest
 {
     /// <summary>
     /// Имя.
     /// </summary>
-    public string Name { get; set; } = null!;
+    public string? Name { get; set; }
 
     /// <summary>
     /// Фамилия.
@@ -18,15 +18,15 @@ public class RegisterUserDto
     /// <summary>
     /// Номер телефона.
     /// </summary>
-    public string Phone { get; set; } = null!;
+    public string? Phone { get; set; }
 
     /// <summary>
     /// Электронный почтовый адрес.
     /// </summary>
-    public string Email { get; set; } = null!;
+    public string? Email { get; set; }
     
     /// <summary>
     /// Пароль.
     /// </summary>
-    public string Password { get; set; } = null!;
+    public string? Password { get; set; }
 }

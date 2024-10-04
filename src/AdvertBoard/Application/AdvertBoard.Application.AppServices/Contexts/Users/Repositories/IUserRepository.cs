@@ -1,7 +1,8 @@
 ﻿using System.Linq.Expressions;
+using AdvertBoard.Application.AppServices.Contexts.Users.Models;
 using AdvertBoard.Application.AppServices.Specifications;
 using AdvertBoard.Contracts.Common;
-using AdvertBoard.Contracts.Contexts.Users;
+using AdvertBoard.Contracts.Contexts.Users.Responses;
 using AdvertBoard.Domain.Contexts.Users;
 
 namespace AdvertBoard.Application.AppServices.Contexts.Users.Repositories;
@@ -26,7 +27,7 @@ public interface IUserRepository
     /// <param name="password"></param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Идентификатор.</returns>
-    public Task<Guid> AddUser(User user, string password, CancellationToken cancellationToken);
+    public Task<Guid> AddAsync(User user, string password, CancellationToken cancellationToken);
 
     /// <summary>
     /// Получает данные о пользователе.
@@ -34,7 +35,7 @@ public interface IUserRepository
     /// <param name="id">Идентификатор.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Модель пользоватея.</returns>
-    Task<UserDto> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+    Task<UserResponse> GetByIdAsync(Guid id, CancellationToken cancellationToken);
 
     /// <summary>
     /// Обновляет данные о пользователе.
@@ -60,7 +61,7 @@ public interface IUserRepository
     /// <param name="paginationRequest">Модель запроса пагинации.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Каталог укороченных моделей пользователя.</returns>
-    Task<PageResponse<ShortUserDto>> GetAllByFilterWithPaginationAsync(ISpecification<User> specification,
+    Task<PageResponse<ShortUserResponse>> GetAllByFilterWithPaginationAsync(ISpecification<User> specification,
         PaginationRequest paginationRequest,
         CancellationToken cancellationToken);
     
@@ -71,4 +72,20 @@ public interface IUserRepository
     /// <param name="rating">Рейтинг.</param>
     /// <param name="cancellationToken">Токен  отмены.</param>
     Task UpdateRatingAsync(Guid id, decimal? rating, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Проводит поиск пользователя по электронному адресу.
+    /// </summary>
+    /// <param name="email">Адрес жлектронной почты.</param>
+    /// <param name="cancellationToken">Токен отмены.</param>
+    /// <returns>Модель для логина.</returns>
+    public Task<UserWithPasswordModel?> FindByEmail(string email, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Проводит поиск пользователя с заданным номером телефона.
+    /// </summary>
+    /// <param name="phone">Номер телефона.</param>
+    /// <param name="cancellationToken">Токен отмены.</param>
+    /// <returns>Наличие телефона в БД.</returns>
+    public Task<bool> IsExistByPhone(string phone, CancellationToken cancellationToken);
 }

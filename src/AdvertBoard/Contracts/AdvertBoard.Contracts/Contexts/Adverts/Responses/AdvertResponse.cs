@@ -1,4 +1,5 @@
 ﻿using AdvertBoard.Contracts.Contexts.Users;
+using AdvertBoard.Contracts.Contexts.Users.Responses;
 using AdvertBoard.Contracts.Enums;
 
 namespace AdvertBoard.Contracts.Contexts.Adverts.Responses;
@@ -56,7 +57,7 @@ public class AdvertResponse
     /// <summary>
     /// Пользователь, выложивший объявление.
     /// </summary>
-    public virtual ShortUserDto? User { get; set; }
+    public virtual ShortUserResponse? User { get; set; }
     
     /// <summary>
     /// Идентификатор категории.
