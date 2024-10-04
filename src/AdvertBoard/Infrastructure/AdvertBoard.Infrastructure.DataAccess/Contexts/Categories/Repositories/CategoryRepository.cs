@@ -1,6 +1,7 @@
 ﻿using AdvertBoard.Application.AppServices.Contexts.Categories.Repositories;
 using AdvertBoard.Application.AppServices.Exceptions;
 using AdvertBoard.Contracts.Contexts.Categories;
+using AdvertBoard.Contracts.Contexts.Categories.Responses;
 using AdvertBoard.Domain.Contexts.Categories;
 using AdvertBoard.Infrastructure.Repository.Relational;
 using AutoMapper;
@@ -34,7 +35,7 @@ public class CategoryRepository : ICategoryRepository
     }
 
     /// <inheritdoc/>
-    public async Task<CategoryHierarchyDto> GetHierarchyByIdAsync(Guid id,
+    public async Task<CategoryHierarchyResponse> GetHierarchyByIdAsync(Guid id,
         CancellationToken cancellationToken)
     {
         string sql =
@@ -58,26 +59,26 @@ public class CategoryRepository : ICategoryRepository
 
         if (query.Length == 0) throw new EntityNotFoundException("Категория не была найдена.");
         
-        return _mapper.Map<CategoryHierarchyDto>(query.FirstOrDefault());
+        return _mapper.Map<CategoryHierarchyResponse>(query.FirstOrDefault());
     }
 
     /// <inheritdoc/>
-    public async Task<IEnumerable<ShortCategoryDto>> GetAllParentsAsync(CancellationToken cancellationToken)
+    public async Task<IEnumerable<ShortCategoryResponse>> GetAllParentsAsync(CancellationToken cancellationToken)
     {
         return await _repository
             .GetAll()
             .Where(x => x.ParentId == null)
-            .ProjectTo<ShortCategoryDto>(_mapper.ConfigurationProvider)
+            .ProjectTo<ShortCategoryResponse>(_mapper.ConfigurationProvider)
             .ToArrayAsync(cancellationToken);
     }
 
     /// <inheritdoc/>
-    public async Task<ShortCategoryDto> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    public async Task<ShortCategoryResponse> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         var category = await _repository.GetByIdAsync(id, cancellationToken);
         if (category is null) throw new EntityNotFoundException("Категория не была найдена.");
         
-        return _mapper.Map<Category, ShortCategoryDto>(category);
+        return _mapper.Map<Category, ShortCategoryResponse>(category);
     }
 
     /// <inheritdoc/>

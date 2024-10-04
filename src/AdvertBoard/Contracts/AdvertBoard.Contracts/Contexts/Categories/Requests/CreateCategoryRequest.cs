@@ -1,9 +1,9 @@
-﻿namespace AdvertBoard.Contracts.Contexts.Categories;
+﻿namespace AdvertBoard.Contracts.Contexts.Categories.Requests;
 
 /// <summary>
 /// Модель запроса создания категории.
 /// </summary>
-public class CreateCategoryDto
+public class CreateCategoryRequest
 {
     /// <summary>
     /// Идентфиикатор родительской категории.
@@ -13,5 +13,5 @@ public class CreateCategoryDto
     /// <summary>
     /// Наименование категории.
     /// </summary>
-    public string Title { get; set; }
+    public string? Title { get; set; }
 }

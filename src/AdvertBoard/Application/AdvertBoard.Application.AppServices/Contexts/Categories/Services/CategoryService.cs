@@ -1,8 +1,12 @@
 ﻿using System.Collections;
 using AdvertBoard.Application.AppServices.Contexts.Categories.Repositories;
+using AdvertBoard.Application.AppServices.Services;
 using AdvertBoard.Contracts.Contexts.Categories;
+using AdvertBoard.Contracts.Contexts.Categories.Requests;
+using AdvertBoard.Contracts.Contexts.Categories.Responses;
 using AdvertBoard.Domain.Contexts.Categories;
 using AutoMapper;
+using FluentValidation;
 
 namespace AdvertBoard.Application.AppServices.Contexts.Categories.Services;
 
@@ -11,39 +15,47 @@ public class CategoryService : ICategoryService
 {
     private readonly ICategoryRepository _categoryRepository;
     private readonly IMapper _mapper;
+    private readonly BusinessLogicAbstractValidator<CreateCategoryRequest> _createCategoryValidator;
 
     /// <summary>
     /// Инициализирует экземпляр класса <see cref="CategoryService"/>.
     /// </summary>
     /// <param name="categoryRepository">Репозиторий для работы с категориями.</param>
     /// <param name="mapper">Маппер.</param>
-    public CategoryService(ICategoryRepository categoryRepository, IMapper mapper)
+    /// <param name="createCategoryValidator">Валидатор добавления категории.</param>
+    public CategoryService(
+        ICategoryRepository categoryRepository, 
+        IMapper mapper,
+        BusinessLogicAbstractValidator<CreateCategoryRequest> createCategoryValidator)
     {
         _categoryRepository = categoryRepository;
         _mapper = mapper;
+        _createCategoryValidator = createCategoryValidator;
     }
 
     /// <inheritdoc/>
-    public Task<Guid> AddAsync(CreateCategoryDto createCategoryDto, CancellationToken cancellationToken)
+    public async Task<Guid> AddAsync(CreateCategoryRequest createCategoryRequest, CancellationToken cancellationToken)
     {
-        var category = _mapper.Map<CreateCategoryDto, Category>(createCategoryDto);
-        return _categoryRepository.AddAsync(category, cancellationToken);
+        await _createCategoryValidator.ValidateAndThrowAsync(createCategoryRequest, cancellationToken);
+        
+        var category = _mapper.Map<CreateCategoryRequest, Category>(createCategoryRequest);
+        return await _categoryRepository.AddAsync(category, cancellationToken);
     }
 
     /// <inheritdoc/>
-    public Task<CategoryHierarchyDto> GetHierarchyByIdAsync(Guid id, CancellationToken cancellationToken)
+    public Task<CategoryHierarchyResponse> GetHierarchyByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         return _categoryRepository.GetHierarchyByIdAsync(id, cancellationToken);
     }
 
     /// <inheritdoc/>
-    public Task<IEnumerable<ShortCategoryDto>> GetAllParentsAsync(CancellationToken cancellationToken)
+    public Task<IEnumerable<ShortCategoryResponse>> GetAllParentsAsync(CancellationToken cancellationToken)
     {
         return _categoryRepository.GetAllParentsAsync(cancellationToken);
     }
 
     /// <inheritdoc/>
-    public Task<ShortCategoryDto> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    public Task<ShortCategoryResponse> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         return _categoryRepository.GetByIdAsync(id, cancellationToken);
     }
@@ -55,9 +67,10 @@ public class CategoryService : ICategoryService
     }
 
     /// <inheritdoc/>
-    public Task<Guid> UpdateAsync(Guid id, UpdateCategoryDto updateCategoryDto, CancellationToken cancellationToken)
+    public Task<Guid> UpdateAsync(Guid id, UpdateCategoryRequest updateCategoryRequest,
+        CancellationToken cancellationToken)
     {
-        var category = _mapper.Map<UpdateCategoryDto, Category>(updateCategoryDto);
+        var category = _mapper.Map<UpdateCategoryRequest, Category>(updateCategoryRequest);
         return _categoryRepository.UpdateAsync(id, category, cancellationToken);
     }
 

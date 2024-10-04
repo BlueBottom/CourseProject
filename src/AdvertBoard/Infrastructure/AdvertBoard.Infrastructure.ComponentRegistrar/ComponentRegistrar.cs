@@ -7,9 +7,9 @@ using AdvertBoard.Application.AppServices.Contexts.Adverts.Validators.BusinessLo
 using AdvertBoard.Application.AppServices.Contexts.Adverts.Validators.Requests;
 using AdvertBoard.Application.AppServices.Contexts.Authentication.Services;
 using AdvertBoard.Application.AppServices.Contexts.Authentication.Validators.BusinessLogic;
-using AdvertBoard.Application.AppServices.Contexts.Authentication.Validators.Requests;
 using AdvertBoard.Application.AppServices.Contexts.Categories.Repositories;
 using AdvertBoard.Application.AppServices.Contexts.Categories.Services;
+using AdvertBoard.Application.AppServices.Contexts.Categories.Validators.BusinessLogic;
 using AdvertBoard.Application.AppServices.Contexts.Comments.Repositories;
 using AdvertBoard.Application.AppServices.Contexts.Comments.Services;
 using AdvertBoard.Application.AppServices.Contexts.Images.Repositories;
@@ -21,6 +21,7 @@ using AdvertBoard.Application.AppServices.Contexts.Users.Repositories;
 using AdvertBoard.Application.AppServices.Contexts.Users.Services;
 using AdvertBoard.Application.AppServices.Services;
 using AdvertBoard.Contracts.Contexts.Adverts.Requests;
+using AdvertBoard.Contracts.Contexts.Categories.Requests;
 using AdvertBoard.Contracts.Contexts.Users.Requests;
 using AdvertBoard.Infrastructure.ComponentRegistrar.MapProfiles;
 using AdvertBoard.Infrastructure.DataAccess.Contexts.Adverts.Repositories;
@@ -133,6 +134,9 @@ public static class ComponentRegistrar
         
         services.AddScoped<BusinessLogicAbstractValidator<LoginUserRequest>, LoginUserValidator>();
         services.AddScoped<BusinessLogicAbstractValidator<RegisterUserRequest>, RegisterUserValidator>();
+        
+        services.AddScoped<BusinessLogicAbstractValidator<CreateCategoryRequest>, CreateCategoryValidator>();
+        
         services.AddFluentValidationAutoValidation(configuration =>
         {
             configuration.ValidationStrategy = ValidationStrategy.All;

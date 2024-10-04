@@ -19,7 +19,7 @@ public class LoginUserRequestValidator : AbstractValidator<LoginUserRequest>
             .EmailAddress()
             .MaximumLength(50);
 
-        RuleFor(x => x.Password)
+        RuleFor(x => x.Password)!
             .PasswordRule();
     }
 }

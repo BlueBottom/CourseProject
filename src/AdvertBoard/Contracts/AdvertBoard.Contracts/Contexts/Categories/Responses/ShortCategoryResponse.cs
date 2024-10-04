@@ -1,9 +1,9 @@
-﻿namespace AdvertBoard.Contracts.Contexts.Categories;
+﻿namespace AdvertBoard.Contracts.Contexts.Categories.Responses;
 
 /// <summary>
 /// Укороченная модель категории.
 /// </summary>
-public class ShortCategoryDto
+public class ShortCategoryResponse
 {
     /// <summary>
     /// Идентификатор сущности.

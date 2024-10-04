@@ -1,12 +1,12 @@
-﻿namespace AdvertBoard.Contracts.Contexts.Categories;
+﻿namespace AdvertBoard.Contracts.Contexts.Categories.Requests;
 
 /// <summary>
 /// Модель запроса на обновление категории.
 /// </summary>
-public class UpdateCategoryDto
+public class UpdateCategoryRequest
 {
     /// <summary>
     /// Наименование категории.
     /// </summary>
-    public string Title { get; set; }
+    public string? Title { get; set; }
 }

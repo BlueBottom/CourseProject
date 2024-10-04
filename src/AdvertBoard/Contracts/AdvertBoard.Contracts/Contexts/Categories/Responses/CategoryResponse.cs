@@ -1,9 +1,9 @@
-﻿namespace AdvertBoard.Contracts.Contexts.Categories;
+﻿namespace AdvertBoard.Contracts.Contexts.Categories.Responses;
 
 /// <summary>
 /// Категория.
 /// </summary>
-public class CategoryHierarchyDto
+public class CategoryResponse
 {
     /// <summary>
     /// Идентификатор сущности.
@@ -19,9 +19,4 @@ public class CategoryHierarchyDto
     /// Наименование.
     /// </summary>
     public string Title { get; set; } = null!;
-    
-    /// <summary>
-    /// Дочерние категории.
-    /// </summary>
-    public IEnumerable<CategoryHierarchyDto>? Children { get; set; }
 }

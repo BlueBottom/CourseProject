@@ -1,4 +1,6 @@
 ﻿using AdvertBoard.Contracts.Contexts.Categories;
+using AdvertBoard.Contracts.Contexts.Categories.Requests;
+using AdvertBoard.Contracts.Contexts.Categories.Responses;
 using AdvertBoard.Domain.Contexts.Categories;
 using AutoMapper;
 
@@ -8,12 +10,12 @@ public class CategoryMapProfile : Profile
 {
     public CategoryMapProfile()
     {
-        CreateMap<Category, ShortCategoryDto>(MemberList.None);
+        CreateMap<Category, ShortCategoryResponse>(MemberList.None);
 
-        CreateMap<CreateCategoryDto, Category>(MemberList.None)
+        CreateMap<CreateCategoryRequest, Category>(MemberList.None)
             .ForMember(x => x.CreatedAt, map => map.MapFrom(s => DateTime.UtcNow));
 
-        CreateMap<UpdateCategoryDto, Category>(MemberList.None);
+        CreateMap<UpdateCategoryRequest, Category>(MemberList.None);
 
         CreateMap<Category, Category>()
             .ForMember(x => x.CreatedAt, map => map.Ignore())
@@ -22,6 +24,6 @@ public class CategoryMapProfile : Profile
             .ForMember(x => x.Children, map => map.Ignore())
             .ForMember(x => x.Adverts, map => map.Ignore());
 
-        CreateMap<Category, CategoryHierarchyDto>(MemberList.None);
+        CreateMap<Category, CategoryHierarchyResponse>(MemberList.None);
     }
 }
