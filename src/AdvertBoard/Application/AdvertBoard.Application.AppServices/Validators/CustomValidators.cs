@@ -24,7 +24,15 @@ namespace AdvertBoard.Application.AppServices.Validators
                 .Matches("[^a-zA-Z0-9]").WithMessage("Пароль должен содержать не менее 1 специального символа.");
         }
 
-        public static IRuleBuilderOptions<T, int> RatingRule<T>(this IRuleBuilder<T, int> ruleBuilder)
+        public static IRuleBuilderOptions<T, int?> RatingRule<T>(this IRuleBuilder<T, int?> ruleBuilder)
+        {
+            return ruleBuilder
+                .NotEmpty()
+                .GreaterThanOrEqualTo(1)
+                .LessThanOrEqualTo(5);
+        }
+        
+        public static IRuleBuilderOptions<T, decimal?> RatingRule<T>(this IRuleBuilder<T, decimal?> ruleBuilder)
         {
             return ruleBuilder
                 .NotEmpty()

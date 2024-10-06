@@ -14,5 +14,5 @@ public interface IUserSpecificationBuilder
     /// Строит спецификацию по модели.
     /// </summary>
     /// <returns>Спецификация.</returns>
-    ISpecification<User> Build(GetAllUsersRequest getAllUsersRequest);
+    ISpecification<User> Build(GetAllUsersByFilterRequest getAllUsersByFilterRequest);
 }

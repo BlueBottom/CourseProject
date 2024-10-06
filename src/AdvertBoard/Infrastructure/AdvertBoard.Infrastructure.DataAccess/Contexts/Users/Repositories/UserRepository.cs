@@ -4,6 +4,7 @@ using AdvertBoard.Application.AppServices.Contexts.Users.Repositories;
 using AdvertBoard.Application.AppServices.Exceptions;
 using AdvertBoard.Application.AppServices.Specifications;
 using AdvertBoard.Contracts.Common;
+using AdvertBoard.Contracts.Contexts.Users.Requests;
 using AdvertBoard.Contracts.Contexts.Users.Responses;
 using AdvertBoard.Domain.Contexts.Users;
 using AdvertBoard.Infrastructure.Repository;
@@ -77,18 +78,13 @@ public class UserRepository : IUserRepository
     }
 
     /// <inheritdoc/>
-    public async Task<Guid> UpdateAsync(Guid userId, User updatedUser, CancellationToken cancellationToken)
+    public async Task<Guid> UpdateAsync(Guid userId, UpdateUserRequest updatedUser, CancellationToken cancellationToken)
     {
         var user = await _repository.GetByIdAsync(userId, cancellationToken);
 
         if (user is null) throw new EntityNotFoundException("Пользователь не был найден.");
-        var checkUser = await FindUser(x => x.Email == updatedUser.Email, cancellationToken);
-        //TODO: исключение - пользователь с таким email уже существует.
-        if (checkUser is not null && checkUser.Id != userId) throw new Exception();
-        checkUser = await FindUser(x => x.Phone == updatedUser.Phone, cancellationToken);
-        //TODO: исключение - пользователь с таким телефоном уже существует.
-        if (checkUser is not null && checkUser.Id != userId) throw new Exception();
-        _mapper.Map<User, User>(updatedUser, user);
+       
+        _mapper.Map<UpdateUserRequest, User>(updatedUser, user);
 
         await _repository.UpdateAsync(user, cancellationToken);
         return user.Id;
@@ -133,7 +129,6 @@ public class UserRepository : IUserRepository
     {
         var user = await _repository.GetByIdAsync(id, cancellationToken);
         if (user is null) throw new EntityNotFoundException("Пользователь не был найден.");
-        ;
 
         user.Rating = rating;
         await _repository.UpdateAsync(user, cancellationToken);

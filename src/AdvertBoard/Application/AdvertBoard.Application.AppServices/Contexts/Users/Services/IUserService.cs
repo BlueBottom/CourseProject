@@ -22,27 +22,27 @@ public interface IUserService
     /// <summary>
     /// Обновляет информацию пользователя.
     /// </summary>
-    /// <param name="userId">Идентификатор.</param>
+    /// <param name="id"></param>
     /// <param name="updateUserRequest">Модель обновления пользователя.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Идентификатор.</returns>
-    Task<Guid> UpdateAsync(Guid userId, UpdateUserRequest updateUserRequest, CancellationToken cancellationToken);
+    Task<Guid> UpdateAsync(Guid id, UpdateUserRequest updateUserRequest, CancellationToken cancellationToken);
 
     /// <summary>
     /// Удаляет пользователя.
     /// </summary>
-    /// <param name="userId"></param>
+    /// <param name="id"></param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Статус действия типа <see cref="bool"/>.</returns>
-    Task<bool> DeleteAsync(Guid userId, CancellationToken cancellationToken);
+    Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken);
 
     /// <summary>
     /// Получает пользователей по фильтру.
     /// </summary>
-    /// <param name="getAllUsersRequest">Модель получения пользователей.</param>
+    /// <param name="getAllUsersByFilterRequest">Модель получения пользователей.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Коллекцию укороченных моделей пользователя.</returns>
-    Task<PageResponse<ShortUserResponse>> GetAllByFilterWithPaginationAsync(GetAllUsersRequest getAllUsersRequest,
+    Task<PageResponse<ShortUserResponse>> GetAllByFilterWithPaginationAsync(GetAllUsersByFilterRequest getAllUsersByFilterRequest,
         CancellationToken cancellationToken);
 
     /// <summary>

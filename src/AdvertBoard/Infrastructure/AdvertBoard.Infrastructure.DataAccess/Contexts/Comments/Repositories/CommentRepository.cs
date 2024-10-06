@@ -46,8 +46,7 @@ public class CommentRepository : ICommentRepository
 
         var elementsCount = await query.CountAsync(cancellationToken);
         result.TotalPages = result.TotalPages = (int)Math.Ceiling((double)elementsCount / getAllCommentsRequest.BatchSize);
-
-        //TODO: валидация поля  AdvertId на наличие в базе.
+        
         var paginationQuery = await query
             .OrderBy(x => x.CreatedAt)
             .Where(x => x.AdvertId == getAllCommentsRequest.AdvertId)

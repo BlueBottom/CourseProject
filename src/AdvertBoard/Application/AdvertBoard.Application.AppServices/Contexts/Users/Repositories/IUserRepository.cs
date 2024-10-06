@@ -2,6 +2,7 @@
 using AdvertBoard.Application.AppServices.Contexts.Users.Models;
 using AdvertBoard.Application.AppServices.Specifications;
 using AdvertBoard.Contracts.Common;
+using AdvertBoard.Contracts.Contexts.Users.Requests;
 using AdvertBoard.Contracts.Contexts.Users.Responses;
 using AdvertBoard.Domain.Contexts.Users;
 
@@ -44,7 +45,7 @@ public interface IUserRepository
     /// <param name="updatedUser">Обновленный пользователь.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Идентификатор.</returns>
-    Task<Guid> UpdateAsync(Guid userId, User updatedUser, CancellationToken cancellationToken);
+    Task<Guid> UpdateAsync(Guid userId, UpdateUserRequest updatedUser, CancellationToken cancellationToken);
     
     /// <summary>
     /// Удаляет пользователя.

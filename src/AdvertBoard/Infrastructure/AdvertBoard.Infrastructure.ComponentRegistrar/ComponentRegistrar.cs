@@ -22,6 +22,7 @@ using AdvertBoard.Application.AppServices.Contexts.Reviews.Validators.BusinessLo
 using AdvertBoard.Application.AppServices.Contexts.Users.Builders;
 using AdvertBoard.Application.AppServices.Contexts.Users.Repositories;
 using AdvertBoard.Application.AppServices.Contexts.Users.Services;
+using AdvertBoard.Application.AppServices.Contexts.Users.Validators.BusinessLogic;
 using AdvertBoard.Application.AppServices.Validators;
 using AdvertBoard.Contracts.Contexts.Adverts.Requests;
 using AdvertBoard.Contracts.Contexts.Categories.Requests;
@@ -158,6 +159,9 @@ public static class ComponentRegistrar
         // Валидация бизнес логики отзывов
         services.AddScoped<BusinessLogicAbstractValidator<CreateReviewRequest>, CreateReviewValidator>();
         services.AddScoped<BusinessLogicAbstractValidator<GetAllReviewsRequest>, GetAllReviewsValidator>();
+        
+        //бизнес логики пользователя
+        services.AddScoped<BusinessLogicAbstractValidator<UpdateUserRequest>, UpdateUserValidator>();
         
         services.AddFluentValidationAutoValidation(configuration =>
         {

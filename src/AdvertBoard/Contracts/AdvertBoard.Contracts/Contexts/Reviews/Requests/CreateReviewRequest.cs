@@ -13,10 +13,10 @@ public class CreateReviewRequest
     /// <summary>
     /// Пользователь, которому оставили отзыв.
     /// </summary>
-    public Guid ReceiverUserId { get; set; }
+    public Guid? ReceiverUserId { get; set; }
     
     /// <summary>
     /// Оценка пользователя.
     /// </summary>
-    public int Rating { get; set; }
+    public int? Rating { get; set; }
 }

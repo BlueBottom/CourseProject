@@ -13,5 +13,5 @@ public class UpdateReviewRequest
     /// <summary>
     /// Оценка пользователя.
     /// </summary>
-    public int Rating { get; set; }
+    public int? Rating { get; set; }
 }

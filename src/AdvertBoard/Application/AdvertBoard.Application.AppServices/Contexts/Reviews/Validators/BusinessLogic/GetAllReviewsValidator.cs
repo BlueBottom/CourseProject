@@ -23,8 +23,8 @@ public class GetAllReviewsValidator : BusinessLogicAbstractValidator<GetAllRevie
             .MustAsync(IsUserExists).WithMessage("Пользователь не был найден");
     }
 
-    private async Task<bool> IsUserExists(Guid id, CancellationToken cancellationToken)
+    private async Task<bool> IsUserExists(Guid? id, CancellationToken cancellationToken)
     {
-        return await _userRepository.IsExistsAsync(id, cancellationToken);
+        return await _userRepository.IsExistsAsync(id!.Value, cancellationToken);
     }
 }

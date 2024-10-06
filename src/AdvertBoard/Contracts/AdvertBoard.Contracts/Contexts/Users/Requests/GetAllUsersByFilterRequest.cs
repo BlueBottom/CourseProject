@@ -5,7 +5,7 @@ namespace AdvertBoard.Contracts.Contexts.Users.Requests;
 /// <summary>
 /// Запрос на получение объявлений с возможностью фильтрации.
 /// </summary>
-public class GetAllUsersRequest : PaginationRequest
+public class GetAllUsersByFilterRequest : PaginationRequest
 {
     /// <summary>
     /// Строка поиска по имени и фамилии.

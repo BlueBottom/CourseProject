@@ -14,7 +14,7 @@ public class CreateReviewValidator : BusinessLogicAbstractValidator<CreateReview
 {
     private readonly IReviewRepository _reviewRepository;
     private readonly IHttpContextAccessor _httpContextAccessor;
-    
+
     /// <summary>
     /// Инициализирует экземпляр класса <see cref="CreateReviewValidator"/>.
     /// </summary>
@@ -24,20 +24,21 @@ public class CreateReviewValidator : BusinessLogicAbstractValidator<CreateReview
         _httpContextAccessor = httpContextAccessor;
 
         RuleFor(x => x.ReceiverUserId)
-            .MustAsync(IsUserAlreadyLeftReview).WithMessage("С этого аккаунта к уже был оставлен отзыв данному пользователю.")
+            .MustAsync(IsUserAlreadyLeftReview)
+            .WithMessage("С этого аккаунта к уже был оставлен отзыв данному пользователю.")
             .Must(IsReviewReferenceToHimself).WithMessage("Запрещено оставлять отзыв на самого себя.");
     }
 
-    private bool IsReviewReferenceToHimself(Guid receiverUserId)
+    private bool IsReviewReferenceToHimself(Guid? receiverUserId)
     {
         var ownerUserId = _httpContextAccessor.GetAuthorizedUserId();
-        return ownerUserId == receiverUserId;
+        return ownerUserId == receiverUserId!.Value;
     }
 
-    private async Task<bool> IsUserAlreadyLeftReview(Guid receiverUserId,
+    private async Task<bool> IsUserAlreadyLeftReview(Guid? receiverUserId,
         CancellationToken cancellationToken)
     {
         var ownerUserId = _httpContextAccessor.GetAuthorizedUserId();
-        return await _reviewRepository.IsUserAlreadyLeftReview(ownerUserId, receiverUserId, cancellationToken);
+        return await _reviewRepository.IsUserAlreadyLeftReview(ownerUserId, receiverUserId!.Value, cancellationToken);
     }
 }

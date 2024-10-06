@@ -28,29 +28,30 @@ public class UserController : ControllerBase
     /// <summary>
     /// Обновляет данные пользователя.
     /// </summary>
-    /// <param name="userId"></param>
+    /// <param name="id">Идентификатор.</param>
     /// <param name="updateUserRequest">Модель обновления пользователя.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Идентификатор.</returns>
     [Authorize]
-    [HttpPut]
-    public async Task<IActionResult> UpdateAsync(Guid userId, [FromForm] UpdateUserRequest updateUserRequest,
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> UpdateAsync(Guid id, [FromForm] UpdateUserRequest updateUserRequest,
         CancellationToken cancellationToken)
     {
-        var result = await _userService.UpdateAsync(userId, updateUserRequest, cancellationToken);
+        var result = await _userService.UpdateAsync(id, updateUserRequest, cancellationToken);
         return Ok(result);
     }
 
     /// <summary>
     /// Удаляет пользователя.
     /// </summary>
+    /// <param name="id">Идентификатор.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns><see cref="NoContentResult"/></returns>
     [Authorize]
-    [HttpDelete]
-    public async Task<IActionResult> DeleteAsync(Guid userId, CancellationToken cancellationToken)
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> DeleteAsync(Guid id, CancellationToken cancellationToken)
     {
-        var result = await _userService.DeleteAsync(userId, cancellationToken);
+        var result = await _userService.DeleteAsync(id, cancellationToken);
         return NoContent();
     }
 
@@ -70,15 +71,15 @@ public class UserController : ControllerBase
     /// <summary>
     /// Получает пользователей по фильтру.
     /// </summary>
-    /// <param name="getAllUsersRequest">Модель получения пользователей.</param>
+    /// <param name="getAllUsersByFilterRequest">Модель получения пользователей.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Коллекцию укороченных моделей пользователя.</returns>
     [Authorize(Roles = "Admin")]
     [HttpPost("search")]
-    public async Task<IActionResult> GetAllAsync([FromForm] GetAllUsersRequest getAllUsersRequest,
+    public async Task<IActionResult> GetAllAsync([FromForm] GetAllUsersByFilterRequest getAllUsersByFilterRequest,
         CancellationToken cancellationToken)
     {
-        var result = await _userService.GetAllByFilterWithPaginationAsync(getAllUsersRequest, cancellationToken);
+        var result = await _userService.GetAllByFilterWithPaginationAsync(getAllUsersByFilterRequest, cancellationToken);
         return Ok(result);
     }
 }
