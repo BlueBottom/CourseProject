@@ -1,9 +1,9 @@
-﻿namespace AdvertBoard.Contracts.Contexts.Reviews;
+﻿namespace AdvertBoard.Contracts.Contexts.Reviews.Requests;
 
 /// <summary>
 /// Модель запроса на обновление отзыва.
 /// </summary>
-public class UpdateReviewDto
+public class UpdateReviewRequest
 {
     /// <summary>
     /// Содержимое.

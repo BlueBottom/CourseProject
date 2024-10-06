@@ -1,12 +1,18 @@
 ﻿using System.Security.Claims;
 using AdvertBoard.Application.AppServices.Authorization.Requirements;
 using AdvertBoard.Application.AppServices.Contexts.Reviews.Repositories;
+using AdvertBoard.Application.AppServices.Contexts.Reviews.Validators.BusinessLogic;
 using AdvertBoard.Application.AppServices.Contexts.Users.Services;
 using AdvertBoard.Application.AppServices.Exceptions;
+using AdvertBoard.Application.AppServices.Helpers;
+using AdvertBoard.Application.AppServices.Validators;
 using AdvertBoard.Contracts.Common;
 using AdvertBoard.Contracts.Contexts.Reviews;
+using AdvertBoard.Contracts.Contexts.Reviews.Requests;
+using AdvertBoard.Contracts.Contexts.Reviews.Responses;
 using AdvertBoard.Domain.Contexts.Reviews;
 using AutoMapper;
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 
@@ -20,49 +26,59 @@ public class ReviewService : IReviewService
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IAuthorizationService _authorizationService;
     private readonly IUserService _userService;
+    private readonly BusinessLogicAbstractValidator<CreateReviewRequest> _createReviewValidator;
+    private readonly BusinessLogicAbstractValidator<GetAllReviewsRequest> _getAllReviewsValidator;
 
     /// <summary>
     /// Инициализирует экземпляр класса <see cref="ReviewService"/>.
     /// </summary>
-    /// <param name="reviewRepository">Умный репозиторий для работы с отзывами.</param>
-    /// <param name="mapper">Маппер.</param>
-    /// <param name="httpContextAccessor">Разрешает доступ к HttpContext.</param>
-    /// <param name="authorizationService">Сервис для использования requirements.</param>
-    /// <param name="userService">Сервис для работы с пользователями.</param>
-    public ReviewService(IReviewRepository reviewRepository, IMapper mapper, IHttpContextAccessor httpContextAccessor,
-        IAuthorizationService authorizationService, IUserService userService)
+    public ReviewService(
+        IReviewRepository reviewRepository, 
+        IMapper mapper, IHttpContextAccessor httpContextAccessor,
+        IAuthorizationService authorizationService, 
+        IUserService userService, 
+        BusinessLogicAbstractValidator<CreateReviewRequest> createReviewValidator, 
+        BusinessLogicAbstractValidator<GetAllReviewsRequest> getAllReviewsValidator
+        )
     {
         _reviewRepository = reviewRepository;
         _mapper = mapper;
         _httpContextAccessor = httpContextAccessor;
         _authorizationService = authorizationService;
         _userService = userService;
+        _createReviewValidator = createReviewValidator;
+        _getAllReviewsValidator = getAllReviewsValidator;
     }
 
     /// <inheritdoc/>
-    public Task<PageResponse<ShortReviewDto>> GetAllByUserIdAsync(GetAllReviewsDto getAllReviewsDto,
+    public async Task<PageResponse<ShortReviewResponse>> GetAllByUserIdAsync(GetAllReviewsRequest getAllReviewsRequest,
         CancellationToken cancellationToken)
     {
-        return _reviewRepository.GetAllByUserIdAsync(getAllReviewsDto, cancellationToken);
+        await _getAllReviewsValidator.ValidateAndThrowAsync(getAllReviewsRequest, cancellationToken);
+        
+        return await _reviewRepository.GetAllByUserIdAsync(getAllReviewsRequest, cancellationToken);
     }
 
     /// <inheritdoc/>
-    public Task<ReviewDto> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    public Task<ReviewResponse> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         return _reviewRepository.GetByIdAsync(id, cancellationToken);
     }
 
     /// <inheritdoc/>
-    public async Task<Guid> AddAsync(CreateReviewDto createReviewDto, CancellationToken cancellationToken)
+    public async Task<Guid> AddAsync(CreateReviewRequest createReviewRequest, CancellationToken cancellationToken)
     {
-        var claims = _httpContextAccessor.HttpContext.User.Claims;
-        var claimId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-
-        if (string.IsNullOrWhiteSpace(claimId)) throw new ForbiddenException();
+        // var claims = _httpContextAccessor.HttpContext.User.Claims;
+        // var claimId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+        //
+        // if (string.IsNullOrWhiteSpace(claimId)) throw new ForbiddenException();
+        //
+        // var userId = Guid.Parse(claimId);
+        await _createReviewValidator.ValidateAndThrowAsync(createReviewRequest, cancellationToken);
         
-        var review = _mapper.Map<CreateReviewDto, Review>(createReviewDto);
+        var userId = _httpContextAccessor.GetAuthorizedUserId();
         
-        var userId = Guid.Parse(claimId);
+        var review = _mapper.Map<CreateReviewRequest, Review>(createReviewRequest);
         review.OwnerUserId = userId;
 
         var result= await _reviewRepository.AddAsync(review, cancellationToken);
@@ -72,15 +88,13 @@ public class ReviewService : IReviewService
     }
 
     /// <inheritdoc/>
-    public async Task<Guid> UpdateAsync(Guid id, UpdateReviewDto updateReviewDto, CancellationToken cancellationToken)
+    public async Task<Guid> UpdateAsync(Guid id, UpdateReviewRequest updateReviewRequest, CancellationToken cancellationToken)
     {
         var existingReview = await _reviewRepository.GetByIdAsync(id, cancellationToken);
-        var authResult = await _authorizationService.AuthorizeAsync(_httpContextAccessor.HttpContext.User,
-            existingReview,
-            new ResourceOwnerRequirement());
-        if (!authResult.Succeeded) throw new ForbiddenException();
         
-        var result = await _reviewRepository.UpdateAsync(id, updateReviewDto, cancellationToken);
+        await EnsureResourceAuthorize(existingReview);
+
+        var result = await _reviewRepository.UpdateAsync(id, updateReviewRequest, cancellationToken);
         await UpdateRating(existingReview.ReceiverUserId, cancellationToken);
 
         return result;
@@ -90,10 +104,8 @@ public class ReviewService : IReviewService
     public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken)
     {
         var existingReview = await _reviewRepository.GetByIdAsync(id, cancellationToken);
-        var authResult = await _authorizationService.AuthorizeAsync(_httpContextAccessor.HttpContext.User,
-            existingReview,
-            new ResourceOwnerRequirement());
-        if (!authResult.Succeeded) throw new ForbiddenException();
+        
+        await EnsureResourceAuthorize(existingReview);
         
         var result = await _reviewRepository.DeleteAsync(id, cancellationToken);
         await UpdateRating(existingReview.ReceiverUserId, cancellationToken);
@@ -105,5 +117,13 @@ public class ReviewService : IReviewService
     {
         var rating = await _reviewRepository.CalcUserRatingAsync(userId, cancellationToken);
         await _userService.UpdateRatingAsync(userId, rating, cancellationToken);
+    }
+    
+    private async Task EnsureResourceAuthorize(ReviewResponse existingReview)
+    {
+        var authResult = await _authorizationService.AuthorizeAsync(_httpContextAccessor.HttpContext.User,
+            existingReview,
+            new ResourceOwnerRequirement());
+        if (!authResult.Succeeded) throw new ForbiddenException();
     }
 }

@@ -1,7 +1,7 @@
 ﻿using AdvertBoard.Contracts.Common;
 using FluentValidation;
 
-namespace AdvertBoard.Application.AppServices.Services;
+namespace AdvertBoard.Application.AppServices.Validators;
 
 /// <summary>
 /// Валидатор модели запроса для пагинации.

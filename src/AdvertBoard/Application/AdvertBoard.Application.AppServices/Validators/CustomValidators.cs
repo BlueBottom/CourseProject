@@ -1,7 +1,6 @@
-﻿using AdvertBoard.Application.AppServices.Contexts.Categories.Services;
-using FluentValidation;
+﻿using FluentValidation;
 
-namespace AdvertBoard.Application.AppServices.Helpers
+namespace AdvertBoard.Application.AppServices.Validators
 {
     public static class CustomValidators
     {
@@ -23,6 +22,14 @@ namespace AdvertBoard.Application.AppServices.Helpers
                 .Matches("[a-z]").WithMessage("Пароль должен содерать не менее 1 литеры нижнего регистра..")
                 .Matches("[0-9]").WithMessage("Пароль должен содерать не менее 1 цифры.")
                 .Matches("[^a-zA-Z0-9]").WithMessage("Пароль должен содержать не менее 1 специального символа.");
+        }
+
+        public static IRuleBuilderOptions<T, int> RatingRule<T>(this IRuleBuilder<T, int> ruleBuilder)
+        {
+            return ruleBuilder
+                .NotEmpty()
+                .GreaterThanOrEqualTo(1)
+                .LessThanOrEqualTo(5);
         }
     }
 }

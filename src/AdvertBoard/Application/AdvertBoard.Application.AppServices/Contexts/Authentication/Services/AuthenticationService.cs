@@ -3,7 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using AdvertBoard.Application.AppServices.Contexts.Users.Repositories;
 using AdvertBoard.Application.AppServices.Helpers;
-using AdvertBoard.Application.AppServices.Services;
+using AdvertBoard.Application.AppServices.Validators;
 using AdvertBoard.Contracts.Contexts.Users.Requests;
 using AdvertBoard.Domain.Contexts.Users;
 using AutoMapper;

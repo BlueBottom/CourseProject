@@ -1,5 +1,4 @@
-﻿using AdvertBoard.Application.AppServices.Services;
-using AdvertBoard.Contracts.Common;
+﻿using AdvertBoard.Contracts.Common;
 using AdvertBoard.Contracts.Contexts.Comments.Requests;
 using FluentValidation;
 

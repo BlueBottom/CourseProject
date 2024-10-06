@@ -1,12 +1,11 @@
-﻿using AdvertBoard.Contracts.Contexts.Users;
-using AdvertBoard.Contracts.Contexts.Users.Responses;
+﻿using AdvertBoard.Contracts.Contexts.Users.Responses;
 
-namespace AdvertBoard.Contracts.Contexts.Reviews;
+namespace AdvertBoard.Contracts.Contexts.Reviews.Responses;
 
 /// <summary>
 /// Укороченная модель отзыва о пользователе.
 /// </summary>
-public class ShortReviewDto
+public class ShortReviewResponse
 {
     /// <summary>
     /// Идентификатор.

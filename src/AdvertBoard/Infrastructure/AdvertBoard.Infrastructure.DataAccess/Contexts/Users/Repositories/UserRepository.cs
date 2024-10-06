@@ -1,11 +1,9 @@
-﻿using System.Diagnostics.SymbolStore;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using AdvertBoard.Application.AppServices.Contexts.Users.Models;
 using AdvertBoard.Application.AppServices.Contexts.Users.Repositories;
 using AdvertBoard.Application.AppServices.Exceptions;
 using AdvertBoard.Application.AppServices.Specifications;
 using AdvertBoard.Contracts.Common;
-using AdvertBoard.Contracts.Contexts.Users;
 using AdvertBoard.Contracts.Contexts.Users.Responses;
 using AdvertBoard.Domain.Contexts.Users;
 using AdvertBoard.Infrastructure.Repository;
@@ -52,7 +50,13 @@ public class UserRepository : IUserRepository
     /// <inheritdoc/>
     public Task<bool> IsExistByPhone(string phone, CancellationToken cancellationToken)
     {
-        return _repository.GetAll().AnyAsync(x => x.Phone == phone, cancellationToken: cancellationToken);
+        return _repository.GetAll().AnyAsync(x => x.Phone == phone, cancellationToken);
+    }
+
+    /// <inheritdoc/>
+    public Task<bool> IsExistsAsync(Guid id, CancellationToken cancellationToken)
+    {
+        return _repository.GetAll().AnyAsync(x => x.Id == id , cancellationToken: cancellationToken);
     }
 
     /// <inheritdoc/>

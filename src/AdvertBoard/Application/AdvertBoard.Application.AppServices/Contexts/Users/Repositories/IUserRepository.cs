@@ -88,4 +88,12 @@ public interface IUserRepository
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Наличие телефона в БД.</returns>
     public Task<bool> IsExistByPhone(string phone, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Проверяет, существует ли пользователь с заданным идентификатором.
+    /// </summary>
+    /// <param name="id">Идентификатор.</param>
+    /// <param name="cancellationToken">Токен отмены.</param>
+    /// <returns>Наличие пользователя в БД.</returns>
+    Task<bool> IsExistsAsync(Guid id, CancellationToken cancellationToken);
 }

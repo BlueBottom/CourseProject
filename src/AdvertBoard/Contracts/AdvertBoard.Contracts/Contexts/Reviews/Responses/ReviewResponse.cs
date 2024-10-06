@@ -1,16 +1,24 @@
-﻿using AdvertBoard.Contracts.Enums;
-
-namespace AdvertBoard.Contracts.Contexts.Reviews;
+﻿namespace AdvertBoard.Contracts.Contexts.Reviews.Responses;
 
 /// <summary>
-/// Модель запроса на создание отзыва. 
+/// Отзыв о пользователе.
 /// </summary>
-public class CreateReviewDto
+public class ReviewResponse
 {
+    /// <summary>
+    /// Идентификатор.
+    /// </summary>
+    public Guid Id { get; set; }
+    
     /// <summary>
     /// Содержимое.
     /// </summary>
     public string? Content { get; set; }
+
+    /// <summary>
+    /// Идентификатор на пользователя, оставившего отзыв.
+    /// </summary>
+    public Guid OwnerUserId { get; set; }
     
     /// <summary>
     /// Пользователь, которому оставили отзыв.

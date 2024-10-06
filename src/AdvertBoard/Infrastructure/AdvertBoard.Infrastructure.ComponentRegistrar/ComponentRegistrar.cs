@@ -18,14 +18,16 @@ using AdvertBoard.Application.AppServices.Contexts.Images.Services;
 using AdvertBoard.Application.AppServices.Contexts.Images.Validators.BusinessLogic;
 using AdvertBoard.Application.AppServices.Contexts.Reviews.Repositories;
 using AdvertBoard.Application.AppServices.Contexts.Reviews.Services;
+using AdvertBoard.Application.AppServices.Contexts.Reviews.Validators.BusinessLogic;
 using AdvertBoard.Application.AppServices.Contexts.Users.Builders;
 using AdvertBoard.Application.AppServices.Contexts.Users.Repositories;
 using AdvertBoard.Application.AppServices.Contexts.Users.Services;
-using AdvertBoard.Application.AppServices.Services;
+using AdvertBoard.Application.AppServices.Validators;
 using AdvertBoard.Contracts.Contexts.Adverts.Requests;
 using AdvertBoard.Contracts.Contexts.Categories.Requests;
 using AdvertBoard.Contracts.Contexts.Comments.Requests;
 using AdvertBoard.Contracts.Contexts.Images.Requests;
+using AdvertBoard.Contracts.Contexts.Reviews.Requests;
 using AdvertBoard.Contracts.Contexts.Users.Requests;
 using AdvertBoard.Infrastructure.ComponentRegistrar.MapProfiles;
 using AdvertBoard.Infrastructure.DataAccess.Contexts.Adverts.Repositories;
@@ -152,6 +154,10 @@ public static class ComponentRegistrar
         
         // Валидация бизнес логики изображений
         services.AddScoped<BusinessLogicAbstractValidator<CreateImageRequest>, CreateImageValidator>();
+        
+        // Валидация бизнес логики отзывов
+        services.AddScoped<BusinessLogicAbstractValidator<CreateReviewRequest>, CreateReviewValidator>();
+        services.AddScoped<BusinessLogicAbstractValidator<GetAllReviewsRequest>, GetAllReviewsValidator>();
         
         services.AddFluentValidationAutoValidation(configuration =>
         {

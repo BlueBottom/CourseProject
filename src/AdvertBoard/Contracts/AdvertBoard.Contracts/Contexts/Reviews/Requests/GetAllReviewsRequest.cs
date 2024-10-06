@@ -1,11 +1,11 @@
 ﻿using AdvertBoard.Contracts.Common;
 
-namespace AdvertBoard.Contracts.Contexts.Reviews;
+namespace AdvertBoard.Contracts.Contexts.Reviews.Requests;
 
 /// <summary>
 /// Модель запроса на получение отзывов.
 /// </summary>
-public class GetAllReviewsDto : PaginationRequest
+public class GetAllReviewsRequest : PaginationRequest
 {
     /// <summary>
     /// Идентификатор пользователя.

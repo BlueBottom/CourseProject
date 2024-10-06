@@ -1,5 +1,7 @@
 ﻿using AdvertBoard.Contracts.Common;
 using AdvertBoard.Contracts.Contexts.Reviews;
+using AdvertBoard.Contracts.Contexts.Reviews.Requests;
+using AdvertBoard.Contracts.Contexts.Reviews.Responses;
 using AdvertBoard.Domain.Contexts.Reviews;
 
 namespace AdvertBoard.Application.AppServices.Contexts.Reviews.Repositories;
@@ -12,10 +14,10 @@ public interface IReviewRepository
     /// <summary>
     /// Получает отзывы на пользователя.
     /// </summary>
-    /// <param name="getAllReviewsDto">Модель запроса для получения пользователей.</param>
+    /// <param name="getAllReviewsRequest">Модель запроса для получения пользователей.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Коллекцию укороченных моделей отзывов.</returns>
-    Task<PageResponse<ShortReviewDto>> GetAllByUserIdAsync(GetAllReviewsDto getAllReviewsDto,
+    Task<PageResponse<ShortReviewResponse>> GetAllByUserIdAsync(GetAllReviewsRequest getAllReviewsRequest,
         CancellationToken cancellationToken);
     
     /// <summary>
@@ -24,7 +26,7 @@ public interface IReviewRepository
     /// <param name="id">Идентификатор.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Модель отзыва.</returns>
-    Task<ReviewDto> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+    Task<ReviewResponse> GetByIdAsync(Guid id, CancellationToken cancellationToken);
     
     /// <summary>
     /// Создает отзыв.
@@ -38,10 +40,10 @@ public interface IReviewRepository
     /// Обновляет отзыв.
     /// </summary>
     /// <param name="id"></param>
-    /// <param name="updatedReviewDto"></param>
+    /// <param name="updatedReviewRequest"></param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Идентификатор.</returns>
-    Task<Guid> UpdateAsync(Guid id, UpdateReviewDto updatedReviewDto, CancellationToken cancellationToken);
+    Task<Guid> UpdateAsync(Guid id, UpdateReviewRequest updatedReviewRequest, CancellationToken cancellationToken);
     
     /// <summary>
     /// Удаляет отзыв.
@@ -58,4 +60,13 @@ public interface IReviewRepository
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns></returns>
     Task<decimal?> CalcUserRatingAsync(Guid id, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Проверяет, оставлял ли уже пользователь отзыв другому конкретно пользователю.
+    /// </summary>
+    /// <param name="ownerUserId"></param>
+    /// <param name="receiverUserId"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    Task<bool> IsUserAlreadyLeftReview(Guid ownerUserId, Guid receiverUserId, CancellationToken cancellationToken);
 }

@@ -1,6 +1,6 @@
 ﻿using AdvertBoard.Application.AppServices.Contexts.Adverts.Repositories;
 using AdvertBoard.Application.AppServices.Contexts.Comments.Repositories;
-using AdvertBoard.Application.AppServices.Services;
+using AdvertBoard.Application.AppServices.Validators;
 using AdvertBoard.Contracts.Contexts.Comments.Requests;
 using FluentValidation;
 

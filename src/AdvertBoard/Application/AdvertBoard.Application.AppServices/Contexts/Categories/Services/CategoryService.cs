@@ -1,7 +1,5 @@
-﻿using System.Collections;
-using AdvertBoard.Application.AppServices.Contexts.Categories.Repositories;
-using AdvertBoard.Application.AppServices.Services;
-using AdvertBoard.Contracts.Contexts.Categories;
+﻿using AdvertBoard.Application.AppServices.Contexts.Categories.Repositories;
+using AdvertBoard.Application.AppServices.Validators;
 using AdvertBoard.Contracts.Contexts.Categories.Requests;
 using AdvertBoard.Contracts.Contexts.Categories.Responses;
 using AdvertBoard.Domain.Contexts.Categories;
