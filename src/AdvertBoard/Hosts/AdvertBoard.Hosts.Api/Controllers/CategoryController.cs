@@ -1,5 +1,6 @@
 ﻿using AdvertBoard.Application.AppServices.Contexts.Categories.Services;
 using AdvertBoard.Contracts.Contexts.Categories;
+using AdvertBoard.Contracts.Contexts.Categories.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,14 +27,14 @@ public class CategoryController : ControllerBase
     /// <summary>
     /// Добавляет категорию.
     /// </summary>
-    /// <param name="createCategoryDto">Модель запроса на создание категории.</param>
+    /// <param name="createCategoryRequest">Модель запроса на создание категории.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Идентификатор.</returns>
     [Authorize(Roles = "Admin")]
     [HttpPost]
-    public async Task<IActionResult> AddAsync(CreateCategoryDto createCategoryDto, CancellationToken cancellationToken)
+    public async Task<IActionResult> AddAsync(CreateCategoryRequest createCategoryRequest, CancellationToken cancellationToken)
     {
-        var result = await _categoryService.AddAsync(createCategoryDto, cancellationToken);
+        var result = await _categoryService.AddAsync(createCategoryRequest, cancellationToken);
         return Ok(result);
     }
 
@@ -79,15 +80,15 @@ public class CategoryController : ControllerBase
     /// Обновляет категорию.
     /// </summary>
     /// <param name="id">Идентификатор.</param>
-    /// <param name="updateCategoryDto">Модель запроса на обновление категории.</param>
+    /// <param name="updateCategoryRequest">Модель запроса на обновление категории.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Идентификатор.</returns>
     [Authorize(Roles = "Admin")]
     [HttpPut("{id:guid}")]
-    public async Task<IActionResult> UpdateAsync(Guid id, UpdateCategoryDto updateCategoryDto,
+    public async Task<IActionResult> UpdateAsync(Guid id, UpdateCategoryRequest updateCategoryRequest,
         CancellationToken cancellationToken)
     {
-        var result = await _categoryService.UpdateAsync(id, updateCategoryDto, cancellationToken);
+        var result = await _categoryService.UpdateAsync(id, updateCategoryRequest, cancellationToken);
         return Ok(result);
     }
 

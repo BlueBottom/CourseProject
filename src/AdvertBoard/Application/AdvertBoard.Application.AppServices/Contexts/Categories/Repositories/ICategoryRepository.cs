@@ -1,4 +1,5 @@
 ﻿using AdvertBoard.Contracts.Contexts.Categories;
+using AdvertBoard.Contracts.Contexts.Categories.Responses;
 using AdvertBoard.Domain.Contexts.Categories;
 
 namespace AdvertBoard.Application.AppServices.Contexts.Categories.Repositories;
@@ -22,14 +23,14 @@ public interface ICategoryRepository
     /// <param name="id">Идентификатор.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Коллекцию категорий.</returns>
-    Task<CategoryHierarchyDto> GetHierarchyByIdAsync(Guid id, CancellationToken cancellationToken);
+    Task<CategoryHierarchyResponse> GetHierarchyByIdAsync(Guid id, CancellationToken cancellationToken);
 
     /// <summary>
     /// Получает полный список категорий.
     /// </summary>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Коллекцию категорий.</returns>
-    Task<IEnumerable<ShortCategoryDto>> GetAllParentsAsync(CancellationToken cancellationToken);
+    Task<IEnumerable<ShortCategoryResponse>> GetAllParentsAsync(CancellationToken cancellationToken);
 
     /// <summary>
     /// Получает категорию.
@@ -37,7 +38,7 @@ public interface ICategoryRepository
     /// <param name="id">Идентификатор.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Укороченную сущность категории.</returns>
-    Task<ShortCategoryDto> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+    Task<ShortCategoryResponse> GetByIdAsync(Guid id, CancellationToken cancellationToken);
 
     /// <summary>
     /// Обновляет категорию.
@@ -63,4 +64,12 @@ public interface ICategoryRepository
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Коллекцию всех дочерних идентификаторов.</returns>
     Task<IEnumerable<Guid>> GetHierarchyIdsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Проверяет наличие категории в БД.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="cancellationToken">Токен отмены.</param>
+    /// <returns>Наличие категории в БД.</returns>
+    Task<bool> IsCategoryExists(Guid id, CancellationToken cancellationToken);
 }

@@ -1,17 +1,18 @@
 ﻿using System.Security.Claims;
 using AdvertBoard.Application.AppServices.Authorization.Requirements;
 using AdvertBoard.Contracts.Contexts.Comments;
+using AdvertBoard.Contracts.Contexts.Comments.Responses;
 using Microsoft.AspNetCore.Authorization;
 
 namespace AdvertBoard.Application.AppServices.Authorization.Handlers;
 
-public class IsCommentOwner : AuthorizationHandler<ResourceOwnerRequirement, CommentDto>
+public class IsCommentOwner : AuthorizationHandler<ResourceOwnerRequirement, CommentResponse>
 {
     /// <inheritdoc/>
     protected override Task HandleRequirementAsync(
         AuthorizationHandlerContext context,
         ResourceOwnerRequirement ownerRequirement, 
-        CommentDto resource)
+        CommentResponse resource)
     {
         var claimId = context.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
         if (claimId is null) return Task.CompletedTask;

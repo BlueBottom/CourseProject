@@ -3,18 +3,33 @@ using AdvertBoard.Application.AppServices.Authorization.Handlers;
 using AdvertBoard.Application.AppServices.Contexts.Adverts.Builders;
 using AdvertBoard.Application.AppServices.Contexts.Adverts.Repositories;
 using AdvertBoard.Application.AppServices.Contexts.Adverts.Services;
+using AdvertBoard.Application.AppServices.Contexts.Adverts.Validators.BusinessLogic;
+using AdvertBoard.Application.AppServices.Contexts.Adverts.Validators.Requests;
 using AdvertBoard.Application.AppServices.Contexts.Authentication.Services;
+using AdvertBoard.Application.AppServices.Contexts.Authentication.Validators.BusinessLogic;
 using AdvertBoard.Application.AppServices.Contexts.Categories.Repositories;
 using AdvertBoard.Application.AppServices.Contexts.Categories.Services;
+using AdvertBoard.Application.AppServices.Contexts.Categories.Validators.BusinessLogic;
 using AdvertBoard.Application.AppServices.Contexts.Comments.Repositories;
 using AdvertBoard.Application.AppServices.Contexts.Comments.Services;
+using AdvertBoard.Application.AppServices.Contexts.Comments.Validators.BusinessLogic;
 using AdvertBoard.Application.AppServices.Contexts.Images.Repositories;
 using AdvertBoard.Application.AppServices.Contexts.Images.Services;
+using AdvertBoard.Application.AppServices.Contexts.Images.Validators.BusinessLogic;
 using AdvertBoard.Application.AppServices.Contexts.Reviews.Repositories;
 using AdvertBoard.Application.AppServices.Contexts.Reviews.Services;
+using AdvertBoard.Application.AppServices.Contexts.Reviews.Validators.BusinessLogic;
 using AdvertBoard.Application.AppServices.Contexts.Users.Builders;
 using AdvertBoard.Application.AppServices.Contexts.Users.Repositories;
 using AdvertBoard.Application.AppServices.Contexts.Users.Services;
+using AdvertBoard.Application.AppServices.Contexts.Users.Validators.BusinessLogic;
+using AdvertBoard.Application.AppServices.Validators;
+using AdvertBoard.Contracts.Contexts.Adverts.Requests;
+using AdvertBoard.Contracts.Contexts.Categories.Requests;
+using AdvertBoard.Contracts.Contexts.Comments.Requests;
+using AdvertBoard.Contracts.Contexts.Images.Requests;
+using AdvertBoard.Contracts.Contexts.Reviews.Requests;
+using AdvertBoard.Contracts.Contexts.Users.Requests;
 using AdvertBoard.Infrastructure.ComponentRegistrar.MapProfiles;
 using AdvertBoard.Infrastructure.DataAccess.Contexts.Adverts.Repositories;
 using AdvertBoard.Infrastructure.DataAccess.Contexts.Categories.Repositories;
@@ -25,6 +40,7 @@ using AdvertBoard.Infrastructure.DataAccess.Contexts.Users.Repositories;
 using AdvertBoard.Infrastructure.Repository;
 using AdvertBoard.Infrastructure.Repository.Relational;
 using AutoMapper;
+using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -32,6 +48,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.IdentityModel.Tokens;
+using SharpGrip.FluentValidation.AutoValidation.Mvc.Enums;
+using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 
 namespace AdvertBoard.Infrastructure.ComponentRegistrar;
 
@@ -48,7 +66,8 @@ public static class ComponentRegistrar
             .AddServices()
             .AddRepositories()
             .AddBuilders()
-            .AddMapper();
+            .AddMapper()
+            .AddFluentValidation();
     }
 
     private static IServiceCollection AddServices(this IServiceCollection serviceCollection)
@@ -112,6 +131,53 @@ public static class ComponentRegistrar
     }
     
     /// <summary>
+    /// Подключить пакеты для работы с FluentValidation.
+    /// </summary>
+    private static IServiceCollection AddFluentValidation(this IServiceCollection services)
+    {
+        // Добавление в DI валидаторов для всех requests
+        services.AddValidatorsFromAssemblyContaining<CreateAdvertRequestValidator>(filter: service => 
+            service.ValidatorType.BaseType?.GetGenericTypeDefinition() != typeof(BusinessLogicAbstractValidator<>));
+        
+        // Валидация бизнес логики объявлений
+        services.AddScoped<BusinessLogicAbstractValidator<CreateAdvertRequest>, CreateAdvertValidator>();
+        
+        // Валидация бизнес логики аутентификации
+        services.AddScoped<BusinessLogicAbstractValidator<LoginUserRequest>, LoginUserValidator>();
+        services.AddScoped<BusinessLogicAbstractValidator<RegisterUserRequest>, RegisterUserValidator>();
+        
+        // Валидация бизнес логики категорий
+        services.AddScoped<BusinessLogicAbstractValidator<CreateCategoryRequest>, CreateCategoryValidator>();
+
+        // Валидация бизнес логики комментариев
+        services.AddScoped<BusinessLogicAbstractValidator<CreateCommentRequest>, CreateCommentValidator>();
+        services.AddScoped<BusinessLogicAbstractValidator<GetAllCommentsRequest>, GetAllCommentsValidator>();
+        
+        // Валидация бизнес логики изображений
+        services.AddScoped<BusinessLogicAbstractValidator<CreateImageRequest>, CreateImageValidator>();
+        
+        // Валидация бизнес логики отзывов
+        services.AddScoped<BusinessLogicAbstractValidator<CreateReviewRequest>, CreateReviewValidator>();
+        services.AddScoped<BusinessLogicAbstractValidator<GetAllReviewsRequest>, GetAllReviewsValidator>();
+        
+        //бизнес логики пользователя
+        services.AddScoped<BusinessLogicAbstractValidator<UpdateUserRequest>, UpdateUserValidator>();
+        
+        services.AddFluentValidationAutoValidation(configuration =>
+        {
+            configuration.ValidationStrategy = ValidationStrategy.All;
+            configuration.DisableBuiltInModelValidation = false;
+            configuration.EnableBodyBindingSourceAutomaticValidation = true;
+            configuration.EnableCustomBindingSourceAutomaticValidation = true;
+            configuration.EnableFormBindingSourceAutomaticValidation = true;
+            configuration.EnablePathBindingSourceAutomaticValidation = true;
+            configuration.EnableQueryBindingSourceAutomaticValidation = true;
+        });
+
+        return services;
+    }
+    
+    /// <summary>
     /// Настраивает аутентификацию.
     /// </summary>
     /// <param name="serviceCollection">Коллекция сервисов.</param>
@@ -136,7 +202,7 @@ public static class ComponentRegistrar
                     // установка потребителя токена
                     ValidAudience = configuration["Jwt:Audience"],
                     // будет ли валидироваться время существования
-                    ValidateLifetime = true,
+                    ValidateLifetime = false,
                     // установка ключа безопасности
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!)),
                     // валидация ключа безопасности

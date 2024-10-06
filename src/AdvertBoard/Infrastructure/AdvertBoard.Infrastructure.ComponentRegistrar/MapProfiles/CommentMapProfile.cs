@@ -1,4 +1,6 @@
 ﻿using AdvertBoard.Contracts.Contexts.Comments;
+using AdvertBoard.Contracts.Contexts.Comments.Requests;
+using AdvertBoard.Contracts.Contexts.Comments.Responses;
 using AdvertBoard.Domain.Contexts.Comments;
 using AutoMapper;
 
@@ -8,17 +10,17 @@ public class CommentMapProfile : Profile
 {
     public CommentMapProfile()
     {
-        CreateMap<CreateCommentDto, Comment>(MemberList.None)
+        CreateMap<CreateCommentRequest, Comment>(MemberList.None)
             .ForMember(x => x.CreatedAt, map => map.MapFrom(s => DateTime.UtcNow));
 
-        CreateMap<UpdateCommentDto, Comment>(MemberList.None)
+        CreateMap<UpdateCommentRequest, Comment>(MemberList.None)
             .ForMember(x => x.EditedAt, map => map.MapFrom(s => DateTime.UtcNow));
 
-        CreateMap<Comment, CommentDto>(MemberList.None);
+        CreateMap<Comment, CommentResponse>(MemberList.None);
 
-        CreateMap<Comment, ShortCommentDto>(MemberList.None)
+        CreateMap<Comment, ShortCommentResponse>(MemberList.None)
             .ForMember(x => x.User, map => map.MapFrom(s => s.User))
             .ForMember(x => x.ChildrenAmount, map => map.MapFrom(s => (s.Children != null) ? s.Children.Count : 0));
-        CreateMap<Comment, CommentHierarchyDto>(MemberList.None);
+        CreateMap<Comment, CommentHierarchyResponse>(MemberList.None);
     }
 }

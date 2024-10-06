@@ -1,4 +1,4 @@
-﻿using AdvertBoard.Contracts.Contexts.Users;
+﻿using AdvertBoard.Contracts.Contexts.Users.Requests;
 
 namespace AdvertBoard.Application.AppServices.Contexts.Authentication.Services;
 
@@ -10,17 +10,16 @@ public interface IAuthenticationService
     /// <summary>
     /// Регистрирует пользователя.
     /// </summary>
-    /// <param name="registerUserDto">Модель регистрации.</param>
+    /// <param name="registerUserRequest">Модель регистрации.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Идентификатор созданного пользователя.</returns>
-    public Task<Guid> RegisterAsync(RegisterUserDto registerUserDto, CancellationToken cancellationToken);
+    public Task<Guid> RegisterAsync(RegisterUserRequest registerUserRequest, CancellationToken cancellationToken);
     
     /// <summary>
     /// Логинит ползователя.
     /// </summary>
-    /// <param name="loginUserDto">Модель логина.</param>
+    /// <param name="loginUserRequest">Модель логина.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns></returns>
-    public Task<string> LoginAsync(LoginUserDto loginUserDto, CancellationToken cancellationToken);
-
+    public Task<string> LoginAsync(LoginUserRequest loginUserRequest, CancellationToken cancellationToken);
 }

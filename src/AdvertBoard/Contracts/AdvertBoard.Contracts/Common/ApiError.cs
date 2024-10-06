@@ -1,4 +1,4 @@
-﻿namespace AdvertBoard.Contracts.Shared;
+﻿namespace AdvertBoard.Contracts.Common;
 
 /// <summary>
 /// Модель ошибки.

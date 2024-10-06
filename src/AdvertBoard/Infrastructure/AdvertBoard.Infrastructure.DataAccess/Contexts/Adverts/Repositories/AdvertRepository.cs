@@ -1,8 +1,8 @@
 ﻿using AdvertBoard.Application.AppServices.Contexts.Adverts.Repositories;
 using AdvertBoard.Application.AppServices.Exceptions;
 using AdvertBoard.Application.AppServices.Specifications;
-using AdvertBoard.Contracts.Contexts.Adverts;
-using AdvertBoard.Contracts.Shared;
+using AdvertBoard.Contracts.Common;
+using AdvertBoard.Contracts.Contexts.Adverts.Responses;
 using AdvertBoard.Domain.Contexts.Adverts;
 using AdvertBoard.Infrastructure.Repository;
 using AutoMapper;
@@ -29,11 +29,11 @@ public class AdvertRepository : IAdvertRepository
     }
 
     /// <inheritdoc/>
-    public async Task<PageResponse<ShortAdvertDto>> GetByFilterWithPaginationAsync(PaginationRequest paginationRequest,
+    public async Task<PageResponse<ShortAdvertResponse>> GetByFilterWithPaginationAsync(PaginationRequest paginationRequest,
         ISpecification<Advert> specification,
         CancellationToken cancellationToken)
     {
-        var result = new PageResponse<ShortAdvertDto>();
+        var result = new PageResponse<ShortAdvertResponse>();
         
         var query = _repository.GetAll();
         
@@ -45,7 +45,7 @@ public class AdvertRepository : IAdvertRepository
             .OrderBy(advert => advert.Id)
             .Skip(paginationRequest.BatchSize * (paginationRequest.PageNumber - 1))
             .Take(paginationRequest.BatchSize)
-            .ProjectTo<ShortAdvertDto>(_mapper.ConfigurationProvider)
+            .ProjectTo<ShortAdvertResponse>(_mapper.ConfigurationProvider)
             .ToArrayAsync(cancellationToken);
         
         result.Response = paginationQuery;
@@ -70,11 +70,11 @@ public class AdvertRepository : IAdvertRepository
     }
 
     /// <inheritdoc/>
-    public async Task<AdvertDto> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    public async Task<AdvertResponse> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         var dto = await _repository.GetByIdAsync(id, cancellationToken);
         if (dto is null) throw new EntityNotFoundException("Объявление не было найдено.");
-        return _mapper.Map<Advert, AdvertDto>(dto);
+        return _mapper.Map<Advert, AdvertResponse>(dto);
     }
 
     /// <inheritdoc/>
@@ -84,5 +84,12 @@ public class AdvertRepository : IAdvertRepository
         if (advert is null) throw new EntityNotFoundException("Объявление не было найдено.");
         await _repository.DeleteAsync(advert, cancellationToken);
         return true;
+    }
+
+    //TODO: добавить проверку на активность объявления.
+    /// <inheritdoc/>
+    public Task<bool> IsAdvertExists(Guid id, CancellationToken cancellationToken)
+    {
+        return _repository.GetAll().AnyAsync(x => x.Id == id, cancellationToken);
     }
 }

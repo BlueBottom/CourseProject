@@ -1,5 +1,7 @@
-﻿using AdvertBoard.Contracts.Contexts.Comments;
-using AdvertBoard.Contracts.Shared;
+﻿using AdvertBoard.Contracts.Common;
+using AdvertBoard.Contracts.Contexts.Comments;
+using AdvertBoard.Contracts.Contexts.Comments.Requests;
+using AdvertBoard.Contracts.Contexts.Comments.Responses;
 using AdvertBoard.Domain.Contexts.Comments;
 
 namespace AdvertBoard.Application.AppServices.Contexts.Comments.Repositories;
@@ -20,10 +22,10 @@ public interface ICommentRepository
     /// <summary>
     /// Получает комментарии к объявлению.
     /// </summary>
-    /// <param name="getAllCommentsDto">Модель запроса на получение комментариев.</param>
+    /// <param name="getAllCommentsRequest">Модель запроса на получение комментариев.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Коллекцию укороченных моделей комментария с пагинацией.</returns>
-    Task<PageResponse<ShortCommentDto>> GetAllWithPaginationAsync(GetAllCommentsDto getAllCommentsDto,
+    Task<PageResponse<ShortCommentResponse>> GetAllWithPaginationAsync(GetAllCommentsRequest getAllCommentsRequest,
         CancellationToken cancellationToken);
 
     /// <summary>
@@ -32,16 +34,16 @@ public interface ICommentRepository
     /// <param name="id">Идентификатор.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Модель комментария.</returns>
-    Task<CommentDto> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+    Task<CommentResponse> GetByIdAsync(Guid id, CancellationToken cancellationToken);
 
     /// <summary>
     /// Обновляет комментарий.
     /// </summary>
     /// <param name="id">Идентификатор.</param>
-    /// <param name="updateCommentDto">Модель запроса на обновление комментария.</param>
+    /// <param name="updateCommentRequest">Модель запроса на обновление комментария.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Идентификатор.</returns>
-    Task<Guid> UpdateAsync(Guid id, UpdateCommentDto updateCommentDto, CancellationToken cancellationToken);
+    Task<Guid> UpdateAsync(Guid id, UpdateCommentRequest updateCommentRequest, CancellationToken cancellationToken);
     
     /// <summary>
     /// Удаляет комментарий.
@@ -57,5 +59,13 @@ public interface ICommentRepository
     /// <param name="id">Идентификатор.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Иерархию комментариев</returns>
-    Task<CommentHierarchyDto> GetHierarchyByIdAsync(Guid id, CancellationToken cancellationToken);
+    Task<CommentHierarchyResponse> GetHierarchyByIdAsync(Guid id, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Проверяет наличие комментария в БД.
+    /// </summary>
+    /// <param name="id">Идентификатор.</param>
+    /// <param name="cancellationToken">Токен отмены.</param>
+    /// <returns>Наличие комментария в БД.</returns>
+    Task<bool> IsCommentExists(Guid id, CancellationToken cancellationToken);
 }

@@ -1,4 +1,6 @@
 ﻿using AdvertBoard.Contracts.Contexts.Reviews;
+using AdvertBoard.Contracts.Contexts.Reviews.Requests;
+using AdvertBoard.Contracts.Contexts.Reviews.Responses;
 using AdvertBoard.Domain.Contexts.Reviews;
 using AutoMapper;
 
@@ -8,14 +10,14 @@ public class ReviewMapProfile : Profile
 {
     public ReviewMapProfile()
     {
-        CreateMap<CreateReviewDto, Review>(MemberList.None)
+        CreateMap<CreateReviewRequest, Review>(MemberList.None)
             .ForMember(x => x.CreatedAt, map => map.MapFrom(s => DateTime.UtcNow));
 
-        CreateMap<UpdateReviewDto, Review>(MemberList.None);
+        CreateMap<UpdateReviewRequest, Review>(MemberList.None);
 
-        CreateMap<Review, ReviewDto>(MemberList.None);
+        CreateMap<Review, ReviewResponse>(MemberList.None);
 
-        CreateMap<Review, ShortReviewDto>(MemberList.None)
+        CreateMap<Review, ShortReviewResponse>(MemberList.None)
             .ForMember(x => x.OwnerUser, map => map.MapFrom(s => s.OwnerUser));
     }
 }

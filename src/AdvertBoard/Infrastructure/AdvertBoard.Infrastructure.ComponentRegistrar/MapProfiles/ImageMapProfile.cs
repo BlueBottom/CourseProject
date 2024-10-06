@@ -1,4 +1,6 @@
 ﻿using AdvertBoard.Contracts.Contexts.Images;
+using AdvertBoard.Contracts.Contexts.Images.Requests;
+using AdvertBoard.Contracts.Contexts.Images.Responses;
 using AdvertBoard.Domain.Contexts.Images;
 using AutoMapper;
 
@@ -8,10 +10,10 @@ public class ImageMapProfile : Profile
 {
     public ImageMapProfile()
     {
-        CreateMap<CreateImageDto, Image>(MemberList.None)
+        CreateMap<CreateImageRequest, Image>(MemberList.None)
             .ForMember(x => x.Content, map => map.MapFrom(s => s.File))
             .ForMember(x => x.CreatedAt, map => map.MapFrom(s => DateTime.UtcNow));
 
-        CreateMap<Image, ImageDto>(MemberList.None);
+        CreateMap<Image, ImageResponse>(MemberList.None);
     }
 }

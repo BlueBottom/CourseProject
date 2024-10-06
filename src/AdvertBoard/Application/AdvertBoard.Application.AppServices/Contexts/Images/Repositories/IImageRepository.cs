@@ -1,4 +1,5 @@
 ﻿using AdvertBoard.Contracts.Contexts.Images;
+using AdvertBoard.Contracts.Contexts.Images.Responses;
 using AdvertBoard.Domain.Contexts.Images;
 
 namespace AdvertBoard.Application.AppServices.Contexts.Images.Repositories;
@@ -14,7 +15,7 @@ public interface IImageRepository
     /// <param name="id">Идентификатор.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Содержимое изображения.</returns>
-    public Task<ImageDto> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+    public Task<ImageResponse> GetByIdAsync(Guid id, CancellationToken cancellationToken);
 
     /// <summary>
     /// Добавляет изображение к объявлению.

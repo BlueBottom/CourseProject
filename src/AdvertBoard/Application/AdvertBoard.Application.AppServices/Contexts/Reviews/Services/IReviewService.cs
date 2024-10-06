@@ -1,5 +1,7 @@
-﻿using AdvertBoard.Contracts.Contexts.Reviews;
-using AdvertBoard.Contracts.Shared;
+﻿using AdvertBoard.Contracts.Common;
+using AdvertBoard.Contracts.Contexts.Reviews;
+using AdvertBoard.Contracts.Contexts.Reviews.Requests;
+using AdvertBoard.Contracts.Contexts.Reviews.Responses;
 
 namespace AdvertBoard.Application.AppServices.Contexts.Reviews.Services;
 
@@ -11,10 +13,10 @@ public interface IReviewService
     /// <summary>
     /// Получает отзывы на пользователя.
     /// </summary>
-    /// <param name="getAllReviewsDto">Модель запроса для получения пользователей.</param>
+    /// <param name="getAllReviewsRequest">Модель запроса для получения пользователей.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Коллекцию укороченных моделей отзывов.</returns>
-    Task<PageResponse<ShortReviewDto>> GetAllByUserIdAsync(GetAllReviewsDto getAllReviewsDto,
+    Task<PageResponse<ShortReviewResponse>> GetAllByUserIdAsync(GetAllReviewsRequest getAllReviewsRequest,
         CancellationToken cancellationToken);
 
     /// <summary>
@@ -23,24 +25,24 @@ public interface IReviewService
     /// <param name="id">Идентификатор.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Модель отзыва.</returns>
-    Task<ReviewDto> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+    Task<ReviewResponse> GetByIdAsync(Guid id, CancellationToken cancellationToken);
 
     /// <summary>
     /// Создает отзыв.
     /// </summary>
-    /// <param name="createReviewDto">Модель запроса на создание.</param>
+    /// <param name="createReviewRequest">Модель запроса на создание.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Идентификатор.</returns>
-    Task<Guid> AddAsync(CreateReviewDto createReviewDto, CancellationToken cancellationToken);
+    Task<Guid> AddAsync(CreateReviewRequest createReviewRequest, CancellationToken cancellationToken);
 
     /// <summary>
     /// Обновляет отзыв.
     /// </summary>
     /// <param name="id">Идентификатор.</param>
-    /// <param name="updateReviewDto">Модель запроса на обновление.</param>
+    /// <param name="updateReviewRequest">Модель запроса на обновление.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Идентификатор.</returns>
-    Task<Guid> UpdateAsync(Guid id, UpdateReviewDto updateReviewDto, CancellationToken cancellationToken);
+    Task<Guid> UpdateAsync(Guid id, UpdateReviewRequest updateReviewRequest, CancellationToken cancellationToken);
 
     /// <summary>
     /// Удаляет отзыв.

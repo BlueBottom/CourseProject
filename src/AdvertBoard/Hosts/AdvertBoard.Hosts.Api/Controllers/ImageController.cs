@@ -1,5 +1,6 @@
 ﻿using AdvertBoard.Application.AppServices.Contexts.Images.Services;
 using AdvertBoard.Contracts.Contexts.Images;
+using AdvertBoard.Contracts.Contexts.Images.Requests;
 using AdvertBoard.Hosts.Api.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -49,7 +50,7 @@ public class ImageController : ControllerBase
     public async Task<IActionResult> AddAsync(Guid advertId, IFormFile file, CancellationToken cancellationToken)
     {
         var image = FormFileHelper.RequestFileToImage(file);
-        var dto = new CreateImageDto
+        var dto = new CreateImageRequest
         {
             AdvertId = advertId,
             File = image

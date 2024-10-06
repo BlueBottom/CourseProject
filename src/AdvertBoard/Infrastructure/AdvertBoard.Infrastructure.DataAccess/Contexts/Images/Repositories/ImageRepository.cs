@@ -1,6 +1,7 @@
 ﻿using AdvertBoard.Application.AppServices.Contexts.Images.Repositories;
 using AdvertBoard.Application.AppServices.Exceptions;
 using AdvertBoard.Contracts.Contexts.Images;
+using AdvertBoard.Contracts.Contexts.Images.Responses;
 using AdvertBoard.Domain.Contexts.Images;
 using AdvertBoard.Infrastructure.Repository;
 using AutoMapper;
@@ -27,12 +28,12 @@ public class ImageRepository : IImageRepository
     }
 
     /// <inheritdoc/>
-    public async Task<ImageDto> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    public async Task<ImageResponse> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         var image = await _repository
             .GetAll()
             .Where(i => i.Id == id)
-            .ProjectTo<ImageDto>(_mapper.ConfigurationProvider)
+            .ProjectTo<ImageResponse>(_mapper.ConfigurationProvider)
             .FirstOrDefaultAsync(cancellationToken);
         
         if (image is null) throw new EntityNotFoundException("Изображение не было найдено.");

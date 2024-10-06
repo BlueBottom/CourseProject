@@ -1,11 +1,15 @@
 ﻿using AdvertBoard.Application.AppServices.Authorization.Requirements;
 using AdvertBoard.Application.AppServices.Contexts.Users.Builders;
+using AdvertBoard.Application.AppServices.Contexts.Users.Models;
 using AdvertBoard.Application.AppServices.Contexts.Users.Repositories;
 using AdvertBoard.Application.AppServices.Exceptions;
-using AdvertBoard.Contracts.Contexts.Users;
-using AdvertBoard.Contracts.Shared;
+using AdvertBoard.Application.AppServices.Validators;
+using AdvertBoard.Contracts.Common;
+using AdvertBoard.Contracts.Contexts.Users.Requests;
+using AdvertBoard.Contracts.Contexts.Users.Responses;
 using AdvertBoard.Domain.Contexts.Users;
 using AutoMapper;
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 
@@ -16,75 +20,70 @@ public class UserService : IUserService
 {
     private readonly IUserRepository _userRepository;
     private readonly IUserSpecificationBuilder _specificationBuilder;
-    private readonly IMapper _mapper;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IAuthorizationService _authorizationService;
+    private readonly BusinessLogicAbstractValidator<UpdateUserRequest> _updateUserValidator;
 
     /// <summary>
     /// Инициализирует экземпляр класса <see cref="UserService"/>.
     /// </summary>
     /// <param name="userRepository">Репозиторий.</param>
     /// <param name="specificationBuilder">Строитель спецификаций.</param>
-    /// <param name="mapper">Маппер.</param>
     /// <param name="httpContextAccessor">Передает HttpContext.</param>
     /// <param name="authorizationService">Сервис для реализации requirements.</param>
-    public UserService(IUserRepository userRepository, IUserSpecificationBuilder specificationBuilder, IMapper mapper,
-        IHttpContextAccessor httpContextAccessor, IAuthorizationService authorizationService)
+    /// <param name="updateUserValidator">Валидатор обновления пользователя.</param>
+    public UserService(
+        IUserRepository userRepository, 
+        IUserSpecificationBuilder specificationBuilder, 
+        IHttpContextAccessor httpContextAccessor, 
+        IAuthorizationService authorizationService,
+        BusinessLogicAbstractValidator<UpdateUserRequest> updateUserValidator)
     {
         _userRepository = userRepository;
         _specificationBuilder = specificationBuilder;
-        _mapper = mapper;
         _httpContextAccessor = httpContextAccessor;
         _authorizationService = authorizationService;
+        _updateUserValidator = updateUserValidator;
     }
 
     /// <inheritdoc/>
-    public Task<UserDto> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    public Task<UserResponse> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         return _userRepository.GetByIdAsync(id, cancellationToken);
     }
 
     /// <inheritdoc/>
-    public async Task<Guid> UpdateAsync(Guid userId, UpdateUserDto updateUserDto, CancellationToken cancellationToken)
-    {
-        var existingUser = await _userRepository.GetByIdAsync(userId, cancellationToken);
-        if (existingUser is null) throw new EntityNotFoundException("Пользователь не был найден.");
-        
-        var authResult = await _authorizationService.AuthorizeAsync(_httpContextAccessor.HttpContext.User, existingUser,
-                new ResourceOwnerRequirement());
-        if (!authResult.Succeeded) throw new ForbiddenException();
-        
-        var user = _mapper.Map<UpdateUserDto, User>(updateUserDto);
-        user.Id = userId;
-        
-        return await _userRepository.UpdateAsync(userId, user, cancellationToken);
-    }
-
-    /// <inheritdoc/>
-    public async Task<bool> DeleteAsync(Guid userId, CancellationToken cancellationToken)
-    {
-        var existingUser = await _userRepository.GetByIdAsync(userId, cancellationToken);
-        if (existingUser is null) throw new EntityNotFoundException("Пользователь не был найден.");
-        
-        var authResult = await _authorizationService.AuthorizeAsync(_httpContextAccessor.HttpContext.User, existingUser,
-                new ResourceOwnerRequirement());
-        if (!authResult.Succeeded) throw new ForbiddenException();
-        
-        return await _userRepository.DeleteAsync(userId, cancellationToken);
-    }
-
-    /// <inheritdoc/>
-    public Task<PageResponse<ShortUserDto>> GetAllByFilterWithPaginationAsync(GetAllUsersDto getAllUsersDto,
+    public async Task<Guid> UpdateAsync(Guid id, UpdateUserRequest updateUserRequest,
         CancellationToken cancellationToken)
     {
-        var specification = _specificationBuilder.Build(getAllUsersDto);
+        await EnsureResourceAuthorize(id, cancellationToken);
+
+        await _updateUserValidator.ValidateAndThrowAsync(updateUserRequest, cancellationToken); 
+        
+        return await _userRepository.UpdateAsync(id, updateUserRequest, cancellationToken);
+    }
+
+    /// <inheritdoc/>
+    public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken)
+    {
+        await EnsureResourceAuthorize(id, cancellationToken);
+
+        return await _userRepository.DeleteAsync(id, cancellationToken);
+    }
+
+    /// <inheritdoc/>
+    public Task<PageResponse<ShortUserResponse>> GetAllByFilterWithPaginationAsync(
+        GetAllUsersByFilterRequest getAllUsersByFilterRequest,
+        CancellationToken cancellationToken)
+    {
+        var specification = _specificationBuilder.Build(getAllUsersByFilterRequest);
 
         var paginationRequest = new PaginationRequest
         {
-            BatchSize = getAllUsersDto.BatchSize,
-            PageNumber = getAllUsersDto.PageNumber
+            BatchSize = getAllUsersByFilterRequest.BatchSize,
+            PageNumber = getAllUsersByFilterRequest.PageNumber
         };
-        
+
         return _userRepository.GetAllByFilterWithPaginationAsync(specification, paginationRequest, cancellationToken);
     }
 
@@ -92,5 +91,27 @@ public class UserService : IUserService
     public Task UpdateRatingAsync(Guid id, decimal? rating, CancellationToken cancellationToken)
     {
         return _userRepository.UpdateRatingAsync(id, rating, cancellationToken);
+    }
+    
+    /// <inheritdoc/>
+    public Task<UserWithPasswordModel?> FindByEmail(string email, CancellationToken cancellationToken)
+    {
+        return _userRepository.FindByEmail(email, cancellationToken);
+    }
+
+    /// <inheritdoc/>
+    public Task<bool> IsExistByPhone(string phone, CancellationToken cancellationToken)
+    {
+        return _userRepository.IsExistByPhone(phone, cancellationToken);
+    }
+
+    private async Task EnsureResourceAuthorize(Guid id, CancellationToken cancellationToken)
+    {
+        var existingUser = await _userRepository.GetByIdAsync(id, cancellationToken);
+        if (existingUser is null) throw new EntityNotFoundException("Пользователь не был найден.");
+
+        var authResult = await _authorizationService.AuthorizeAsync(_httpContextAccessor.HttpContext.User, existingUser,
+            new ResourceOwnerRequirement());
+        if (!authResult.Succeeded) throw new ForbiddenException();
     }
 }

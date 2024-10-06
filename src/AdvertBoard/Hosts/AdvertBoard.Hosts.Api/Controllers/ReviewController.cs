@@ -1,5 +1,6 @@
 ﻿using AdvertBoard.Application.AppServices.Contexts.Reviews.Services;
 using AdvertBoard.Contracts.Contexts.Reviews;
+using AdvertBoard.Contracts.Contexts.Reviews.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,14 +27,14 @@ public class ReviewController : ControllerBase
     /// <summary>
     /// Получает отзывы на пользователя.
     /// </summary>
-    /// <param name="getAllReviewsDto">Модель запроса для получения пользователей.</param>
+    /// <param name="getAllReviewsRequest">Модель запроса для получения пользователей.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Коллекцию укороченных моделей отзывов.</returns>
     [HttpGet("by-user")]
-    public async Task<IActionResult> GetAllByUserIdAsync([FromQuery] GetAllReviewsDto getAllReviewsDto,
+    public async Task<IActionResult> GetAllByUserIdAsync([FromQuery] GetAllReviewsRequest getAllReviewsRequest,
         CancellationToken cancellationToken)
     {
-        var result = await _reviewService.GetAllByUserIdAsync(getAllReviewsDto, cancellationToken);
+        var result = await _reviewService.GetAllByUserIdAsync(getAllReviewsRequest, cancellationToken);
         return Ok(result);
     }
 
@@ -53,14 +54,14 @@ public class ReviewController : ControllerBase
     /// <summary>
     /// Создает отзыв.
     /// </summary>
-    /// <param name="createReviewDto">Модель запроса на создание.</param>
+    /// <param name="createReviewRequest">Модель запроса на создание.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Идентификатор.</returns>
     [Authorize]
     [HttpPost]
-    public async Task<IActionResult> AddAsync(CreateReviewDto createReviewDto, CancellationToken cancellationToken)
+    public async Task<IActionResult> AddAsync(CreateReviewRequest createReviewRequest, CancellationToken cancellationToken)
     {
-        var result = await _reviewService.AddAsync(createReviewDto, cancellationToken);
+        var result = await _reviewService.AddAsync(createReviewRequest, cancellationToken);
         return Ok(result);
     }
     
@@ -68,15 +69,15 @@ public class ReviewController : ControllerBase
     /// Обновляет отзыв.
     /// </summary>
     /// <param name="id">Идентификатор.</param>
-    /// <param name="updateReviewDto">Модель запроса на обновление.</param>
+    /// <param name="updateReviewRequest">Модель запроса на обновление.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Идентификатор.</returns>
     [Authorize]
     [HttpPut("{id:guid}")]
-    public async Task<IActionResult> UpdateAsync(Guid id, UpdateReviewDto updateReviewDto,
+    public async Task<IActionResult> UpdateAsync(Guid id, UpdateReviewRequest updateReviewRequest,
         CancellationToken cancellationToken)
     {
-        var result = await _reviewService.UpdateAsync(id, updateReviewDto, cancellationToken);
+        var result = await _reviewService.UpdateAsync(id, updateReviewRequest, cancellationToken);
         return Ok(result);
     }
 

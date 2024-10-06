@@ -1,6 +1,7 @@
 ﻿using AdvertBoard.Application.AppServices.Contexts.Users.Specifications;
 using AdvertBoard.Application.AppServices.Specifications;
 using AdvertBoard.Contracts.Contexts.Users;
+using AdvertBoard.Contracts.Contexts.Users.Requests;
 using AdvertBoard.Domain.Contexts.Users;
 
 namespace AdvertBoard.Application.AppServices.Contexts.Users.Builders;
@@ -9,43 +10,43 @@ namespace AdvertBoard.Application.AppServices.Contexts.Users.Builders;
 public class UserSpecificationBuilder : IUserSpecificationBuilder
 {
     /// <inheritdoc/>
-    public ISpecification<User> Build(GetAllUsersDto getAllUsersDto)
+    public ISpecification<User> Build(GetAllUsersByFilterRequest getAllUsersByFilterRequest)
     {
         ISpecification<User> specification = Specification<User>.True;
 
-        if (getAllUsersDto.CreatedFromDate.HasValue)
+        if (getAllUsersByFilterRequest.CreatedFromDate.HasValue)
         {
-            specification = specification.And(new StartDateSpecification(getAllUsersDto.CreatedFromDate.Value));
+            specification = specification.And(new StartDateSpecification(getAllUsersByFilterRequest.CreatedFromDate.Value));
         }
 
-        if (getAllUsersDto.CreateToDate.HasValue)
+        if (getAllUsersByFilterRequest.CreateToDate.HasValue)
         {
-            specification = specification.And(new EndDateSpecification(getAllUsersDto.CreateToDate.Value));
+            specification = specification.And(new EndDateSpecification(getAllUsersByFilterRequest.CreateToDate.Value));
         }
 
-        if (getAllUsersDto.MinRating.HasValue)
+        if (getAllUsersByFilterRequest.MinRating.HasValue)
         {
-            specification = specification.And(new MinRatingSpecification(getAllUsersDto.MinRating.Value));
+            specification = specification.And(new MinRatingSpecification(getAllUsersByFilterRequest.MinRating.Value));
         }
 
-        if (getAllUsersDto.MaxRating.HasValue)
+        if (getAllUsersByFilterRequest.MaxRating.HasValue)
         {
-            specification = specification.And(new MaxRatingSpecification(getAllUsersDto.MaxRating.Value));
+            specification = specification.And(new MaxRatingSpecification(getAllUsersByFilterRequest.MaxRating.Value));
         }
 
-        if (!string.IsNullOrWhiteSpace(getAllUsersDto.SearchEmailString))
+        if (!string.IsNullOrWhiteSpace(getAllUsersByFilterRequest.SearchEmailString))
         {
-            specification = specification.And(new EmailSpecification(getAllUsersDto.SearchEmailString));
+            specification = specification.And(new EmailSpecification(getAllUsersByFilterRequest.SearchEmailString));
         }
         
-        if (!string.IsNullOrWhiteSpace(getAllUsersDto.SearchNameString))
+        if (!string.IsNullOrWhiteSpace(getAllUsersByFilterRequest.SearchNameString))
         {
-            specification = specification.And(new NameSpecification(getAllUsersDto.SearchNameString));
+            specification = specification.And(new NameSpecification(getAllUsersByFilterRequest.SearchNameString));
         }
         
-        if (!string.IsNullOrWhiteSpace(getAllUsersDto.SearchPhoneString))
+        if (!string.IsNullOrWhiteSpace(getAllUsersByFilterRequest.SearchPhoneString))
         {
-            specification = specification.And(new PhoneSpecification(getAllUsersDto.SearchPhoneString));
+            specification = specification.And(new PhoneSpecification(getAllUsersByFilterRequest.SearchPhoneString));
         }
 
         return specification;

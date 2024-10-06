@@ -2,6 +2,7 @@
 using AdvertBoard.Application.AppServices.Contexts.Categories.Services;
 using AdvertBoard.Application.AppServices.Specifications;
 using AdvertBoard.Contracts.Contexts.Adverts;
+using AdvertBoard.Contracts.Contexts.Adverts.Requests;
 using AdvertBoard.Domain.Contexts.Adverts;
 
 namespace AdvertBoard.Application.AppServices.Contexts.Adverts.Builders;
@@ -18,39 +19,39 @@ public class AdvertSpecificationBuilder : IAdvertSpecificationBuilder
     }
 
     /// <inheritdoc/>
-    public async Task<ISpecification<Advert>> Build(GetAllAdvertsDto getAllAdvertsDto)
+    public async Task<ISpecification<Advert>> Build(GetAdvertsByFilterRequest getAdvertsByFilterRequest)
     {
         ISpecification<Advert> specification = Specification<Advert>.True;
 
-        if (!getAllAdvertsDto.ShowNonActive)
+        if (!getAdvertsByFilterRequest.ShowNonActive)
         {
-            specification = specification.And(new ActiveAdvertSpecification(getAllAdvertsDto.ShowNonActive));
+            specification = specification.And(new ActiveAdvertSpecification(getAdvertsByFilterRequest.ShowNonActive));
         }
 
-        if (getAllAdvertsDto.CategoryIds is not null && getAllAdvertsDto.CategoryIds.Any())
+        if (getAdvertsByFilterRequest.CategoryIds is not null && getAdvertsByFilterRequest.CategoryIds.Any())
         {
-            var categoryIds = await _categoryService.GetHierarchyIdsAsync(getAllAdvertsDto.CategoryIds, CancellationToken.None);
+            var categoryIds = await _categoryService.GetHierarchyIdsAsync(getAdvertsByFilterRequest.CategoryIds, CancellationToken.None);
             specification = specification.And(new CategoryAdvertSpecification(categoryIds));
         }
 
-        if (getAllAdvertsDto.Location.HasValue)
+        if (getAdvertsByFilterRequest.Location.HasValue)
         {
-            specification = specification.And(new LocationSpecification(getAllAdvertsDto.Location.Value));
+            specification = specification.And(new LocationSpecification(getAdvertsByFilterRequest.Location.Value));
         }
 
-        if (getAllAdvertsDto.MaxPrice.HasValue)
+        if (getAdvertsByFilterRequest.MaxPrice.HasValue)
         {
-            specification = specification.And(new MaxPriceSpecification(getAllAdvertsDto.MaxPrice.Value));
+            specification = specification.And(new MaxPriceSpecification(getAdvertsByFilterRequest.MaxPrice.Value));
         }
 
-        if (getAllAdvertsDto.MinPrice.HasValue)
+        if (getAdvertsByFilterRequest.MinPrice.HasValue)
         {
-            specification = specification.And(new MinPriceSpecification(getAllAdvertsDto.MinPrice.Value));
+            specification = specification.And(new MinPriceSpecification(getAdvertsByFilterRequest.MinPrice.Value));
         }
 
-        if (!string.IsNullOrWhiteSpace(getAllAdvertsDto.SearchString))
+        if (!string.IsNullOrWhiteSpace(getAdvertsByFilterRequest.SearchString))
         {
-            specification = specification.And(new SearchStringSpecification(getAllAdvertsDto.SearchString));
+            specification = specification.And(new SearchStringSpecification(getAdvertsByFilterRequest.SearchString));
         }
 
         return specification;

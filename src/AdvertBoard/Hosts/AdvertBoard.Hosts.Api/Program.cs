@@ -1,6 +1,4 @@
-using System.IdentityModel.Tokens.Jwt;
-using AdvertBoard.Contracts.Contexts.Adverts;
-using AdvertBoard.Contracts.Contexts.Images;
+using AdvertBoard.Contracts.Contexts.Adverts.Responses;
 using AdvertBoard.Hosts.Api.Controllers;
 using AdvertBoard.Hosts.Api.Middlewares;
 using AdvertBoard.Infrastructure.ComponentRegistrar;
@@ -17,10 +15,8 @@ builder.Services.AddSwaggerGen(options =>
 
     var docTypeMarkers = new[]
     {
-        typeof(AdvertDto),
-        typeof(AdvertController),
-        typeof(ImageDto),
-        typeof(ImageController)
+        typeof(AdvertResponse),
+        typeof(AdvertController)
     };
 
     foreach (var marker in docTypeMarkers)
@@ -47,6 +43,7 @@ builder.Services.AddSwaggerGen(options =>
                       Example: Bearer 1safsfsdfdfd
                       """,
     });
+    
     options.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -62,6 +59,7 @@ builder.Services.AddSwaggerGen(options =>
         }
     });
 });
+
 builder.Services.AddDependencies();
 builder.Services.AddDatabase(builder.Configuration);
 
