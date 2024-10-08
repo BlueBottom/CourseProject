@@ -117,4 +117,10 @@ public class CommentRepository : ICommentRepository
     {
         return _repository.GetAll().AnyAsync(x => x.Id == id, cancellationToken);
     }
+
+    /// <inheritdoc/>
+    public Task<bool> IsCurrentCommentRelatedToCurrentAdvert(Guid? parentId, Guid? advertId, CancellationToken cancellationToken)
+    {
+        return _repository.GetAll().AnyAsync(x => x.Id == parentId && x.AdvertId == advertId, cancellationToken);
+    }
 }

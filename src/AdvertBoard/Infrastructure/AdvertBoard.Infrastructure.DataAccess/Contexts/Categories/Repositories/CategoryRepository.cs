@@ -1,6 +1,7 @@
 ﻿using AdvertBoard.Application.AppServices.Contexts.Categories.Repositories;
 using AdvertBoard.Application.AppServices.Exceptions;
 using AdvertBoard.Contracts.Contexts.Categories;
+using AdvertBoard.Contracts.Contexts.Categories.Requests;
 using AdvertBoard.Contracts.Contexts.Categories.Responses;
 using AdvertBoard.Domain.Contexts.Categories;
 using AdvertBoard.Infrastructure.Repository.Relational;
@@ -82,7 +83,8 @@ public class CategoryRepository : ICategoryRepository
     }
 
     /// <inheritdoc/>
-    public async Task<Guid> UpdateAsync(Guid id, Category updatedCategory, CancellationToken cancellationToken)
+    public async Task<Guid> UpdateAsync(Guid id, UpdateCategoryRequest updatedCategory,
+        CancellationToken cancellationToken)
     {
         var category = await _repository.GetByIdAsync(id, cancellationToken);
         if (category is null) throw new EntityNotFoundException("Категория не была найдена.");

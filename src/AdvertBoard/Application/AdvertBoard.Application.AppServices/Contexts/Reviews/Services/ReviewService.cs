@@ -68,12 +68,6 @@ public class ReviewService : IReviewService
     /// <inheritdoc/>
     public async Task<Guid> AddAsync(CreateReviewRequest createReviewRequest, CancellationToken cancellationToken)
     {
-        // var claims = _httpContextAccessor.HttpContext.User.Claims;
-        // var claimId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-        //
-        // if (string.IsNullOrWhiteSpace(claimId)) throw new ForbiddenException();
-        //
-        // var userId = Guid.Parse(claimId);
         await _createReviewValidator.ValidateAndThrowAsync(createReviewRequest, cancellationToken);
         
         var userId = _httpContextAccessor.GetAuthorizedUserId();

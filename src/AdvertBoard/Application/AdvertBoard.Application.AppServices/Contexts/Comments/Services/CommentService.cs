@@ -2,6 +2,7 @@
 using AdvertBoard.Application.AppServices.Authorization.Requirements;
 using AdvertBoard.Application.AppServices.Contexts.Comments.Repositories;
 using AdvertBoard.Application.AppServices.Exceptions;
+using AdvertBoard.Application.AppServices.Helpers;
 using AdvertBoard.Application.AppServices.Validators;
 using AdvertBoard.Contracts.Common;
 using AdvertBoard.Contracts.Contexts.Comments.Requests;
@@ -56,7 +57,7 @@ public class CommentService : ICommentService
         await _createCommentValidator.ValidateAndThrowAsync(createCommentRequest, cancellationToken);
 
         var comment = _mapper.Map<CreateCommentRequest, Comment>(createCommentRequest);
-        comment.UserId = GetUserId();
+        comment.UserId = _httpContextAccessor.GetAuthorizedUserId();
 
         return await _commentRepository.AddAsync(comment, cancellationToken);
     }
@@ -110,15 +111,5 @@ public class CommentService : ICommentService
     public Task<CommentHierarchyResponse> GetHierarchyByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         return _commentRepository.GetHierarchyByIdAsync(id, cancellationToken);
-    }
-
-    private Guid GetUserId()
-    {
-        var claims = _httpContextAccessor.HttpContext.User.Claims;
-        var claimId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-
-        if (string.IsNullOrWhiteSpace(claimId)) throw new ForbiddenException();
-
-        return Guid.Parse(claimId);
     }
 }

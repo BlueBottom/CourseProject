@@ -59,7 +59,7 @@ public static class ComponentRegistrar
     /// Добавляет методы расширения.
     /// </summary>
     /// <param name="serviceCollection">Коллекция сервисов.</param>
-    /// <returns>Ioc.</returns>
+    /// <returns>IoC.</returns>
     public static IServiceCollection AddDependencies(this IServiceCollection serviceCollection)
     {
         return serviceCollection
@@ -84,7 +84,7 @@ public static class ComponentRegistrar
         serviceCollection.AddScoped<IAuthorizationHandler, IsAdvertOwnerHandler>();
         serviceCollection.AddScoped<IAuthorizationHandler, IsCurrentUserHandler>();
         serviceCollection.AddScoped<IAuthorizationHandler, IsReviewOwnerHandler>();
-        serviceCollection.AddScoped<IAuthorizationHandler, IsCommentOwner>();
+        serviceCollection.AddScoped<IAuthorizationHandler, IsCommentOwnerHandler>();
         serviceCollection.AddScoped<IAuthorizationHandler, IsAdminHandler>();
         
         return serviceCollection;

@@ -30,7 +30,7 @@ public class Advert : BaseEntity
     /// <summary>
     /// Статус.
     /// </summary>
-    public AdvertStatus Status { get; set; }
+    public AdvertStatus StatusId { get; set; }
     
     /// <summary>
     /// Регион.

@@ -49,9 +49,9 @@ public class AuthenticationService : IAuthenticationService
     {
         await _registerUserValidator.ValidateAndThrowAsync(registerUserRequest, cancellationToken);
 
-        registerUserRequest.Phone = PhoneHelper.NormalizePhoneNumber(registerUserRequest.Phone);
+        registerUserRequest.Phone = PhoneHelper.NormalizePhoneNumber(registerUserRequest.Phone!);
         var user = _mapper.Map<RegisterUserRequest, User>(registerUserRequest);
-        var password = CryptoHelper.GetBase64Hash(registerUserRequest.Password);
+        var password = CryptoHelper.GetBase64Hash(registerUserRequest.Password!);
         
         return await _userRepository.AddAsync(user, password, cancellationToken);
     }
@@ -61,7 +61,7 @@ public class AuthenticationService : IAuthenticationService
     {
         await _loginUserValidator.ValidateAndThrowAsync(loginUserRequest, cancellationToken);
 
-        var existingUser = await _userRepository.FindByEmail(loginUserRequest.Email, cancellationToken);
+        var existingUser = await _userRepository.FindByEmail(loginUserRequest.Email!, cancellationToken);
 
         var claims = new List<Claim>
         {

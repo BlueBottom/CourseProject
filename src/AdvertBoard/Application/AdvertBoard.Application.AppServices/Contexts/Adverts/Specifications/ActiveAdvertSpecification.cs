@@ -10,18 +10,7 @@ namespace AdvertBoard.Application.AppServices.Contexts.Adverts.Specifications;
 /// </summary>
 public class ActiveAdvertSpecification : Specification<Advert>
 {
-    private readonly bool _showNonActive;
-
-    /// <summary>
-    /// Инициализирует экземпляр класса.
-    /// </summary>
-    /// <param name="showNonActive">Параметр "Показывать неактивные объяления".</param>
-    public ActiveAdvertSpecification(bool showNonActive)
-    {
-        _showNonActive = showNonActive;
-    }
-
     /// <inheritdoc/>
     public override Expression<Func<Advert, bool>> PredicateExpression =>
-        advert => advert.Status == AdvertStatus.Published;
+        advert => advert.StatusId == AdvertStatus.Published;
 }
