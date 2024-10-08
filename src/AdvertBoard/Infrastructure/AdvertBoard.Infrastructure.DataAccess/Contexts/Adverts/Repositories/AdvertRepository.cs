@@ -2,7 +2,9 @@
 using AdvertBoard.Application.AppServices.Exceptions;
 using AdvertBoard.Application.AppServices.Specifications;
 using AdvertBoard.Contracts.Common;
+using AdvertBoard.Contracts.Contexts.Adverts.Requests;
 using AdvertBoard.Contracts.Contexts.Adverts.Responses;
+using AdvertBoard.Contracts.Enums;
 using AdvertBoard.Domain.Contexts.Adverts;
 using AdvertBoard.Infrastructure.Repository;
 using AutoMapper;
@@ -29,14 +31,15 @@ public class AdvertRepository : IAdvertRepository
     }
 
     /// <inheritdoc/>
-    public async Task<PageResponse<ShortAdvertResponse>> GetByFilterWithPaginationAsync(PaginationRequest paginationRequest,
+    public async Task<PageResponse<ShortAdvertResponse>> GetByFilterWithPaginationAsync(
+        PaginationRequest paginationRequest,
         ISpecification<Advert> specification,
         CancellationToken cancellationToken)
     {
         var result = new PageResponse<ShortAdvertResponse>();
-        
+
         var query = _repository.GetAll();
-        
+
         var elementsCount = await query.CountAsync(cancellationToken);
         result.TotalPages = result.TotalPages = (int)Math.Ceiling((double)elementsCount / paginationRequest.BatchSize);
 
@@ -47,8 +50,9 @@ public class AdvertRepository : IAdvertRepository
             .Take(paginationRequest.BatchSize)
             .ProjectTo<ShortAdvertResponse>(_mapper.ConfigurationProvider)
             .ToArrayAsync(cancellationToken);
-        
+
         result.Response = paginationQuery;
+        
         return result;
     }
 
@@ -56,16 +60,18 @@ public class AdvertRepository : IAdvertRepository
     public async Task<Guid> AddAsync(Advert advert, CancellationToken cancellationToken)
     {
         await _repository.AddAsync(advert, cancellationToken);
+        
         return advert.Id;
     }
 
     /// <inheritdoc/>
-    public async Task<Guid> UpdateAsync(Guid id, Advert updatedAdvert, CancellationToken cancellationToken)
+    public async Task<Guid> UpdateAsync(Guid id, UpdateAdvertRequest updatedAdvert, CancellationToken cancellationToken)
     {
         var advert = await _repository.GetByIdAsync(id, cancellationToken);
         if (advert is null) throw new EntityNotFoundException("Объявление не было найдено.");
         _mapper.Map(updatedAdvert, advert);
         await _repository.UpdateAsync(advert, cancellationToken);
+        
         return advert.Id;
     }
 
@@ -74,6 +80,7 @@ public class AdvertRepository : IAdvertRepository
     {
         var dto = await _repository.GetByIdAsync(id, cancellationToken);
         if (dto is null) throw new EntityNotFoundException("Объявление не было найдено.");
+        
         return _mapper.Map<Advert, AdvertResponse>(dto);
     }
 
@@ -83,13 +90,36 @@ public class AdvertRepository : IAdvertRepository
         var advert = await _repository.GetByIdAsync(id, cancellationToken);
         if (advert is null) throw new EntityNotFoundException("Объявление не было найдено.");
         await _repository.DeleteAsync(advert, cancellationToken);
+        
+        return true;
+    }
+    
+    /// <inheritdoc/>
+    public Task<bool> IsAdvertExistsAndActive(Guid id, CancellationToken cancellationToken)
+    {
+        return _repository.GetAll()
+            .AnyAsync(x => x.Id == id && x.StatusId == AdvertStatus.Published, cancellationToken);
+    }
+
+    /// <inheritdoc/>
+    public async Task<bool> ArchiveAsync(Guid id, CancellationToken cancellationToken)
+    {
+        var advert = await _repository.GetByIdAsync(id, cancellationToken);
+        if (advert is null) throw new EntityNotFoundException("Объявление не было найдено.");
+        advert.StatusId = AdvertStatus.Archived;
+        await _repository.UpdateAsync(advert, cancellationToken);
+
         return true;
     }
 
-    //TODO: добавить проверку на активность объявления.
     /// <inheritdoc/>
-    public Task<bool> IsAdvertExists(Guid id, CancellationToken cancellationToken)
+    public async Task<bool> UnarchiveAsync(Guid id, CancellationToken cancellationToken)
     {
-        return _repository.GetAll().AnyAsync(x => x.Id == id, cancellationToken);
+        var advert = await _repository.GetByIdAsync(id, cancellationToken);
+        if (advert is null) throw new EntityNotFoundException("Объявление не было найдено.");
+        advert.StatusId = AdvertStatus.Published;
+        await _repository.UpdateAsync(advert, cancellationToken);
+
+        return true;
     }
 }

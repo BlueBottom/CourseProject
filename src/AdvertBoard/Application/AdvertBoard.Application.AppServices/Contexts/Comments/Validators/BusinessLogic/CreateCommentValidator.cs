@@ -26,7 +26,7 @@ public class CreateCommentValidator : BusinessLogicAbstractValidator<CreateComme
 
         RuleFor(x => x.AdvertId)
             .NotEmpty()
-            .MustAsync(IsAdvertExists)
+            .MustAsync(IsAdvertExistsAndActive)
             .WithMessage("Объявление не найдено.");
 
         RuleFor(x => x.ParentId)
@@ -35,9 +35,9 @@ public class CreateCommentValidator : BusinessLogicAbstractValidator<CreateComme
             .When(x => x.ParentId.HasValue);
     }
 
-    private Task<bool> IsAdvertExists(Guid? id, CancellationToken cancellationToken)
+    private Task<bool> IsAdvertExistsAndActive(Guid? id, CancellationToken cancellationToken)
     {
-        return _advertRepository.IsAdvertExists(id!.Value, cancellationToken);
+        return _advertRepository.IsAdvertExistsAndActive(id!.Value, cancellationToken);
     }
 
     private Task<bool> IsParentCommentExists(Guid? id, CancellationToken cancellationToken)

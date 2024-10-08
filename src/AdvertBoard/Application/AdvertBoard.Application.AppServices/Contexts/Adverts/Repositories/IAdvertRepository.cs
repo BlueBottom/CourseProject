@@ -1,6 +1,7 @@
 ﻿using AdvertBoard.Application.AppServices.Specifications;
 using AdvertBoard.Contracts.Common;
 using AdvertBoard.Contracts.Contexts.Adverts;
+using AdvertBoard.Contracts.Contexts.Adverts.Requests;
 using AdvertBoard.Contracts.Contexts.Adverts.Responses;
 using AdvertBoard.Domain.Contexts.Adverts;
 
@@ -34,10 +35,10 @@ public interface IAdvertRepository
     /// Обновлляет объявление.
     /// </summary>
     /// <param name="id">Идентификатор.</param>
-    /// <param name="advert"></param>
+    /// <param name="updatedAdvert"></param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Идентификатор объявления.</returns>
-    Task<Guid> UpdateAsync(Guid id, Advert advert, CancellationToken cancellationToken);
+    Task<Guid> UpdateAsync(Guid id, UpdateAdvertRequest updatedAdvert, CancellationToken cancellationToken);
     
     /// <summary>
     /// Получает объявление по идентификатору.
@@ -56,10 +57,26 @@ public interface IAdvertRepository
     Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken);
 
     /// <summary>
-    /// Проверяет наличие объявления в базе данных.
+    /// Проверяет наличие и активность объявления в базе данных.
     /// </summary>
     /// <param name="id">Идентификатор.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Наличие объявления в БД.</returns>
-    Task<bool> IsAdvertExists(Guid id, CancellationToken cancellationToken);
+    Task<bool> IsAdvertExistsAndActive(Guid id, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Меняет статус объявления на "Archived".
+    /// </summary>
+    /// <param name="id">Идентификатор.</param>
+    /// <param name="cancellationToken">Токен отмеы.</param>
+    /// <returns>Статус действия в виде <see cref="bool"/>.</returns>
+    Task<bool> ArchiveAsync(Guid id, CancellationToken cancellationToken);
+    
+    /// <summary>
+    /// Меняет статус объявления на "Published".
+    /// </summary>
+    /// <param name="id">Идентификатор.</param>
+    /// <param name="cancellationToken">Токен отмены.</param>
+    /// <returns>Статус действия в виде <see cref="bool"/>.</returns>
+    Task<bool> UnarchiveAsync(Guid id, CancellationToken cancellationToken);
 }

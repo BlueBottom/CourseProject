@@ -1,4 +1,5 @@
 ﻿using AdvertBoard.Contracts.Contexts.Categories;
+using AdvertBoard.Contracts.Contexts.Categories.Requests;
 using AdvertBoard.Contracts.Contexts.Categories.Responses;
 using AdvertBoard.Domain.Contexts.Categories;
 
@@ -47,7 +48,7 @@ public interface ICategoryRepository
     /// <param name="updatedCategory">Обновленная сущность.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Идентификатор.</returns>
-    Task<Guid> UpdateAsync(Guid id, Category updatedCategory, CancellationToken cancellationToken);
+    Task<Guid> UpdateAsync(Guid id, UpdateCategoryRequest updatedCategory, CancellationToken cancellationToken);
     
     /// <summary>
     /// Удаляет категорию.

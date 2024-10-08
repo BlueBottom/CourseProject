@@ -1,4 +1,5 @@
-﻿using AdvertBoard.Domain.Contexts.Adverts;
+﻿using AdvertBoard.Contracts.Enums;
+using AdvertBoard.Domain.Contexts.Adverts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -33,8 +34,8 @@ public class AdvertConfiguration : IEntityTypeConfiguration<Advert>
             .HasMaxLength(15);
 
         builder
-            .Property(x => x.Status)
-            .IsRequired();
+            .Property(x => x.StatusId)
+            .HasDefaultValue(AdvertStatus.Published);
 
         builder
             .Property(x => x.Location)

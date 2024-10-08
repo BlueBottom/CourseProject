@@ -68,8 +68,7 @@ public class CategoryService : ICategoryService
     public Task<Guid> UpdateAsync(Guid id, UpdateCategoryRequest updateCategoryRequest,
         CancellationToken cancellationToken)
     {
-        var category = _mapper.Map<UpdateCategoryRequest, Category>(updateCategoryRequest);
-        return _categoryRepository.UpdateAsync(id, category, cancellationToken);
+        return _categoryRepository.UpdateAsync(id, updateCategoryRequest, cancellationToken);
     }
 
     /// <inheritdoc/>

@@ -25,6 +25,6 @@ public class CreateImageValidator : BusinessLogicAbstractValidator<CreateImageRe
 
     private Task<bool> IsAdvertExist(Guid id, CancellationToken cancellationToken)
     {
-        return _advertRepository.IsAdvertExists(id, cancellationToken);
+        return _advertRepository.IsAdvertExistsAndActive(id, cancellationToken);
     }
 }

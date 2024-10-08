@@ -1,10 +1,7 @@
-﻿using AdvertBoard.Contracts.Contexts.Adverts;
-using AdvertBoard.Contracts.Contexts.Adverts.Requests;
+﻿using AdvertBoard.Contracts.Contexts.Adverts.Requests;
 using AdvertBoard.Contracts.Contexts.Adverts.Responses;
 using AdvertBoard.Domain.Contexts.Adverts;
-using AdvertBoard.Domain.Contexts.Images;
 using AutoMapper;
-using Microsoft.AspNetCore.Http;
 
 namespace AdvertBoard.Infrastructure.ComponentRegistrar.MapProfiles;
 
@@ -16,12 +13,9 @@ public class AdvertMapProfile : Profile
             .ForMember(x => x.ImageIds, map => map.MapFrom(s => s.Images.Select(x => x.Id)))
             .ForMember(x => x.CommentIds, map => map.MapFrom(s => s.Comments.Select(x => x.Id)))
             .ForMember(x => x.CategoryId, map => map.MapFrom(s => s.CategoryId));
-            
+
         CreateMap<AdvertResponse, Advert>(MemberList.None);
 
-        CreateMap<Advert, Advert>(MemberList.None)
-            .ForMember(x => x.CreatedAt, map => map.Ignore());
-        
         CreateMap<Advert, ShortAdvertResponse>(MemberList.None)
             .ForMember(x => x.ImageId, map => map.MapFrom(x => x.Images.Select(a => a.Id).First()));
 

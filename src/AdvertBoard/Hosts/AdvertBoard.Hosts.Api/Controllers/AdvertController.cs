@@ -93,4 +93,32 @@ public class AdvertController : ControllerBase
         var result = await _advertService.DeleteAsync(id, cancellationToken);
         return NoContent();
     }
+
+    /// <summary>
+    /// Меняет статус объявления на "Archived".
+    /// </summary>
+    /// <param name="id">Идентификатор.</param>
+    /// <param name="cancellationToken">Токен отмеы.</param>
+    /// <returns>Статус действия в виде <see cref="bool"/>.</returns>
+    [Authorize]
+    [HttpPatch("{id:guid}/archived")]
+    public async Task<IActionResult> ArchiveAsync(Guid id, CancellationToken cancellationToken)
+    {
+        var result = await _advertService.ArchiveAsync(id, cancellationToken);
+        return NoContent();
+    }
+    
+    /// <summary>
+    /// Меняет статус объявления на "Published".
+    /// </summary>
+    /// <param name="id">Идентификатор.</param>
+    /// <param name="cancellationToken">Токен отмеы.</param>
+    /// <returns>Статус действия в виде <see cref="bool"/>.</returns>
+    [Authorize]
+    [HttpPatch("{id:guid}/unarchived")]
+    public async Task<IActionResult> UnarchiveAsync(Guid id, CancellationToken cancellationToken)
+    {
+        var result = await _advertService.UnarchiveAsync(id, cancellationToken);
+        return NoContent();
+    }
 }

@@ -1,5 +1,4 @@
 ﻿using AdvertBoard.Contracts.Common;
-using AdvertBoard.Contracts.Contexts.Adverts;
 using AdvertBoard.Contracts.Contexts.Adverts.Requests;
 using AdvertBoard.Contracts.Contexts.Adverts.Responses;
 
@@ -51,4 +50,20 @@ public interface IAdvertService
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Статус действия в виде <see cref="bool"/>.</returns>
     Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Меняет статус объявления на "Archived".
+    /// </summary>
+    /// <param name="id">Идентификатор.</param>
+    /// <param name="cancellationToken">Токен отмеы.</param>
+    /// <returns>Статус действия в виде <see cref="bool"/>.</returns>
+    Task<bool> ArchiveAsync(Guid id, CancellationToken cancellationToken);
+    
+    /// <summary>
+    /// Меняет статус объявления на "Published".
+    /// </summary>
+    /// <param name="id">Идентификатор.</param>
+    /// <param name="cancellationToken">Токен отмены.</param>
+    /// <returns>Статус действия в виде <see cref="bool"/>.</returns>
+    Task<bool> UnarchiveAsync(Guid id, CancellationToken cancellationToken);
 }

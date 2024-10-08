@@ -27,6 +27,6 @@ public class GetAllCommentsValidator : BusinessLogicAbstractValidator<GetAllComm
     
     private Task<bool> IsAdvertExists(Guid? id, CancellationToken cancellationToken)
     {
-        return _advertRepository.IsAdvertExists(id!.Value, cancellationToken);
+        return _advertRepository.IsAdvertExistsAndActive(id!.Value, cancellationToken);
     }
 }

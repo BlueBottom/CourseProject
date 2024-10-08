@@ -3,6 +3,7 @@ using System;
 using AdvertBoard.Hosts.DbMigrator.DbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AdvertBoard.Hosts.DbMigrator.Migrations
 {
     [DbContext(typeof(MigratorDbContext))]
-    partial class MigratorDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241008075943_Added_Advert_Status")]
+    partial class Added_Advert_Status
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

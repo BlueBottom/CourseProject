@@ -3,6 +3,7 @@ using AdvertBoard.Application.AppServices.Authorization.Requirements;
 using AdvertBoard.Application.AppServices.Contexts.Adverts.Builders;
 using AdvertBoard.Application.AppServices.Contexts.Adverts.Repositories;
 using AdvertBoard.Application.AppServices.Exceptions;
+using AdvertBoard.Application.AppServices.Helpers;
 using AdvertBoard.Application.AppServices.Validators;
 using AdvertBoard.Contracts.Common;
 using AdvertBoard.Contracts.Contexts.Adverts.Requests;
@@ -71,8 +72,8 @@ public class AdvertService : IAdvertService
         await _createAdvertValidator.ValidateAndThrowAsync(createAdvertRequest, cancellationToken);
         
         var advert = _mapper.Map<CreateAdvertRequest, Advert>(createAdvertRequest);
-        
-        advert.UserId = GetUserId();
+
+        advert.UserId = _httpContextAccessor.GetAuthorizedUserId();
         
         return await _advertRepository.AddAsync(advert, cancellationToken);
     }
@@ -82,9 +83,7 @@ public class AdvertService : IAdvertService
     {
         await EnsureResourceAuthorize(id, cancellationToken);
         
-        var advert = _mapper.Map<UpdateAdvertRequest, Advert>(updateAdvertRequest);
-
-        return await _advertRepository.UpdateAsync(id, advert, cancellationToken);
+        return await _advertRepository.UpdateAsync(id, updateAdvertRequest, cancellationToken);
     }
 
     /// <inheritdoc/>
@@ -101,6 +100,20 @@ public class AdvertService : IAdvertService
         return await _advertRepository.DeleteAsync(id, cancellationToken);
     }
 
+    public async Task<bool> ArchiveAsync(Guid id, CancellationToken cancellationToken)
+    {
+        await EnsureResourceAuthorize(id, cancellationToken);
+
+        return await _advertRepository.ArchiveAsync(id, cancellationToken);
+    }
+
+    public async Task<bool> UnarchiveAsync(Guid id, CancellationToken cancellationToken)
+    {
+        await EnsureResourceAuthorize(id, cancellationToken);
+        
+        return await _advertRepository.UnarchiveAsync(id, cancellationToken);
+    }
+
     private async Task EnsureResourceAuthorize(Guid resourceId, CancellationToken cancellationToken)
     {
         var existingAdvert = await _advertRepository.GetByIdAsync(resourceId, cancellationToken);
@@ -111,15 +124,5 @@ public class AdvertService : IAdvertService
             );
         
         if (!authResult.Succeeded) throw new ForbiddenException();
-    }
-
-    private Guid GetUserId()
-    {
-        var claims = _httpContextAccessor.HttpContext.User.Claims;
-        var claimId = claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-
-        if (string.IsNullOrWhiteSpace(claimId)) throw new ForbiddenException();
-
-        return Guid.Parse(claimId);
     }
 }

@@ -16,14 +16,7 @@ public class CategoryMapProfile : Profile
             .ForMember(x => x.CreatedAt, map => map.MapFrom(s => DateTime.UtcNow));
 
         CreateMap<UpdateCategoryRequest, Category>(MemberList.None);
-
-        CreateMap<Category, Category>()
-            .ForMember(x => x.CreatedAt, map => map.Ignore())
-            .ForMember(x => x.ParentId, map => map.Ignore())
-            .ForMember(x => x.Id, map => map.Ignore())
-            .ForMember(x => x.Children, map => map.Ignore())
-            .ForMember(x => x.Adverts, map => map.Ignore());
-
+        
         CreateMap<Category, CategoryHierarchyResponse>(MemberList.None);
     }
 }

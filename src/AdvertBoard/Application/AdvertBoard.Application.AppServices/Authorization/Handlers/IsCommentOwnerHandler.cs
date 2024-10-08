@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace AdvertBoard.Application.AppServices.Authorization.Handlers;
 
-public class IsCommentOwner : AuthorizationHandler<ResourceOwnerRequirement, CommentResponse>
+public class IsCommentOwnerHandler : AuthorizationHandler<ResourceOwnerRequirement, CommentResponse>
 {
     /// <inheritdoc/>
     protected override Task HandleRequirementAsync(
