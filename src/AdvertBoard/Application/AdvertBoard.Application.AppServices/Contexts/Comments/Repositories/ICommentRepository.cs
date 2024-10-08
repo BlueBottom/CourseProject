@@ -68,4 +68,13 @@ public interface ICommentRepository
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Наличие комментария в БД.</returns>
     Task<bool> IsCommentExists(Guid id, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Проверяет, принадлежит ли родительский комментарий к конкретному объявлению.
+    /// </summary>
+    /// <param name="parentId">Идентификатор родительского комментария.</param>
+    /// <param name="advertId">Идентификатор объявления.</param>
+    /// <param name="cancellationToken">Токен отмены.</param>
+    /// <returns>Соответсвие коментария объявлению.</returns>
+    Task<bool> IsCurrentCommentRelatedToCurrentAdvert(Guid? parentId, Guid? advertId, CancellationToken cancellationToken);
 }
