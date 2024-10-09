@@ -21,7 +21,7 @@ public class ReviewCreatedConsumer : IConsumer<ReviewStatusUpdatedEvent>
 
     public async Task Consume(ConsumeContext<ReviewStatusUpdatedEvent> context)
     {
-        await _userRatingService.EvaluateUserRatingAsync(context.Message.ReceiverUserId, CancellationToken.None);
+        await _userRatingService.EvaluateUserRatingAsync(context.Message.ReceiverUserId, context.CancellationToken);
         Console.WriteLine("Рейтинг пользователя посчитан.");
     }
 }

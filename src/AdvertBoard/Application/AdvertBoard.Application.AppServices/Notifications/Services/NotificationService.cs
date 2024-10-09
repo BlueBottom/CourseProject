@@ -1,4 +1,5 @@
 ﻿using AdvertBoard.Contracts.Contexts.Reviews.Events;
+using AdvertBoard.Contracts.Contexts.Users.Events;
 using MassTransit;
 
 namespace AdvertBoard.Application.AppServices.Notifications.Services
@@ -21,6 +22,12 @@ namespace AdvertBoard.Application.AppServices.Notifications.Services
         {
             var message = new ReviewStatusUpdatedEvent(reviewId, receiverUserId);
             await _publishEndpoint.Publish(message, cancellationToken);
-        }   
+        }
+
+        public async Task SendUserRegistered(string userName, string userEmail, CancellationToken cancellationToken)
+        {
+            var message = new UserRegisteredEvent(userName, userEmail);
+            await _publishEndpoint.Publish(message, cancellationToken);
+        }
     }
 }
