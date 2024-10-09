@@ -31,4 +31,11 @@
       </Reference>
     </ItemGroup>
 
+    <ItemGroup>
+      <None Remove="Contexts\Email\Resources\WelcomeUserMail.txt" />
+      <EmbeddedResource Include="Contexts\Email\Resources\WelcomeUserMail.txt">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </EmbeddedResource>
+    </ItemGroup>
+
 </Project>

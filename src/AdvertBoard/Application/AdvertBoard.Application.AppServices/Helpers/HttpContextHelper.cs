@@ -4,8 +4,17 @@ using Microsoft.AspNetCore.Http;
 
 namespace AdvertBoard.Application.AppServices.Helpers;
 
+/// <summary>
+/// Класс со вспомогательными методами для HttpContextAccessor.
+/// </summary>
 public static class HttpContextHelper
 {
+    /// <summary>
+    /// Получает идентификатор пользователя из клаимов.
+    /// </summary>
+    /// <param name="httpContextAccessor"><see cref="IHttpContextAccessor"/>.</param>
+    /// <returns>Идентификатор пользователя.</returns>
+    /// <exception cref="ForbiddenException">Исключение "Нет прав доступа".</exception>
     public static Guid GetAuthorizedUserId(this IHttpContextAccessor httpContextAccessor)
     {
         var claims = httpContextAccessor.HttpContext.User.Claims;

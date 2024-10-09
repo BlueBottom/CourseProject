@@ -2,8 +2,16 @@
 
 namespace AdvertBoard.Application.AppServices.Helpers;
 
+/// <summary>
+/// Класс с вспомогательными методами нормализации.
+/// </summary>
 public class PhoneHelper
 {
+    /// <summary>
+    /// Нормализует номер телефона.
+    /// </summary>
+    /// <param name="phoneNumber">Номер телефона.</param>
+    /// <returns>Номер телефона, приведенный к единому виду.</returns>
     public static string NormalizePhoneNumber(string phoneNumber)
     {
         // Удаляем все лишние символы
