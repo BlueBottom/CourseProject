@@ -1,13 +1,10 @@
-﻿using System.Security.Claims;
-using AdvertBoard.Application.AppServices.Authorization.Requirements;
+﻿using AdvertBoard.Application.AppServices.Authorization.Requirements;
 using AdvertBoard.Application.AppServices.Contexts.Reviews.Repositories;
-using AdvertBoard.Application.AppServices.Contexts.Reviews.Validators.BusinessLogic;
-using AdvertBoard.Application.AppServices.Contexts.Users.Services;
 using AdvertBoard.Application.AppServices.Exceptions;
 using AdvertBoard.Application.AppServices.Helpers;
+using AdvertBoard.Application.AppServices.Notifications.Services;
 using AdvertBoard.Application.AppServices.Validators;
 using AdvertBoard.Contracts.Common;
-using AdvertBoard.Contracts.Contexts.Reviews;
 using AdvertBoard.Contracts.Contexts.Reviews.Requests;
 using AdvertBoard.Contracts.Contexts.Reviews.Responses;
 using AdvertBoard.Domain.Contexts.Reviews;
@@ -25,29 +22,29 @@ public class ReviewService : IReviewService
     private readonly IMapper _mapper;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IAuthorizationService _authorizationService;
-    private readonly IUserService _userService;
     private readonly BusinessLogicAbstractValidator<CreateReviewRequest> _createReviewValidator;
     private readonly BusinessLogicAbstractValidator<GetAllReviewsRequest> _getAllReviewsValidator;
+    private readonly INotificationService _notificationService;
 
     /// <summary>
     /// Инициализирует экземпляр класса <see cref="ReviewService"/>.
     /// </summary>
     public ReviewService(
         IReviewRepository reviewRepository, 
-        IMapper mapper, IHttpContextAccessor httpContextAccessor,
+        IMapper mapper, 
+        IHttpContextAccessor httpContextAccessor,
         IAuthorizationService authorizationService, 
-        IUserService userService, 
         BusinessLogicAbstractValidator<CreateReviewRequest> createReviewValidator, 
-        BusinessLogicAbstractValidator<GetAllReviewsRequest> getAllReviewsValidator
-        )
+        BusinessLogicAbstractValidator<GetAllReviewsRequest> getAllReviewsValidator, 
+        INotificationService notificationService)
     {
         _reviewRepository = reviewRepository;
         _mapper = mapper;
         _httpContextAccessor = httpContextAccessor;
         _authorizationService = authorizationService;
-        _userService = userService;
         _createReviewValidator = createReviewValidator;
         _getAllReviewsValidator = getAllReviewsValidator;
+        _notificationService = notificationService;
     }
 
     /// <inheritdoc/>
@@ -76,7 +73,7 @@ public class ReviewService : IReviewService
         review.OwnerUserId = userId;
 
         var result= await _reviewRepository.AddAsync(review, cancellationToken);
-        await UpdateRating(review.ReceiverUserId, cancellationToken);
+        await _notificationService.SendReviewCreated(review.Id, review.ReceiverUserId, cancellationToken);
 
         return result;
     }
@@ -89,8 +86,9 @@ public class ReviewService : IReviewService
         await EnsureResourceAuthorize(existingReview);
 
         var result = await _reviewRepository.UpdateAsync(id, updateReviewRequest, cancellationToken);
-        await UpdateRating(existingReview.ReceiverUserId, cancellationToken);
-
+        await _notificationService.SendReviewCreated(existingReview.Id, existingReview.ReceiverUserId,
+            cancellationToken);
+        
         return result;
     }
 
@@ -102,15 +100,10 @@ public class ReviewService : IReviewService
         await EnsureResourceAuthorize(existingReview);
         
         var result = await _reviewRepository.DeleteAsync(id, cancellationToken);
-        await UpdateRating(existingReview.ReceiverUserId, cancellationToken);
-
+        await _notificationService.SendReviewCreated(existingReview.Id, existingReview.ReceiverUserId,
+            cancellationToken);
+        
         return result;
-    }
-    
-    private async Task UpdateRating(Guid userId, CancellationToken cancellationToken)
-    {
-        var rating = await _reviewRepository.CalcUserRatingAsync(userId, cancellationToken);
-        await _userService.UpdateRatingAsync(userId, rating, cancellationToken);
     }
     
     private async Task EnsureResourceAuthorize(ReviewResponse existingReview)

@@ -1,8 +1,10 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using AdvertBoard.Application.AppServices.Contexts.Email.Services;
 using AdvertBoard.Application.AppServices.Contexts.Users.Repositories;
 using AdvertBoard.Application.AppServices.Helpers;
+using AdvertBoard.Application.AppServices.Notifications.Services;
 using AdvertBoard.Application.AppServices.Validators;
 using AdvertBoard.Contracts.Contexts.Users.Requests;
 using AdvertBoard.Domain.Contexts.Users;
@@ -21,6 +23,7 @@ public class AuthenticationService : IAuthenticationService
     private readonly IMapper _mapper;
     private readonly BusinessLogicAbstractValidator<LoginUserRequest> _loginUserValidator;
     private readonly BusinessLogicAbstractValidator<RegisterUserRequest> _registerUserValidator;
+    private readonly INotificationService _notificationService;
 
     /// <summary>
     /// Инициализирует экземпляр класса <see cref="AuthenticationService"/>.
@@ -30,18 +33,21 @@ public class AuthenticationService : IAuthenticationService
     /// <param name="mapper">Маппер.</param>
     /// <param name="loginUserValidator">Валидатор логина.</param>
     /// <param name="registerUserValidator">Валидатор регистрации.</param>
+    /// <param name="notificationService">Сервис отправки событий.</param>
     public AuthenticationService(
         IUserRepository userRepository, 
         IConfiguration configuration, 
         IMapper mapper,
         BusinessLogicAbstractValidator<LoginUserRequest> loginUserValidator, 
-        BusinessLogicAbstractValidator<RegisterUserRequest> registerUserValidator)
+        BusinessLogicAbstractValidator<RegisterUserRequest> registerUserValidator, 
+        INotificationService notificationService)
     {
         _userRepository = userRepository;
         _configuration = configuration;
         _mapper = mapper;
         _loginUserValidator = loginUserValidator;
         _registerUserValidator = registerUserValidator;
+        _notificationService = notificationService;
     }
 
     /// <inheritdoc/>
@@ -53,7 +59,11 @@ public class AuthenticationService : IAuthenticationService
         var user = _mapper.Map<RegisterUserRequest, User>(registerUserRequest);
         var password = CryptoHelper.GetBase64Hash(registerUserRequest.Password!);
         
-        return await _userRepository.AddAsync(user, password, cancellationToken);
+        var id = await _userRepository.AddAsync(user, password, cancellationToken);
+        await _notificationService.SendUserRegistered(user.Name, user.Email, cancellationToken);
+        
+        return id;
+
     }
 
     /// <inheritdoc/>

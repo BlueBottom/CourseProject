@@ -22,7 +22,9 @@ using AdvertBoard.Application.AppServices.Contexts.Reviews.Validators.BusinessLo
 using AdvertBoard.Application.AppServices.Contexts.Users.Builders;
 using AdvertBoard.Application.AppServices.Contexts.Users.Repositories;
 using AdvertBoard.Application.AppServices.Contexts.Users.Services;
+using AdvertBoard.Application.AppServices.Contexts.Users.Services.Rating;
 using AdvertBoard.Application.AppServices.Contexts.Users.Validators.BusinessLogic;
+using AdvertBoard.Application.AppServices.Notifications.Services;
 using AdvertBoard.Application.AppServices.Validators;
 using AdvertBoard.Contracts.Contexts.Adverts.Requests;
 using AdvertBoard.Contracts.Contexts.Categories.Requests;
@@ -78,6 +80,7 @@ public static class ComponentRegistrar
         serviceCollection.AddScoped<IReviewService, ReviewService>();
         serviceCollection.AddScoped<ICommentService, CommentService>();
         serviceCollection.AddScoped<ICategoryService, CategoryService>();
+        serviceCollection.AddScoped<IUserRatingService, UserRatingService>();
         serviceCollection.AddScoped<IAuthenticationService, AuthenticationService>();
 
         //Handlers для работы с ресурсной авторизацией.
@@ -86,6 +89,9 @@ public static class ComponentRegistrar
         serviceCollection.AddScoped<IAuthorizationHandler, IsReviewOwnerHandler>();
         serviceCollection.AddScoped<IAuthorizationHandler, IsCommentOwnerHandler>();
         serviceCollection.AddScoped<IAuthorizationHandler, IsAdminHandler>();
+        
+        //Notifications
+        serviceCollection.AddTransient<INotificationService, NotificationService>();
         
         return serviceCollection;
     }

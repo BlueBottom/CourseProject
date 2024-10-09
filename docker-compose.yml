@@ -11,6 +11,12 @@
       context: .
       dockerfile: src/AdvertBoard/Hosts/AdvertBoard.Hosts.DbMigrator/Dockerfile
       
+  advertboard.hosts.daemon:
+    image: advertboard.hosts.daemon
+    build:
+      context: .
+      dockerfile: src/AdvertBoard/Hosts/AdvertBoard.Hosts.Daemon/Dockerfile
+      
   postgres:
     image: postgres
     ports:
@@ -20,7 +26,16 @@
       POSTGRES_PASSWORD: password
     volumes:
       - pg-data:/var/lib/postgresql/data
+    
+  rabbitmq:
+    image: rabbitmq:4-management
+    hostname: rabbit
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    ports:
+      - 15672:15672
+      - 5672:5672
 
 volumes:
   pg-data:
-

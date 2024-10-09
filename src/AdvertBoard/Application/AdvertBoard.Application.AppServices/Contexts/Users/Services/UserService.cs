@@ -1,4 +1,5 @@
 ﻿using AdvertBoard.Application.AppServices.Authorization.Requirements;
+using AdvertBoard.Application.AppServices.Contexts.Reviews.Repositories;
 using AdvertBoard.Application.AppServices.Contexts.Users.Builders;
 using AdvertBoard.Application.AppServices.Contexts.Users.Models;
 using AdvertBoard.Application.AppServices.Contexts.Users.Repositories;
@@ -7,8 +8,6 @@ using AdvertBoard.Application.AppServices.Validators;
 using AdvertBoard.Contracts.Common;
 using AdvertBoard.Contracts.Contexts.Users.Requests;
 using AdvertBoard.Contracts.Contexts.Users.Responses;
-using AdvertBoard.Domain.Contexts.Users;
-using AutoMapper;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -23,6 +22,7 @@ public class UserService : IUserService
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IAuthorizationService _authorizationService;
     private readonly BusinessLogicAbstractValidator<UpdateUserRequest> _updateUserValidator;
+    private readonly IReviewRepository _reviewRepository;
 
     /// <summary>
     /// Инициализирует экземпляр класса <see cref="UserService"/>.
@@ -32,18 +32,21 @@ public class UserService : IUserService
     /// <param name="httpContextAccessor">Передает HttpContext.</param>
     /// <param name="authorizationService">Сервис для реализации requirements.</param>
     /// <param name="updateUserValidator">Валидатор обновления пользователя.</param>
+    /// <param name="reviewRepository">Умный репозиторий для работы с отзывами.</param>
     public UserService(
         IUserRepository userRepository, 
         IUserSpecificationBuilder specificationBuilder, 
         IHttpContextAccessor httpContextAccessor, 
         IAuthorizationService authorizationService,
-        BusinessLogicAbstractValidator<UpdateUserRequest> updateUserValidator)
+        BusinessLogicAbstractValidator<UpdateUserRequest> updateUserValidator, 
+        IReviewRepository reviewRepository)
     {
         _userRepository = userRepository;
         _specificationBuilder = specificationBuilder;
         _httpContextAccessor = httpContextAccessor;
         _authorizationService = authorizationService;
         _updateUserValidator = updateUserValidator;
+        _reviewRepository = reviewRepository;
     }
 
     /// <inheritdoc/>
@@ -85,12 +88,6 @@ public class UserService : IUserService
         };
 
         return _userRepository.GetAllByFilterWithPaginationAsync(specification, paginationRequest, cancellationToken);
-    }
-
-    /// <inheritdoc/>
-    public Task UpdateRatingAsync(Guid id, decimal? rating, CancellationToken cancellationToken)
-    {
-        return _userRepository.UpdateRatingAsync(id, rating, cancellationToken);
     }
     
     /// <inheritdoc/>

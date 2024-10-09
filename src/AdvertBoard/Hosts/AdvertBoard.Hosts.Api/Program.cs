@@ -2,6 +2,7 @@ using AdvertBoard.Contracts.Contexts.Adverts.Responses;
 using AdvertBoard.Hosts.Api.Controllers;
 using AdvertBoard.Hosts.Api.Middlewares;
 using AdvertBoard.Infrastructure.ComponentRegistrar;
+using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
 
@@ -75,6 +76,14 @@ builder.Services.AddCors(options =>
 });
 builder.Services.AddAuthenticationWithJwtToken(builder.Configuration);
 builder.Services.AddAuthorization();
+
+builder.Services.AddMassTransit(bus =>
+{
+    bus.UsingRabbitMq((ctx, configurator) =>
+    {
+        configurator.Host(builder.Configuration.GetConnectionString("RabbitMq"));
+    });
+});
 
 var app = builder.Build();
 

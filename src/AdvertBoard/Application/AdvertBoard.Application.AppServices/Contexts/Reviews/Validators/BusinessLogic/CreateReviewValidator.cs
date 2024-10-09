@@ -24,21 +24,22 @@ public class CreateReviewValidator : BusinessLogicAbstractValidator<CreateReview
         _httpContextAccessor = httpContextAccessor;
 
         RuleFor(x => x.ReceiverUserId)
-            .MustAsync(IsUserAlreadyLeftReview)
+            .MustAsync(IsUserNotAlreadyLeftReview)
             .WithMessage("С этого аккаунта к уже был оставлен отзыв данному пользователю.")
-            .Must(IsReviewReferenceToHimself).WithMessage("Запрещено оставлять отзыв на самого себя.");
+            .Must(IsReviewNotReferenceToHimself)
+            .WithMessage("Запрещено оставлять отзыв на самого себя.");
     }
 
-    private bool IsReviewReferenceToHimself(Guid? receiverUserId)
+    private bool IsReviewNotReferenceToHimself(Guid? receiverUserId)
     {
         var ownerUserId = _httpContextAccessor.GetAuthorizedUserId();
-        return ownerUserId == receiverUserId!.Value;
+        return ownerUserId != receiverUserId!.Value;
     }
 
-    private async Task<bool> IsUserAlreadyLeftReview(Guid? receiverUserId,
+    private async Task<bool> IsUserNotAlreadyLeftReview(Guid? receiverUserId,
         CancellationToken cancellationToken)
     {
         var ownerUserId = _httpContextAccessor.GetAuthorizedUserId();
-        return await _reviewRepository.IsUserAlreadyLeftReview(ownerUserId, receiverUserId!.Value, cancellationToken);
+        return !await _reviewRepository.IsUserAlreadyLeftReview(ownerUserId, receiverUserId!.Value, cancellationToken);
     }
 }

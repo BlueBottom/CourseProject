@@ -91,7 +91,7 @@ public class ReviewRepository : IReviewRepository
     }
 
     /// <inheritdoc/>
-    public async Task<decimal?> CalcUserRatingAsync(Guid id, CancellationToken cancellationToken)
+    public async Task<decimal?> EvaluateUserRatingAsync(Guid id, CancellationToken cancellationToken)
     {
         var userRatingQuery = _repository
             .GetAll()
