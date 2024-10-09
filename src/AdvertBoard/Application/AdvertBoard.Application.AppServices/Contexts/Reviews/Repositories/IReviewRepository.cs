@@ -59,7 +59,7 @@ public interface IReviewRepository
     /// <param name="id">Идентификатор.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns></returns>
-    Task<decimal?> CalcUserRatingAsync(Guid id, CancellationToken cancellationToken);
+    Task<decimal?> EvaluateUserRatingAsync(Guid id, CancellationToken cancellationToken);
 
     /// <summary>
     /// Проверяет, оставлял ли уже пользователь отзыв другому конкретно пользователю.

@@ -1,5 +1,4 @@
-﻿using AdvertBoard.Contracts.Contexts.Users;
-using AdvertBoard.Contracts.Contexts.Users.Responses;
+﻿using AdvertBoard.Contracts.Contexts.Users.Responses;
 using AdvertBoard.Contracts.Enums;
 
 namespace AdvertBoard.Contracts.Contexts.Adverts.Responses;
