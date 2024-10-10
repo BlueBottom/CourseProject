@@ -31,7 +31,7 @@ public interface ICategoryRepository
     /// </summary>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Коллекцию категорий.</returns>
-    Task<IEnumerable<ShortCategoryResponse>> GetAllParentsAsync(CancellationToken cancellationToken);
+    Task<IReadOnlyCollection<ShortCategoryResponse>> GetAllParentsAsync(CancellationToken cancellationToken);
 
     /// <summary>
     /// Получает категорию.

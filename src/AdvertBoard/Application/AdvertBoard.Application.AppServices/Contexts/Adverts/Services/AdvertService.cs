@@ -100,6 +100,7 @@ public class AdvertService : IAdvertService
         return await _advertRepository.DeleteAsync(id, cancellationToken);
     }
 
+    /// <inheritdoc/>
     public async Task<bool> ArchiveAsync(Guid id, CancellationToken cancellationToken)
     {
         await EnsureResourceAuthorize(id, cancellationToken);
@@ -107,6 +108,7 @@ public class AdvertService : IAdvertService
         return await _advertRepository.ArchiveAsync(id, cancellationToken);
     }
 
+    /// <inheritdoc/>
     public async Task<bool> UnarchiveAsync(Guid id, CancellationToken cancellationToken)
     {
         await EnsureResourceAuthorize(id, cancellationToken);

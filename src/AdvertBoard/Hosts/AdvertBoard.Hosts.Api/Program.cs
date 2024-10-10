@@ -77,6 +77,9 @@ builder.Services.AddCors(options =>
 builder.Services.AddAuthenticationWithJwtToken(builder.Configuration);
 builder.Services.AddAuthorization();
 
+builder.Services.AddMemoryCache();
+builder.Services.AddRedis(builder.Configuration);
+
 builder.Services.AddMassTransit(bus =>
 {
     bus.UsingRabbitMq((ctx, configurator) =>

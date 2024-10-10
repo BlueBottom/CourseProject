@@ -64,7 +64,8 @@ public class CategoryRepository : ICategoryRepository
     }
 
     /// <inheritdoc/>
-    public async Task<IEnumerable<ShortCategoryResponse>> GetAllParentsAsync(CancellationToken cancellationToken)
+    public async Task<IReadOnlyCollection<ShortCategoryResponse>> GetAllParentsAsync(
+        CancellationToken cancellationToken)
     {
         return await _repository
             .GetAll()

@@ -218,4 +218,21 @@ public static class ComponentRegistrar
 
         return serviceCollection;
     }
+
+    /// <summary>
+    /// Подключает редис.
+    /// </summary>
+    /// <param name="serviceCollection">Коллекция сервисов.</param>
+    /// <param name="configuration">Конфигурация.</param>
+    /// <returns>Коллекцию сервисов.</returns>
+    public static IServiceCollection AddRedis(this IServiceCollection serviceCollection, IConfiguration configuration)
+    {
+        serviceCollection.AddStackExchangeRedisCache(options =>
+        {
+            options.InstanceName = "advert_";
+            options.Configuration = configuration.GetConnectionString("Redis");
+        });
+
+        return serviceCollection;
+    }
 }
