@@ -36,6 +36,16 @@
     ports:
       - 15672:15672
       - 5672:5672
+  
+  redis:
+    image: redis
+    restart: always
+    command: [ "redis-server", "--appendonly", "yes" ]
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
 
 volumes:
   pg-data:
+  redis_data:
