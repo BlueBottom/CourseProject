@@ -12,6 +12,7 @@ using AdvertBoard.Infrastructure.DataAccess.Contexts.Reviews.Repositories;
 using AdvertBoard.Infrastructure.DataAccess.Contexts.Users.Repositories;
 using AdvertBoard.Infrastructure.Repository;
 using MassTransit;
+using Serilog;
 
 namespace AdvertBoard.Hosts.Daemon;
 
@@ -42,6 +43,12 @@ public class Program
         builder.Services.AddAutoMapper(typeof(UserMapProfile));
         
         builder.Services.AddDatabase(builder.Configuration);
+        
+        builder.Services.AddSerilog(config =>
+        {
+            config.ReadFrom.Configuration(builder.Configuration)
+                .Enrich.WithEnvironmentName();
+        });
 
         var host = builder.Build();
         host.Run();

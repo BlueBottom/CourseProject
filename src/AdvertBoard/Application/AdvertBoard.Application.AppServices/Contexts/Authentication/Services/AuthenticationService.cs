@@ -1,6 +1,7 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json;
 using AdvertBoard.Application.AppServices.Contexts.Email.Services;
 using AdvertBoard.Application.AppServices.Contexts.Users.Repositories;
 using AdvertBoard.Application.AppServices.Helpers;
@@ -11,6 +12,7 @@ using AdvertBoard.Domain.Contexts.Users;
 using AutoMapper;
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 
 namespace AdvertBoard.Application.AppServices.Contexts.Authentication.Services;
@@ -24,6 +26,7 @@ public class AuthenticationService : IAuthenticationService
     private readonly BusinessLogicAbstractValidator<LoginUserRequest> _loginUserValidator;
     private readonly BusinessLogicAbstractValidator<RegisterUserRequest> _registerUserValidator;
     private readonly INotificationService _notificationService;
+    private readonly ILogger<AuthenticationService> _logger;
 
     /// <summary>
     /// Инициализирует экземпляр класса <see cref="AuthenticationService"/>.
@@ -34,13 +37,15 @@ public class AuthenticationService : IAuthenticationService
     /// <param name="loginUserValidator">Валидатор логина.</param>
     /// <param name="registerUserValidator">Валидатор регистрации.</param>
     /// <param name="notificationService">Сервис отправки событий.</param>
+    /// <param name="logger">Логер.</param>
     public AuthenticationService(
         IUserRepository userRepository, 
         IConfiguration configuration, 
         IMapper mapper,
         BusinessLogicAbstractValidator<LoginUserRequest> loginUserValidator, 
         BusinessLogicAbstractValidator<RegisterUserRequest> registerUserValidator, 
-        INotificationService notificationService)
+        INotificationService notificationService, 
+        ILogger<AuthenticationService> logger)
     {
         _userRepository = userRepository;
         _configuration = configuration;
@@ -48,11 +53,14 @@ public class AuthenticationService : IAuthenticationService
         _loginUserValidator = loginUserValidator;
         _registerUserValidator = registerUserValidator;
         _notificationService = notificationService;
+        _logger = logger;
     }
 
     /// <inheritdoc/>
     public async Task<Guid> RegisterAsync(RegisterUserRequest registerUserRequest, CancellationToken cancellationToken)
     {
+        _logger.LogInformation($"Поступил запрос {nameof(RegisterUserRequest)} : {{Request}}",
+            JsonSerializer.Serialize(registerUserRequest));
         await _registerUserValidator.ValidateAndThrowAsync(registerUserRequest, cancellationToken);
 
         registerUserRequest.Phone = PhoneHelper.NormalizePhoneNumber(registerUserRequest.Phone!);

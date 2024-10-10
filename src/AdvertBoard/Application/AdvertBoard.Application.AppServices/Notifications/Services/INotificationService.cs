@@ -11,7 +11,7 @@ public interface INotificationService
     /// <param name="reviewId">Идентификатор отзыва.</param>
     /// <param name="receiverUserId">Идентификатор получателя отзыва.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
-    Task SendReviewCreated(Guid reviewId, Guid receiverUserId, CancellationToken cancellationToken);
+    Task SendReviewStatusUpdated(Guid reviewId, Guid receiverUserId, CancellationToken cancellationToken);
 
     /// <summary>
     /// Отправляет сообщение на электронную почту о регистрации пользователя.

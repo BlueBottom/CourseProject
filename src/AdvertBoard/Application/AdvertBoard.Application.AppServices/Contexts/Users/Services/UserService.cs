@@ -1,5 +1,4 @@
 ﻿using AdvertBoard.Application.AppServices.Authorization.Requirements;
-using AdvertBoard.Application.AppServices.Contexts.Reviews.Repositories;
 using AdvertBoard.Application.AppServices.Contexts.Users.Builders;
 using AdvertBoard.Application.AppServices.Contexts.Users.Models;
 using AdvertBoard.Application.AppServices.Contexts.Users.Repositories;
@@ -22,7 +21,6 @@ public class UserService : IUserService
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IAuthorizationService _authorizationService;
     private readonly BusinessLogicAbstractValidator<UpdateUserRequest> _updateUserValidator;
-    private readonly IReviewRepository _reviewRepository;
 
     /// <summary>
     /// Инициализирует экземпляр класса <see cref="UserService"/>.
@@ -32,21 +30,19 @@ public class UserService : IUserService
     /// <param name="httpContextAccessor">Передает HttpContext.</param>
     /// <param name="authorizationService">Сервис для реализации requirements.</param>
     /// <param name="updateUserValidator">Валидатор обновления пользователя.</param>
-    /// <param name="reviewRepository">Умный репозиторий для работы с отзывами.</param>
     public UserService(
         IUserRepository userRepository, 
         IUserSpecificationBuilder specificationBuilder, 
         IHttpContextAccessor httpContextAccessor, 
         IAuthorizationService authorizationService,
-        BusinessLogicAbstractValidator<UpdateUserRequest> updateUserValidator, 
-        IReviewRepository reviewRepository)
+        BusinessLogicAbstractValidator<UpdateUserRequest> updateUserValidator 
+        )
     {
         _userRepository = userRepository;
         _specificationBuilder = specificationBuilder;
         _httpContextAccessor = httpContextAccessor;
         _authorizationService = authorizationService;
         _updateUserValidator = updateUserValidator;
-        _reviewRepository = reviewRepository;
     }
 
     /// <inheritdoc/>

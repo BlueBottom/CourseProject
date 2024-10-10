@@ -59,7 +59,7 @@ public class ReviewController : ControllerBase
     /// <returns>Идентификатор.</returns>
     [Authorize]
     [HttpPost]
-    public async Task<IActionResult> AddAsync(CreateReviewRequest createReviewRequest, CancellationToken cancellationToken)
+    public async Task<IActionResult> AddAsync([FromForm] CreateReviewRequest createReviewRequest, CancellationToken cancellationToken)
     {
         var result = await _reviewService.AddAsync(createReviewRequest, cancellationToken);
         return Ok(result);

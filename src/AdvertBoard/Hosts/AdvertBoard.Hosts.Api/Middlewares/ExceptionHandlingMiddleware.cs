@@ -3,6 +3,9 @@ using System.Text.Json;
 using AdvertBoard.Application.AppServices.Exceptions;
 using AdvertBoard.Contracts.Common;
 using FluentValidation;
+using Microsoft.AspNetCore.Http.Extensions;
+using Serilog;
+using Serilog.Context;
 
 namespace AdvertBoard.Hosts.Api.Middlewares;
 
@@ -43,8 +46,19 @@ public class ExceptionHandlingMiddleware
             await _next(context);
         }
         catch (Exception e)
-        {
+        {            
             var statusCode = GetStatusCode(e);
+            
+            using (LogContext.PushProperty("Request.TraceId", context.TraceIdentifier))
+            using (LogContext.PushProperty("Request.UserName", context.User.Identity?.Name ?? string.Empty))
+            using (LogContext.PushProperty("Request.Connection", context.Connection.RemoteIpAddress?.ToString() ?? string.Empty))
+            using (LogContext.PushProperty("Request.DisplayUrl", context.Request.GetDisplayUrl()))
+            {
+                logger.LogError(e, LogTemplate,
+                    context.Request.Method,
+                    context.Request.Path.ToString(),
+                    (int)statusCode);
+            }
 
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)statusCode;
