@@ -5,6 +5,7 @@ using AdvertBoard.Infrastructure.ComponentRegistrar;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -86,6 +87,12 @@ builder.Services.AddMassTransit(bus =>
     {
         configurator.Host(builder.Configuration.GetConnectionString("RabbitMq"));
     });
+});
+
+builder.Host.UseSerilog((context, provider, config) =>
+{
+    config.ReadFrom.Configuration(context.Configuration)
+        .Enrich.WithEnvironmentName();
 });
 
 var app = builder.Build();

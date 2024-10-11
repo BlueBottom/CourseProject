@@ -2,6 +2,7 @@
 using System.Net.Mail;
 using AdvertBoard.Application.AppServices.Helpers;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace AdvertBoard.Application.AppServices.Contexts.Email.Services;
 
@@ -9,14 +10,17 @@ namespace AdvertBoard.Application.AppServices.Contexts.Email.Services;
 public class UserEmailService : IUserEmailService
 {
     private const string WelcomeText = "Contexts.Email.Resources.WelcomeUserMail.txt";
+    
     private readonly IConfiguration _configuration;
+    private readonly ILogger<UserEmailService> _logger;
 
     /// <summary>
     /// Инициализирует экземпляр класса <see cref="UserEmailService"/>.
     /// </summary>
-    public UserEmailService(IConfiguration configuration)
+    public UserEmailService(IConfiguration configuration, ILogger<UserEmailService> logger)
     {
         _configuration = configuration;
+        _logger = logger;
     }
 
     /// <summary>
@@ -48,5 +52,6 @@ public class UserEmailService : IUserEmailService
         mailMessage.To.Add(email);
 
         await smtpClient.SendMailAsync(mailMessage, cancellationToken);
+        _logger.LogInformation($"Пользователю {name} на email {email} было отправлено пьсьмо о регистрации");
     }
 }

@@ -73,7 +73,7 @@ public class ReviewService : IReviewService
         review.OwnerUserId = userId;
 
         var result= await _reviewRepository.AddAsync(review, cancellationToken);
-        await _notificationService.SendReviewCreated(review.Id, review.ReceiverUserId, cancellationToken);
+        await _notificationService.SendReviewStatusUpdated(review.Id, review.ReceiverUserId, cancellationToken);
 
         return result;
     }
@@ -86,7 +86,7 @@ public class ReviewService : IReviewService
         await EnsureResourceAuthorize(existingReview);
 
         var result = await _reviewRepository.UpdateAsync(id, updateReviewRequest, cancellationToken);
-        await _notificationService.SendReviewCreated(existingReview.Id, existingReview.ReceiverUserId,
+        await _notificationService.SendReviewStatusUpdated(existingReview.Id, existingReview.ReceiverUserId,
             cancellationToken);
         
         return result;
@@ -100,7 +100,7 @@ public class ReviewService : IReviewService
         await EnsureResourceAuthorize(existingReview);
         
         var result = await _reviewRepository.DeleteAsync(id, cancellationToken);
-        await _notificationService.SendReviewCreated(existingReview.Id, existingReview.ReceiverUserId,
+        await _notificationService.SendReviewStatusUpdated(existingReview.Id, existingReview.ReceiverUserId,
             cancellationToken);
         
         return result;

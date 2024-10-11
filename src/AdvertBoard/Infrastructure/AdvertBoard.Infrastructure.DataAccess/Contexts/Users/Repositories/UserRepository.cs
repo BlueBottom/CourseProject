@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using System.Text.Json;
 using AdvertBoard.Application.AppServices.Contexts.Users.Models;
 using AdvertBoard.Application.AppServices.Contexts.Users.Repositories;
 using AdvertBoard.Application.AppServices.Exceptions;
@@ -11,6 +12,7 @@ using AdvertBoard.Infrastructure.Repository;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace AdvertBoard.Infrastructure.DataAccess.Contexts.Users.Repositories;
 
@@ -21,16 +23,19 @@ public class UserRepository : IUserRepository
 {
     private readonly IRepository<User> _repository;
     private readonly IMapper _mapper;
+    private readonly ILogger<UserRepository> _logger;
 
     /// <summary>
     /// Инициализирует экземпляр класса.
     /// </summary>
     /// <param name="repository">Глупый репозиторий.</param>
     /// <param name="mapper">Маппер.</param>
-    public UserRepository(IRepository<User> repository, IMapper mapper)
+    /// <param name="logger"></param>
+    public UserRepository(IRepository<User> repository, IMapper mapper, ILogger<UserRepository> logger)
     {
         _repository = repository;
         _mapper = mapper;
+        _logger = logger;
     }
 
     /// <inheritdoc/>
@@ -65,6 +70,7 @@ public class UserRepository : IUserRepository
     {
         user.Password = password;
         await _repository.AddAsync(user, cancellationToken);
+        _logger.LogInformation($"Добавлен пользователь : {{User}}", JsonSerializer.Serialize(user));
         return user.Id;
     }
 
@@ -130,7 +136,10 @@ public class UserRepository : IUserRepository
         var user = await _repository.GetByIdAsync(id, cancellationToken);
         if (user is null) throw new EntityNotFoundException("Пользователь не был найден.");
 
+        var oldRating = user.Rating;
         user.Rating = rating;
+        
         await _repository.UpdateAsync(user, cancellationToken);
+        _logger.LogInformation($"Рейтинг пользователя изменен с {oldRating?.ToString() ?? "null"} на {rating}");
     }
 }

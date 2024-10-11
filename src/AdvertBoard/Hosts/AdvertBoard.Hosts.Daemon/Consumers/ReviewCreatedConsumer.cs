@@ -10,18 +10,20 @@ namespace AdvertBoard.Hosts.Daemon.Consumers;
 public class ReviewCreatedConsumer : IConsumer<ReviewStatusUpdatedEvent>
 {
     private readonly IUserRatingService _userRatingService;
+    private readonly ILogger<ReviewCreatedConsumer> _logger;
 
     /// <summary>
     /// Инициализирует экземпляр класса <see cref="ReviewCreatedConsumer"/>.
     /// </summary>
-    public ReviewCreatedConsumer(IUserRatingService userRatingService)
+    public ReviewCreatedConsumer(IUserRatingService userRatingService, ILogger<ReviewCreatedConsumer> logger)
     {
         _userRatingService = userRatingService;
+        _logger = logger;
     }
 
     public async Task Consume(ConsumeContext<ReviewStatusUpdatedEvent> context)
     {
+        _logger.LogInformation("Получено событие на пересчет рейтинга пользователя");
         await _userRatingService.EvaluateUserRatingAsync(context.Message.ReceiverUserId, context.CancellationToken);
-        Console.WriteLine("Рейтинг пользователя посчитан.");
     }
 }
