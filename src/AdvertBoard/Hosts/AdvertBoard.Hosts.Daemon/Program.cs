@@ -34,7 +34,7 @@ public class Program
         });
 
         builder.Services.AddScoped<IUserRatingService, UserRatingService>();
-        builder.Services.AddScoped<IUserEmailService, UserEmailService>();
+        builder.Services.AddScoped<IEmailService, EmailService>();
         
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<IReviewRepository, ReviewRepository>();

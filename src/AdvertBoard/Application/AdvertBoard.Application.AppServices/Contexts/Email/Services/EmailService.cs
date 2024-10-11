@@ -7,17 +7,17 @@ using Microsoft.Extensions.Logging;
 namespace AdvertBoard.Application.AppServices.Contexts.Email.Services;
 
 /// <inheritdoc/>
-public class UserEmailService : IUserEmailService
+public class EmailService : IEmailService
 {
     private const string WelcomeText = "Contexts.Email.Resources.WelcomeUserMail.txt";
     
     private readonly IConfiguration _configuration;
-    private readonly ILogger<UserEmailService> _logger;
+    private readonly ILogger<EmailService> _logger;
 
     /// <summary>
-    /// Инициализирует экземпляр класса <see cref="UserEmailService"/>.
+    /// Инициализирует экземпляр класса <see cref="EmailService"/>.
     /// </summary>
-    public UserEmailService(IConfiguration configuration, ILogger<UserEmailService> logger)
+    public EmailService(IConfiguration configuration, ILogger<EmailService> logger)
     {
         _configuration = configuration;
         _logger = logger;

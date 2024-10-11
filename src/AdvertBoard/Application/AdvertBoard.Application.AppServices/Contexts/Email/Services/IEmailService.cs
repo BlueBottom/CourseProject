@@ -3,7 +3,7 @@
 /// <summary>
 /// Сервис для рассылки сообщений пользователям.
 /// </summary>
-public interface IUserEmailService
+public interface IEmailService
 {
     /// <summary>
     /// Отправляет сообщение на почту об успешной регистрации.
