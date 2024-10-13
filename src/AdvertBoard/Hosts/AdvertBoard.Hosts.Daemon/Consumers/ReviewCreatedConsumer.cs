@@ -24,6 +24,6 @@ public class ReviewCreatedConsumer : IConsumer<ReviewStatusUpdatedEvent>
     public async Task Consume(ConsumeContext<ReviewStatusUpdatedEvent> context)
     {
         _logger.LogInformation("Получено событие на пересчет рейтинга пользователя");
-        await _userRatingService.EvaluateUserRatingAsync(context.Message.ReceiverUserId, context.CancellationToken);
+        await _userRatingService.UpdateRatingAsync(context.Message.ReceiverUserId, context.CancellationToken);
     }
 }

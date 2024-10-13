@@ -15,18 +15,16 @@ public class UpdateUserRequestValidator : AbstractValidator<UpdateUserRequest>
     public UpdateUserRequestValidator()
     {
         RuleFor(x => x.Email)
-            .NotEmpty()
-            .EmailAddress();
+            .EmailRule();
 
         RuleFor(x => x.Phone)
             .NotEmpty()
             .MatchPhoneNumberRule();
-        
+
         RuleFor(x => x.Name)
-            .NotEmpty()
-            .MaximumLength(25);
+            .NameRule();
 
         RuleFor(x => x.Lastname)
-            .MaximumLength(25);
+            .LastnameRule();
     }
 }

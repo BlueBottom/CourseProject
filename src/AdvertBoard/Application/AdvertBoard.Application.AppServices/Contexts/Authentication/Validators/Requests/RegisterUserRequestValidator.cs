@@ -16,19 +16,17 @@ public class RegisterUserRequestValidator : AbstractValidator<RegisterUserReques
     public RegisterUserRequestValidator()
     {
         RuleFor(x => x.Name)
-            .NotEmpty()
-            .MaximumLength(25);
+            .NameRule();
 
         RuleFor(x => x.Lastname)
-            .MaximumLength(25);
-
-        RuleFor(x => x.Phone)
-            .MatchPhoneNumberRule();
+            .LastnameRule();
         
-        RuleFor(x => x.Email)
+        RuleFor(x => x.Phone)
             .NotEmpty()
-            .EmailAddress()
-            .MaximumLength(50);
+            .MatchPhoneNumberRule();
+
+        RuleFor(x => x.Email)
+            .EmailRule();
 
         RuleFor(x => x.Password)
             .PasswordRule();

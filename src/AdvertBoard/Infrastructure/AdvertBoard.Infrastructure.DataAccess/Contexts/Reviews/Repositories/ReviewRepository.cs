@@ -91,17 +91,15 @@ public class ReviewRepository : IReviewRepository
     }
 
     /// <inheritdoc/>
-    public async Task<decimal?> EvaluateUserRatingAsync(Guid id, CancellationToken cancellationToken)
+    public Task<int[]> GetAllRatesByUser(Guid receiverUserId, CancellationToken cancellationToken)
     {
         var userRatingQuery = _repository
             .GetAll()
-            .Where(x => x.ReceiverUserId == id)
-            .Select(x => x.Rating);
+            .Where(x => x.ReceiverUserId == receiverUserId)
+            .Select(x => x.Rating)
+            .ToArrayAsync(cancellationToken);
 
-        if (!await userRatingQuery.AnyAsync(cancellationToken)) return null;
-
-        var userRating = (decimal)await userRatingQuery.AverageAsync(cancellationToken);
-        return userRating;
+        return userRatingQuery;
     }
 
     /// <inheritdoc/>
