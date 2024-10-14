@@ -59,7 +59,7 @@ public class CategoryService : ICategoryService
 
         var category = await _categoryRepository.GetHierarchyByIdAsync(id, cancellationToken);
 
-        await _distributedCache.PutByKeyAsync(key, category, 1, cancellationToken);
+        await _distributedCache.PutByKeyAsync(key, category, 60, cancellationToken);
         return category;
     }
 
@@ -67,13 +67,13 @@ public class CategoryService : ICategoryService
     public async Task<IEnumerable<ShortCategoryResponse>> GetAllParentsAsync(CancellationToken cancellationToken)
     {
         var categoriesFromCache = await _distributedCache.GetByKeyAsync<IEnumerable<ShortCategoryResponse>>(
-            ParentsCategoriesKey,
+            $"{RedisKeyCategoryPrefix}{ParentsCategoriesKey}",
             cancellationToken);
         
         if (categoriesFromCache?.Any() ?? false) return categoriesFromCache;
         var categories = await _categoryRepository.GetAllParentsAsync(cancellationToken);
 
-        await _distributedCache.PutByKeyAsync(ParentsCategoriesKey, categories, 1, cancellationToken);
+        await _distributedCache.PutByKeyAsync(ParentsCategoriesKey, categories, 60, cancellationToken);
 
         return categories;
     }
@@ -86,8 +86,7 @@ public class CategoryService : ICategoryService
         if (categoryFromCache is not null) return categoryFromCache;
 
         var category = await _categoryRepository.GetByIdAsync(id, cancellationToken);
-
-        await _distributedCache.PutByKeyAsync(key, category, 1, cancellationToken);
+        
         return category;
     }
 

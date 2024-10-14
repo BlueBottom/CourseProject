@@ -56,10 +56,10 @@ public interface IReviewRepository
     /// <summary>
     /// Рассчитывает рейтинг пользователя по оставленным отзывам.
     /// </summary>
-    /// <param name="id">Идентификатор.</param>
+    /// <param name="receiverUserId"></param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns></returns>
-    Task<decimal?> EvaluateUserRatingAsync(Guid id, CancellationToken cancellationToken);
+    Task<int[]> GetAllRatesByUser(Guid receiverUserId, CancellationToken cancellationToken);
 
     /// <summary>
     /// Проверяет, оставлял ли уже пользователь отзыв другому конкретно пользователю.

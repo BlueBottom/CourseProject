@@ -5,7 +5,7 @@ namespace AdvertBoard.Infrastructure.Repository;
 /// <summary>
 /// Базовый репозиторий.
 /// </summary>
-/// <typeparam name="TEntity">Сущность</typeparam>
+/// <typeparam name="TEntity">Тип объекта.</typeparam>
 public interface IRepository<TEntity> where TEntity : class
 {
     /// <summary>

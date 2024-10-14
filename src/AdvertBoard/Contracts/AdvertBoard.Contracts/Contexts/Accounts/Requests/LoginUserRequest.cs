@@ -1,4 +1,4 @@
-﻿namespace AdvertBoard.Contracts.Contexts.Users.Requests;
+﻿namespace AdvertBoard.Contracts.Contexts.Accounts.Requests;
 
 /// <summary>
 /// Модель логина пользователя.

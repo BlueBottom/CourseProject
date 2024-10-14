@@ -14,8 +14,8 @@ public static class DistributedCacheHelper
     /// <param name="distributedCache">Распределенный кэш.</param>
     /// <param name="key">Ключ.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
-    /// <typeparam name="T">Сущность.</typeparam>
-    /// <returns>Сущность.</returns>
+    /// <typeparam name="T">Тип кэшируемого объекта.</typeparam>
+    /// <returns>Значение из кэша по ключу.</returns>
     public static async Task<T?> GetByKeyAsync<T>(this IDistributedCache distributedCache, string key,
         CancellationToken cancellationToken)
     {
@@ -31,20 +31,20 @@ public static class DistributedCacheHelper
     /// <param name="distributedCache">Распределенный кэш.</param>
     /// <param name="key">Ключ.</param>
     /// <param name="entity">Сущность, помещемая в кэш.</param>
-    /// <param name="cacheLifetimeInHours">Время жизни сущности в кэше в часах.</param>
+    /// <param name="cacheLifetimeInMinutes">Время жизни в минутах.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
-    /// <typeparam name="T">Сущность.</typeparam>
+    /// <typeparam name="T">Тип кэшируемого объекта.</typeparam>
     public static async Task PutByKeyAsync<T>(this IDistributedCache distributedCache,
         string key,
         T entity,
-        int cacheLifetimeInHours,
+        int cacheLifetimeInMinutes,
         CancellationToken cancellationToken)
     {
         var itemToCache = JsonSerializer.Serialize(entity);
         await distributedCache.SetStringAsync(key, itemToCache,
             new DistributedCacheEntryOptions
             {
-                SlidingExpiration = TimeSpan.FromHours(cacheLifetimeInHours)
+                SlidingExpiration = TimeSpan.FromMinutes(cacheLifetimeInMinutes)
             },
             cancellationToken);
     }

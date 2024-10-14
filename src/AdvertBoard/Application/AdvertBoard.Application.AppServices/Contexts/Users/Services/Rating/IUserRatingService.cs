@@ -6,10 +6,10 @@
 public interface IUserRatingService
 {
     /// <summary>
-    /// Считает рейтинг пользователя.
+    /// Обновляет рейтинг пользователя.
     /// </summary>
     /// <param name="id">Идентификатор пользователя.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns></returns>
-    Task EvaluateUserRatingAsync(Guid id, CancellationToken cancellationToken);
+    Task UpdateRatingAsync(Guid id, CancellationToken cancellationToken);
 }

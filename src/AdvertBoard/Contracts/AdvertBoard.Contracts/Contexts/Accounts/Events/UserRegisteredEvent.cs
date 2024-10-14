@@ -1,4 +1,4 @@
-﻿namespace AdvertBoard.Contracts.Contexts.Users.Events;
+﻿namespace AdvertBoard.Contracts.Contexts.Accounts.Events;
 
 /// <summary>
 /// Событие о регистрации пользователя.

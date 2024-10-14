@@ -1,9 +1,9 @@
-﻿using AdvertBoard.Application.AppServices.Helpers;
-using AdvertBoard.Application.AppServices.Validators;
+﻿using AdvertBoard.Application.AppServices.Validators;
+using AdvertBoard.Contracts.Contexts.Accounts.Requests;
 using AdvertBoard.Contracts.Contexts.Users.Requests;
 using FluentValidation;
 
-namespace AdvertBoard.Application.AppServices.Contexts.Authentication.Validators.Requests;
+namespace AdvertBoard.Application.AppServices.Contexts.Accounts.Validators.Requests;
 
 /// <summary>
 /// Валидатор запроса на регистрацию пользователя.
@@ -16,19 +16,17 @@ public class RegisterUserRequestValidator : AbstractValidator<RegisterUserReques
     public RegisterUserRequestValidator()
     {
         RuleFor(x => x.Name)
-            .NotEmpty()
-            .MaximumLength(25);
+            .NameRule();
 
         RuleFor(x => x.Lastname)
-            .MaximumLength(25);
-
-        RuleFor(x => x.Phone)
-            .MatchPhoneNumberRule();
+            .LastnameRule();
         
-        RuleFor(x => x.Email)
+        RuleFor(x => x.Phone)
             .NotEmpty()
-            .EmailAddress()
-            .MaximumLength(50);
+            .MatchPhoneNumberRule();
+
+        RuleFor(x => x.Email)
+            .EmailRule();
 
         RuleFor(x => x.Password)
             .PasswordRule();

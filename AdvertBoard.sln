@@ -50,6 +50,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdvertBoard.Hosts.Daemon", "src\AdvertBoard\Hosts\AdvertBoard.Hosts.Daemon\AdvertBoard.Hosts.Daemon.csproj", "{A54844F6-F835-460C-B037-579B780A8912}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{F7E10B3C-6CDE-463A-A730-16EAC708D3B9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdvertBoard.Tests", "tests\AdvertBoard.Tests\AdvertBoard.Tests.csproj", "{EE661A72-6A4B-4222-BCEA-02B6DF5CB626}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -71,6 +75,7 @@ Global
 		{8D58E3BF-68A2-4D38-B489-8D4E7627EFC0} = {12E5346D-AE85-4A9B-B749-F2B2106B5378}
 		{B7E2008A-E2C3-44F5-925A-8DE0E743F85E} = {E383C580-A8C7-447A-ADD8-E4AEBAB17BF4}
 		{A54844F6-F835-460C-B037-579B780A8912} = {E383C580-A8C7-447A-ADD8-E4AEBAB17BF4}
+		{EE661A72-6A4B-4222-BCEA-02B6DF5CB626} = {F7E10B3C-6CDE-463A-A730-16EAC708D3B9}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{EF27C82F-2226-4C3F-90B2-EC28B08611C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -109,5 +114,9 @@ Global
 		{A54844F6-F835-460C-B037-579B780A8912}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A54844F6-F835-460C-B037-579B780A8912}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A54844F6-F835-460C-B037-579B780A8912}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE661A72-6A4B-4222-BCEA-02B6DF5CB626}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE661A72-6A4B-4222-BCEA-02B6DF5CB626}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE661A72-6A4B-4222-BCEA-02B6DF5CB626}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE661A72-6A4B-4222-BCEA-02B6DF5CB626}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -37,6 +37,14 @@
       <EmbeddedResource Include="Contexts\Email\Resources\WelcomeUserMail.txt">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </EmbeddedResource>
+      <None Remove="Contexts\Email\Resources\PasswordRecoverMail.txt" />
+      <EmbeddedResource Include="Contexts\Email\Resources\PasswordRecoverMail.txt">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </EmbeddedResource>
+      <None Remove="Contexts\Email\Resources\PasswordRecoveredInfoMail.txt" />
+      <EmbeddedResource Include="Contexts\Email\Resources\PasswordRecoveredInfoMail.txt">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </EmbeddedResource>
     </ItemGroup>
 
 </Project>
