@@ -1,12 +1,12 @@
 ﻿using System.Text;
 using AdvertBoard.Application.AppServices.Authorization.Handlers;
+using AdvertBoard.Application.AppServices.Contexts.Accounts.Services;
+using AdvertBoard.Application.AppServices.Contexts.Accounts.Validators.BusinessLogic;
 using AdvertBoard.Application.AppServices.Contexts.Adverts.Builders;
 using AdvertBoard.Application.AppServices.Contexts.Adverts.Repositories;
 using AdvertBoard.Application.AppServices.Contexts.Adverts.Services;
 using AdvertBoard.Application.AppServices.Contexts.Adverts.Validators.BusinessLogic;
 using AdvertBoard.Application.AppServices.Contexts.Adverts.Validators.Requests;
-using AdvertBoard.Application.AppServices.Contexts.Authentication.Services;
-using AdvertBoard.Application.AppServices.Contexts.Authentication.Validators.BusinessLogic;
 using AdvertBoard.Application.AppServices.Contexts.Categories.Repositories;
 using AdvertBoard.Application.AppServices.Contexts.Categories.Services;
 using AdvertBoard.Application.AppServices.Contexts.Categories.Validators.BusinessLogic;
@@ -22,10 +22,12 @@ using AdvertBoard.Application.AppServices.Contexts.Reviews.Validators.BusinessLo
 using AdvertBoard.Application.AppServices.Contexts.Users.Builders;
 using AdvertBoard.Application.AppServices.Contexts.Users.Repositories;
 using AdvertBoard.Application.AppServices.Contexts.Users.Services;
+using AdvertBoard.Application.AppServices.Contexts.Users.Services.Password;
 using AdvertBoard.Application.AppServices.Contexts.Users.Services.Rating;
 using AdvertBoard.Application.AppServices.Contexts.Users.Validators.BusinessLogic;
 using AdvertBoard.Application.AppServices.Notifications.Services;
 using AdvertBoard.Application.AppServices.Validators;
+using AdvertBoard.Contracts.Contexts.Accounts.Requests;
 using AdvertBoard.Contracts.Contexts.Adverts.Requests;
 using AdvertBoard.Contracts.Contexts.Categories.Requests;
 using AdvertBoard.Contracts.Contexts.Comments.Requests;
@@ -81,7 +83,8 @@ public static class ComponentRegistrar
         serviceCollection.AddScoped<ICommentService, CommentService>();
         serviceCollection.AddScoped<ICategoryService, CategoryService>();
         serviceCollection.AddScoped<IUserRatingService, UserRatingService>();
-        serviceCollection.AddScoped<IAuthenticationService, AuthenticationService>();
+        serviceCollection.AddScoped<IAccountService, AccountService>();
+        //serviceCollection.AddScoped<IUserPasswordService, UserPasswordService>();
 
         //Handlers для работы с ресурсной авторизацией.
         serviceCollection.AddScoped<IAuthorizationHandler, IsAdvertOwnerHandler>();
@@ -151,6 +154,8 @@ public static class ComponentRegistrar
         // Валидация бизнес логики аутентификации
         services.AddScoped<BusinessLogicAbstractValidator<LoginUserRequest>, LoginUserValidator>();
         services.AddScoped<BusinessLogicAbstractValidator<RegisterUserRequest>, RegisterUserValidator>();
+        services.AddScoped<BusinessLogicAbstractValidator<RecoverPasswordWithCodeRequest>, RecoverPasswordWithCodeValidator>();
+        services.AddScoped<BusinessLogicAbstractValidator<AskRecoveryPasswordCodeRequest>, AskRecoveryPasswordCodeValidator>();
         
         // Валидация бизнес логики категорий
         services.AddScoped<BusinessLogicAbstractValidator<CreateCategoryRequest>, CreateCategoryValidator>();
@@ -169,16 +174,16 @@ public static class ComponentRegistrar
         //бизнес логики пользователя
         services.AddScoped<BusinessLogicAbstractValidator<UpdateUserRequest>, UpdateUserValidator>();
         
-        services.AddFluentValidationAutoValidation(configuration =>
-        {
-            configuration.ValidationStrategy = ValidationStrategy.All;
-            configuration.DisableBuiltInModelValidation = false;
-            configuration.EnableBodyBindingSourceAutomaticValidation = true;
-            configuration.EnableCustomBindingSourceAutomaticValidation = true;
-            configuration.EnableFormBindingSourceAutomaticValidation = true;
-            configuration.EnablePathBindingSourceAutomaticValidation = true;
-            configuration.EnableQueryBindingSourceAutomaticValidation = true;
-        });
+            services.AddFluentValidationAutoValidation(configuration =>
+            {
+                configuration.ValidationStrategy = ValidationStrategy.All;
+                configuration.DisableBuiltInModelValidation = false;
+                configuration.EnableBodyBindingSourceAutomaticValidation = true;
+                configuration.EnableCustomBindingSourceAutomaticValidation = true;
+                configuration.EnableFormBindingSourceAutomaticValidation = true;
+                configuration.EnablePathBindingSourceAutomaticValidation = true;
+                configuration.EnableQueryBindingSourceAutomaticValidation = true;
+            });
 
         return services;
     }

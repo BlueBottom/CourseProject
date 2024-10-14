@@ -1,25 +1,26 @@
-﻿using AdvertBoard.Application.AppServices.Contexts.Users.Services;
+﻿using AdvertBoard.Application.AppServices.Contexts.Users.Repositories;
 using AdvertBoard.Application.AppServices.Helpers;
 using AdvertBoard.Application.AppServices.Validators;
+using AdvertBoard.Contracts.Contexts.Accounts.Requests;
 using AdvertBoard.Contracts.Contexts.Users.Requests;
 using FluentValidation;
 
-namespace AdvertBoard.Application.AppServices.Contexts.Authentication.Validators.BusinessLogic;
+namespace AdvertBoard.Application.AppServices.Contexts.Accounts.Validators.BusinessLogic;
 
 /// <summary>
 /// Валидатор, проеряющий правила бизне логики для регистрации пользователя.
 /// </summary>
 public class RegisterUserValidator : BusinessLogicAbstractValidator<RegisterUserRequest>
 {
-    private readonly IUserService _userService;
+    private readonly IUserRepository _userRepository;
     
     /// <summary>
     /// Инициализирует экземпляр класса <see cref="RegisterUserValidator"/>.
     /// </summary>
-    /// <param name="userService">Сервис для работы с пользователями.</param>
-    public RegisterUserValidator(IUserService userService)
+    /// <param name="userRepository">Сервис для работы с пользователями.</param>
+    public RegisterUserValidator(IUserRepository userRepository)
     {
-        _userService = userService;
+        _userRepository = userRepository;
 
         RuleFor(x => x.Email)
             .MustAsync(IsEmailNotAlreadyTaken)
@@ -32,12 +33,12 @@ public class RegisterUserValidator : BusinessLogicAbstractValidator<RegisterUser
 
     private async Task<bool> IsEmailNotAlreadyTaken(string? email, CancellationToken cancellationToken)
     {
-        return (await _userService.FindByEmail(email!, cancellationToken)) is null;
+        return (await _userRepository.FindByEmail(email!, cancellationToken)) is null;
     }
 
     private async Task<bool> IsPhoneNotAlreadyTaken(string? phone, CancellationToken cancellationToken)
     {
         var phoneNormalized = PhoneHelper.NormalizePhoneNumber(phone!);
-        return !await _userService.IsExistByPhone(phoneNormalized, cancellationToken);
+        return !await _userRepository.IsExistByPhone(phoneNormalized, cancellationToken);
     }
 }

@@ -20,4 +20,20 @@ public interface INotificationService
     /// <param name="userEmail">Электронный почтовый адрес.</param>
     /// <param name="cancellationToken"></param>
     Task SendUserRegistered(string userName, string userEmail, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Отправляет код на почту пользователя, необходимый для восстановления пароля.
+    /// </summary>
+    /// <param name="email">Электронная почта.</param>
+    /// <param name="code">Код для восстановления пароля.</param>
+    /// <param name="cancellationToken">Токен отмены.</param>
+    Task SendPasswordRecoveryCode(string email, string code, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Отправляе письмо об успешном восстановлении пароля.
+    /// </summary>
+    /// <param name="email"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    Task SendPasswordSuccessfullyRecovered(string email, CancellationToken cancellationToken);
 }

@@ -142,4 +142,15 @@ public class UserRepository : IUserRepository
         await _repository.UpdateAsync(user, cancellationToken);
         _logger.LogInformation($"Рейтинг пользователя изменен с {oldRating?.ToString() ?? "null"} на {rating}");
     }
+
+    /// <inheritdoc/>
+    public async Task ChangePassword(string email, string password, CancellationToken cancellationToken)
+    {
+        var userModel = await FindByEmail(email, cancellationToken);
+        var user = await _repository.GetByIdAsync(userModel!.Id, cancellationToken);
+
+        user!.Password = password;
+        await _repository.UpdateAsync(user, cancellationToken);
+        _logger.LogInformation($"Пароль пользователя {{UserModel}} был обновлен", userModel);
+    }
 }

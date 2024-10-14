@@ -1,5 +1,5 @@
 ﻿using AdvertBoard.Application.AppServices.Contexts.Email.Services;
-using AdvertBoard.Contracts.Contexts.Users.Events;
+using AdvertBoard.Contracts.Contexts.Accounts.Events;
 using MassTransit;
 
 namespace AdvertBoard.Hosts.Daemon.Consumers;
@@ -21,10 +21,14 @@ public class UserRegisteredConsumer : IConsumer<UserRegisteredEvent>
         _logger = logger;
     }
 
+    /// <summary>
+    /// Обрабатывает полученне из очереди событие.
+    /// </summary>
+    /// <param name="context">Контекст события.</param>
     public async Task Consume(ConsumeContext<UserRegisteredEvent> context)
     {
-        _logger.LogInformation("Получено событие на отправку письма о регистрации пользователя");
-        await _emailService.SendEmailAboutRegistration(context.Message.Name, context.Message.Email,
+        _logger.LogInformation($"Получено событие {nameof(UserRegisteredEvent)}.");
+        await _emailService.SendMailAboutRegistration(context.Message.Name, context.Message.Email,
             context.CancellationToken);
     }
 }

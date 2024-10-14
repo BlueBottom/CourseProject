@@ -59,7 +59,7 @@ public class CategoryService : ICategoryService
 
         var category = await _categoryRepository.GetHierarchyByIdAsync(id, cancellationToken);
 
-        await _distributedCache.PutByKeyAsync(key, category, 1, cancellationToken);
+        await _distributedCache.PutByKeyAsync(key, category, 60, cancellationToken);
         return category;
     }
 
@@ -73,7 +73,7 @@ public class CategoryService : ICategoryService
         if (categoriesFromCache?.Any() ?? false) return categoriesFromCache;
         var categories = await _categoryRepository.GetAllParentsAsync(cancellationToken);
 
-        await _distributedCache.PutByKeyAsync(ParentsCategoriesKey, categories, 1, cancellationToken);
+        await _distributedCache.PutByKeyAsync(ParentsCategoriesKey, categories, 60, cancellationToken);
 
         return categories;
     }

@@ -1,7 +1,9 @@
-﻿using AdvertBoard.Application.AppServices.Contexts.Authentication.Validators.BusinessLogic;
+﻿using AdvertBoard.Application.AppServices.Contexts.Accounts.Validators.BusinessLogic;
 using AdvertBoard.Application.AppServices.Contexts.Users.Models;
+using AdvertBoard.Application.AppServices.Contexts.Users.Repositories;
 using AdvertBoard.Application.AppServices.Contexts.Users.Services;
 using AdvertBoard.Application.AppServices.Helpers;
+using AdvertBoard.Contracts.Contexts.Accounts.Requests;
 using AdvertBoard.Contracts.Contexts.Users.Requests;
 using AutoFixture;
 using Bogus;
@@ -16,7 +18,7 @@ namespace AdvertBoard.Tests.Application.AppServicesTests.Contexts.Authentication
 /// </summary>
 public class RegisterUserValidatorTests
 {
-    private readonly Mock<IUserService> _userServiceMock;
+    private readonly Mock<IUserRepository> _userRepositoryMock;
     private readonly RegisterUserValidator _validator;
     private readonly CancellationToken _token;
     private readonly Fixture _fixture;
@@ -26,8 +28,8 @@ public class RegisterUserValidatorTests
     /// </summary>
     public RegisterUserValidatorTests()
     {
-        _userServiceMock = new Mock<IUserService>();
-        _validator = new RegisterUserValidator(_userServiceMock.Object);
+        _userRepositoryMock = new Mock<IUserRepository>();
+        _validator = new RegisterUserValidator(_userRepositoryMock.Object);
         _token = new CancellationTokenSource().Token;       
         _fixture = new Fixture();
     }   
@@ -46,7 +48,7 @@ public class RegisterUserValidatorTests
             .With(x => x.Email, email)
             .Create();
         
-        _userServiceMock
+        _userRepositoryMock
             .Setup(x => x.FindByEmail(email, _token))
             .ReturnsAsync(new UserWithPasswordModel());
 
@@ -75,7 +77,7 @@ public class RegisterUserValidatorTests
             .With(x => x.Email, email)
             .Create();
         
-        _userServiceMock
+        _userRepositoryMock
             .Setup(x => x.FindByEmail(email, _token))
             .ReturnsAsync(model);
         
@@ -101,7 +103,7 @@ public class RegisterUserValidatorTests
             .With(x => x.Phone, phone)
             .Create();
         
-        _userServiceMock
+        _userRepositoryMock
             .Setup(x => x.IsExistByPhone(normalizedPhone, _token))
             .ReturnsAsync(true);
 
@@ -128,7 +130,7 @@ public class RegisterUserValidatorTests
             .With(x => x.Phone, phone)
             .Create();
         
-        _userServiceMock
+        _userRepositoryMock
             .Setup(x => x.IsExistByPhone(phone, _token))
             .ReturnsAsync(false);
         

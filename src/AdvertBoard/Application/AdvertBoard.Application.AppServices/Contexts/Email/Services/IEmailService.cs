@@ -10,6 +10,21 @@ public interface IEmailService
     /// </summary>
     /// <param name="name">Имя пользователя.</param>
     /// <param name="email">Адрес электронной почты.</param>
-    /// <param name="cancellationToken"></param>
-    Task SendEmailAboutRegistration(string name, string email, CancellationToken cancellationToken);
+    /// <param name="cancellationToken">Токен отмены.</param>
+    Task SendMailAboutRegistration(string name, string email, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Отправляет код для восстановления пароля.
+    /// </summary>
+    /// <param name="email">Электронная почта.</param>
+    /// <param name="code">Код.</param>
+    /// <param name="cancellationToken">Токен отмены.</param>
+    Task SendRecoveryPasswordCode(string email, string code, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Отправляет письмо об успешном восстановлении пароля.
+    /// </summary>
+    /// <param name="email">"Электронная почта.</param>
+    /// <param name="cancellationToken">Токен отмены.</param>
+    Task SendMailAboutPasswordRecovering(string email, CancellationToken cancellationToken);
 }

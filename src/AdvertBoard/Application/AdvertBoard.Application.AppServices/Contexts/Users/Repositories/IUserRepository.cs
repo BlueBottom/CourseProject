@@ -97,4 +97,12 @@ public interface IUserRepository
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Наличие пользователя в БД.</returns>
     Task<bool> IsExistsAsync(Guid id, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Изменяет пароль.
+    /// </summary>
+    /// <param name="email">Электронная почта.</param>
+    /// <param name="password">Пароль.</param>
+    /// <param name="cancellationToken">Токен отмены.</param>
+    Task ChangePassword(string email, string password, CancellationToken cancellationToken);
 }

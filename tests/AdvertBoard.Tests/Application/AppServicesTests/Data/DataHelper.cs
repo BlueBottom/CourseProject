@@ -34,7 +34,8 @@ public class DataHelper
             new object[] { "user.name@example.co.uk" },
             new object[] { "user+tag@example.com" },
             new object[] { "mail123@example123.com" },
-            new object[] { "firstname-lastname@example.com" }
+            new object[] { "firstname-lastname@example.com" },
+            new object[] { "Delfina04@gmail.com" }
         };
     }
 
