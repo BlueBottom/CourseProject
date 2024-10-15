@@ -1,7 +1,6 @@
 ﻿using AdvertBoard.Application.AppServices.Contexts.Users.Repositories;
 using AdvertBoard.Application.AppServices.Validators;
 using AdvertBoard.Contracts.Contexts.Accounts.Requests;
-using AdvertBoard.Contracts.Contexts.Users.Requests;
 using FluentValidation;
 
 namespace AdvertBoard.Application.AppServices.Contexts.Accounts.Validators.BusinessLogic;

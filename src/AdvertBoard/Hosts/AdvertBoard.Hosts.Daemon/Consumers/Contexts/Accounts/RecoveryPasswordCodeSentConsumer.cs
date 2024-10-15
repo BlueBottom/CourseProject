@@ -2,7 +2,7 @@
 using AdvertBoard.Contracts.Contexts.Accounts.Events;
 using MassTransit;
 
-namespace AdvertBoard.Hosts.Daemon.Consumers;
+namespace AdvertBoard.Hosts.Daemon.Consumers.Contexts.Accounts;
 
 /// <summary>
 /// Consumer для отправки кода для восстановления пароля.

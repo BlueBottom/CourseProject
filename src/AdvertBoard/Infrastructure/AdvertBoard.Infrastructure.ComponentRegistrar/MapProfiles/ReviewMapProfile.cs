@@ -1,5 +1,4 @@
-﻿using AdvertBoard.Contracts.Contexts.Reviews;
-using AdvertBoard.Contracts.Contexts.Reviews.Requests;
+﻿using AdvertBoard.Contracts.Contexts.Reviews.Requests;
 using AdvertBoard.Contracts.Contexts.Reviews.Responses;
 using AdvertBoard.Domain.Contexts.Reviews;
 using AutoMapper;

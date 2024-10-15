@@ -1,9 +1,9 @@
 ﻿using AdvertBoard.Application.AppServices.Contexts.Categories.Repositories;
 using AdvertBoard.Application.AppServices.Exceptions;
-using AdvertBoard.Contracts.Contexts.Categories;
 using AdvertBoard.Contracts.Contexts.Categories.Requests;
 using AdvertBoard.Contracts.Contexts.Categories.Responses;
 using AdvertBoard.Domain.Contexts.Categories;
+using AdvertBoard.Infrastructure.DataAccess.Helpers;
 using AdvertBoard.Infrastructure.Repository.Relational;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
@@ -14,6 +14,9 @@ namespace AdvertBoard.Infrastructure.DataAccess.Contexts.Categories.Repositories
 /// <inheritdoc/>
 public class CategoryRepository : ICategoryRepository
 {
+    private const string GetHierarchyByIdSqlQuery = "Contexts.Categories.Resources.GetHierarchyByIdSqlQuery.txt";
+    private const string GetHierarchyIdsSqlQuery = "Contexts.Categories.Resources.GetHierarchyIdsSqlQuery.txt";
+    
     private readonly IRelationalRepository<Category> _repository;
     private readonly IMapper _mapper;
 
@@ -39,20 +42,8 @@ public class CategoryRepository : ICategoryRepository
     public async Task<CategoryHierarchyResponse> GetHierarchyByIdAsync(Guid id,
         CancellationToken cancellationToken)
     {
-        string sql =
-             """
-             WITH RECURSIVE r AS (
-                 SELECT c."Id", c."Title", c."ParentId", c."CreatedAt"
-                 FROM public."Category" c
-                 WHERE "Id" = {0}
-                 UNION
-                 SELECT c."Id", c."Title", c."ParentId", c."CreatedAt"
-                 FROM public."Category" c
-                 JOIN r ON c."ParentId" = r."Id"
-             )
-             SELECT * FROM r
-             """;
-
+        string sql = await EmbeddedResourceHelper.GetEmbeddedResourceAsString(GetHierarchyByIdSqlQuery, cancellationToken);
+       
         var query = await _repository
             .GetBySql(sql, id)
             .AsNoTrackingWithIdentityResolution()
@@ -111,20 +102,11 @@ public class CategoryRepository : ICategoryRepository
     {
         var placeholders = string.Join(",", Enumerable.Range(0, ids.Count())
             .Select(i => "{" + i + "}"));
+        
         var values = ids.Cast<object>().ToArray();
-        string sql =
-             $"""
-             WITH RECURSIVE r AS (
-                 SELECT c."Id"
-                 FROM public."Category" c
-                 WHERE "Id" IN ({placeholders})
-                 UNION
-                 SELECT c."Id"
-                 FROM public."Category" c
-                 JOIN r ON c."ParentId" = r."Id"
-             )
-             SELECT * FROM r
-             """;
+        
+        string template = await EmbeddedResourceHelper.GetEmbeddedResourceAsString(GetHierarchyIdsSqlQuery, cancellationToken);
+        var sql = string.Format(template, placeholders);
         
         var query = await _repository
             .GetBySql(sql, values)

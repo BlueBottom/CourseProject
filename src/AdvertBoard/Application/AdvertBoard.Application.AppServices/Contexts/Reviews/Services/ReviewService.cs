@@ -48,12 +48,13 @@ public class ReviewService : IReviewService
     }
 
     /// <inheritdoc/>
-    public async Task<PageResponse<ShortReviewResponse>> GetAllByUserIdAsync(GetAllReviewsRequest getAllReviewsRequest,
+    public async Task<PageResponse<ShortReviewResponse>> GetAllByUsedWithPaginationAsync(
+        GetAllReviewsRequest getAllReviewsRequest,
         CancellationToken cancellationToken)
     {
         await _getAllReviewsValidator.ValidateAndThrowAsync(getAllReviewsRequest, cancellationToken);
         
-        return await _reviewRepository.GetAllByUserIdAsync(getAllReviewsRequest, cancellationToken);
+        return await _reviewRepository.GetAllByUserWithPaginationAsync(getAllReviewsRequest, cancellationToken);
     }
 
     /// <inheritdoc/>

@@ -36,6 +36,7 @@ public class CreateCommentValidator : BusinessLogicAbstractValidator<CreateComme
 
         RuleFor(x => new { x.ParentId, x.AdvertId })
             .MustAsync((args, token) => IsCurrentCommentRelatedToCurrentAdvert(args.ParentId!, args.AdvertId!, token))
+            .When(x => x.ParentId.HasValue)
             .WithMessage("В этом объявлении не существует комментария с таким id.");
     }
 

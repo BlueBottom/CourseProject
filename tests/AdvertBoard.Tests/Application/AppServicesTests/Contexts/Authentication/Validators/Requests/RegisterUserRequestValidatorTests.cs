@@ -1,6 +1,5 @@
 ﻿using AdvertBoard.Application.AppServices.Contexts.Accounts.Validators.Requests;
 using AdvertBoard.Contracts.Contexts.Accounts.Requests;
-using AdvertBoard.Contracts.Contexts.Users.Requests;
 using AdvertBoard.Tests.Application.AppServicesTests.Data;
 using FluentValidation.TestHelper;
 using Xunit;

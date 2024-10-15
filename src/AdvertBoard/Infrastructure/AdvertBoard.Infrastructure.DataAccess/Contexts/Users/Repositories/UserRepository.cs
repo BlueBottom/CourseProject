@@ -107,7 +107,7 @@ public class UserRepository : IUserRepository
     }
 
     /// <inheritdoc/>
-    public async Task<PageResponse<ShortUserResponse>> GetAllByFilterWithPaginationAsync(
+    public async Task<PageResponse<ShortUserResponse>> GetByFilterWithPaginationAsync(
         ISpecification<User> specification,
         PaginationRequest paginationRequest, CancellationToken cancellationToken)
     {

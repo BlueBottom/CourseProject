@@ -5,6 +5,9 @@
 /// </summary>
 public class ForbiddenException : Exception
 {
+    /// <summary>
+    /// Инициализирует экземпляр класса <see cref="ForbiddenException"/>.
+    /// </summary>
     public ForbiddenException() : base("Нет права доступа.")
     {
         

@@ -1,7 +1,5 @@
-﻿using AdvertBoard.Contracts.Contexts.Images;
-using AdvertBoard.Contracts.Contexts.Images.Requests;
+﻿using AdvertBoard.Contracts.Contexts.Images.Requests;
 using AdvertBoard.Contracts.Contexts.Images.Responses;
-using Microsoft.AspNetCore.Http;
 
 namespace AdvertBoard.Application.AppServices.Contexts.Images.Services;
 

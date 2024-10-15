@@ -71,7 +71,7 @@ public class UserService : IUserService
     }
 
     /// <inheritdoc/>
-    public Task<PageResponse<ShortUserResponse>> GetAllByFilterWithPaginationAsync(
+    public Task<PageResponse<ShortUserResponse>> GetByFilterWithPaginationAsync(
         GetAllUsersByFilterRequest getAllUsersByFilterRequest,
         CancellationToken cancellationToken)
     {
@@ -83,7 +83,7 @@ public class UserService : IUserService
             PageNumber = getAllUsersByFilterRequest.PageNumber
         };
 
-        return _userRepository.GetAllByFilterWithPaginationAsync(specification, paginationRequest, cancellationToken);
+        return _userRepository.GetByFilterWithPaginationAsync(specification, paginationRequest, cancellationToken);
     }
     
     /// <inheritdoc/>

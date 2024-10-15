@@ -29,7 +29,8 @@ public class ReviewRepository : IReviewRepository
     }
 
     /// <inheritdoc/>
-    public async Task<PageResponse<ShortReviewResponse>> GetAllByUserIdAsync(GetAllReviewsRequest getAllReviewsRequest,
+    public async Task<PageResponse<ShortReviewResponse>> GetAllByUserWithPaginationAsync(
+        GetAllReviewsRequest getAllReviewsRequest,
         CancellationToken cancellationToken)
     {
         var result = new PageResponse<ShortReviewResponse>();

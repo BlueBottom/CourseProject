@@ -1,10 +1,10 @@
 ﻿using System.Net;
+using System.Net.Mail;
 using System.Text.Json;
 using AdvertBoard.Application.AppServices.Exceptions;
 using AdvertBoard.Contracts.Common;
 using FluentValidation;
 using Microsoft.AspNetCore.Http.Extensions;
-using Serilog;
 using Serilog.Context;
 
 namespace AdvertBoard.Hosts.Api.Middlewares;
@@ -33,25 +33,26 @@ public class ExceptionHandlingMiddleware
     }
 
     /// <summary>
-    /// Выполняет операцию промежуточного ПО и передаёт управление
+    /// Выполняет операцию промежуточного ПО и передаёт управление.
     /// </summary>
     public async Task Invoke(
-        HttpContext context
-        , IHostEnvironment environment
-        , IServiceProvider serviceProvider
-        , ILogger<ExceptionHandlingMiddleware> logger)
+        HttpContext context,
+        IHostEnvironment environment,
+        IServiceProvider serviceProvider,
+        ILogger<ExceptionHandlingMiddleware> logger)
     {
         try
         {
             await _next(context);
         }
         catch (Exception e)
-        {            
+        {
             var statusCode = GetStatusCode(e);
-            
+
             using (LogContext.PushProperty("Request.TraceId", context.TraceIdentifier))
             using (LogContext.PushProperty("Request.UserName", context.User.Identity?.Name ?? string.Empty))
-            using (LogContext.PushProperty("Request.Connection", context.Connection.RemoteIpAddress?.ToString() ?? string.Empty))
+            using (LogContext.PushProperty("Request.Connection",
+                       context.Connection.RemoteIpAddress?.ToString() ?? string.Empty))
             using (LogContext.PushProperty("Request.DisplayUrl", context.Request.GetDisplayUrl()))
             {
                 logger.LogError(e, LogTemplate,
@@ -105,13 +106,20 @@ public class ExceptionHandlingMiddleware
             ValidationException validationException => new ValidationApiError()
             {
                 Message = validationException.Message,
-                Description = string.Join("\n", validationException.Errors.Select(s => $"{s.PropertyName}: {s.ErrorMessage}")),
+                Description = string.Join("\n",
+                    validationException.Errors.Select(s => $"{s.PropertyName}: {s.ErrorMessage}")),
                 Code = context.Response.StatusCode.ToString(),
                 Errors = validationException.Errors
                     .GroupBy(
-                        x => x.PropertyName, 
+                        x => x.PropertyName,
                         x => x.ErrorMessage)
                     .ToDictionary(k => k.Key, v => v.ToArray())
+            },
+            SmtpException smtpException => new ApiError
+            {
+                Code = smtpException.StatusCode.ToString(),
+                Message = smtpException.Message,
+                Description = smtpException.StackTrace,
             },
             _ => new ApiError
             {
@@ -129,6 +137,7 @@ public class ExceptionHandlingMiddleware
             EntityNotFoundException => HttpStatusCode.NotFound,
             ForbiddenException => HttpStatusCode.Forbidden,
             ValidationException => HttpStatusCode.BadRequest,
+            SmtpException => HttpStatusCode.ServiceUnavailable,
             _ => HttpStatusCode.InternalServerError,
         };
     }

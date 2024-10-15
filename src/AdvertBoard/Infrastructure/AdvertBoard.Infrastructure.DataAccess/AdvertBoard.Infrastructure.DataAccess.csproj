@@ -19,4 +19,19 @@
       <ProjectReference Include="..\AdvertBoard.Infrastructure\AdvertBoard.Infrastructure.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Remove="Contexts\Comments\Resources\GetHierarchyById.txt" />
+      <EmbeddedResource Include="Contexts\Comments\Resources\GetHierarchyByIdSqlQuery.txt">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </EmbeddedResource>
+      <None Remove="Contexts\Categories\Resources\GetHierarchyByIdSqlQuery.txt" />
+      <EmbeddedResource Include="Contexts\Categories\Resources\GetHierarchyByIdSqlQuery.txt">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </EmbeddedResource>
+      <None Remove="Contexts\Categories\Resources\GetHierarchyIdsSqlQuery.txt" />
+      <EmbeddedResource Include="Contexts\Categories\Resources\GetHierarchyIdsSqlQuery.txt">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </EmbeddedResource>
+    </ItemGroup>
+
 </Project>

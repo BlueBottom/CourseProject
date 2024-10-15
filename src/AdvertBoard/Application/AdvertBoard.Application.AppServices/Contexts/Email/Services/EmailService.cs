@@ -12,7 +12,7 @@ public class EmailService : IEmailService
     private const string WelcomeText = "Contexts.Email.Resources.WelcomeUserMail.txt";
     private const string RecoveryPasswordText = "Contexts.Email.Resources.PasswordRecoverMail.txt";
     private const string PasswordRecoveredText = "Contexts.Email.Resources.PasswordRecoveredInfoMail.txt";
-    
+
     private readonly IConfiguration _configuration;
     private readonly ILogger<EmailService> _logger;
 
@@ -25,92 +25,89 @@ public class EmailService : IEmailService
         _logger = logger;
     }
 
-    /// <summary>
-    /// Отправляет сообщение на электронную почту об успешной регистрации.
-    /// </summary>
-    /// <param name="name">Имя пользователя.</param>
-    /// <param name="email">Электронный адрес.</param>
-    /// <param name="cancellationToken">Токен отмены.</param>
-    public async Task SendMailAboutRegistration(string name, string email, CancellationToken cancellationToken)
+    /// <inheritdoc/>
+    public Task SendMailAboutRegistration(string name, string email, CancellationToken cancellationToken)
     {
-        var smtpClient = new SmtpClient(_configuration["Email:SMTP"])
-        {
-            Port = int.Parse(_configuration["Email:Port"]!),
-            Credentials = new NetworkCredential(_configuration["Email:Sender"], _configuration["Email:Password"]),
-            EnableSsl = true,
-        };
+        var subject = "Добро пожаловать в AdvertBoard!";
+        var parameters = new object[] { name };
+        var logMessage = $"Пользователю {name} на email {email} было отправлено письмо о регистрации";
 
-        var mailBody = await EmbeddedResourceHelper.GetEmbeddedResourceAsString(WelcomeText, cancellationToken);
-        var format = string.Format(mailBody, name);
+        return SendEmailAsync(email, subject, WelcomeText, parameters, logMessage, cancellationToken);
+    }
 
-        var mailMessage = new MailMessage
-        {
-            From = new MailAddress(_configuration["Email:Sender"]!),
-            Subject = "Добро пожаловать в AdvertBoard!",
-            Body = format,
-            IsBodyHtml = true,
-        };
+    /// <inheritdoc/>
+    public Task SendRecoveryPasswordCode(string email, string code, CancellationToken cancellationToken)
+    {
+        var subject = "Восстановление пароля на платформе AdvertBoard.";
+        var parameters = new object[] { code };
+        var logMessage = $"Пользователю с email {email} был отправлен код для восстановления пароля.";
 
-        mailMessage.To.Add(email);
+        return SendEmailAsync(email, subject, RecoveryPasswordText, parameters, logMessage, cancellationToken);
+    }
 
-        await smtpClient.SendMailAsync(mailMessage, cancellationToken);
-        _logger.LogInformation($"Пользователю {name} на email {email} было отправлено пьсьмо о регистрации");
+    /// <inheritdoc/>
+    public Task SendMailAboutPasswordRecovering(string email, CancellationToken cancellationToken)
+    {
+        var subject = "Восстановлен пароль на платформе AdvertBoard";
+        object[]? parameters = null;
+        var logMessage = $"Пользователю с email {email} было отправлено письмо о смене (восстановлении) пароля.";
+
+        return SendEmailAsync(email, subject, PasswordRecoveredText, parameters, logMessage, cancellationToken);
     }
 
     /// <summary>
-    /// Отправляет на электронную почту код для восстановления пароля.
+    /// Отправляет письмо на электронную почту.
     /// </summary>
-    /// <param name="email">Электронная почта.</param>
-    /// <param name="code">Код.</param>
+    /// <param name="toEmail">Почта получателя.</param>
+    /// <param name="subject">Заголовок.</param>
+    /// <param name="templatePath">Путь к ресурсу.</param>
+    /// <param name="parameters">Параметры для интерполяции строкового содержимого ресурса.</param>
+    /// <param name="logMessage">Сообщения для лога.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
-    public async Task SendRecoveryPasswordCode(string email, string code, CancellationToken cancellationToken)
+    private async Task SendEmailAsync(
+        string toEmail,
+        string subject,
+        string templatePath,
+        object[]? parameters,
+        string logMessage,
+        CancellationToken cancellationToken)
     {
-        var smtpClient = new SmtpClient(_configuration["Email:SMTP"])
+        using var smtpClient = new SmtpClient(_configuration["Email:SMTP"])
         {
             Port = int.Parse(_configuration["Email:Port"]!),
-            Credentials = new NetworkCredential(_configuration["Email:Sender"], _configuration["Email:Password"]),
+            Credentials = new NetworkCredential(
+                _configuration["Email:Sender"],
+                _configuration["Email:Password"]),
             EnableSsl = true,
         };
-        
-        var mailBody = await EmbeddedResourceHelper.GetEmbeddedResourceAsString(RecoveryPasswordText, cancellationToken);
-        var format = string.Format(mailBody, code);
 
-        var mailMessage = new MailMessage
+        string mailBody;
+        if (parameters != null && parameters.Length > 0)
+        {
+            var template = await EmbeddedResourceHelper.GetEmbeddedResourceAsString(templatePath, cancellationToken);
+            mailBody = string.Format(template, parameters);
+        }
+        else mailBody = await EmbeddedResourceHelper.GetEmbeddedResourceAsString(templatePath, cancellationToken);
+
+        using var mailMessage = new MailMessage
         {
             From = new MailAddress(_configuration["Email:Sender"]!),
-            Subject = "Восстановление пароля на платформе AdvertBoard",
-            Body = format,
-            IsBodyHtml = true,
-        };
-
-        mailMessage.To.Add(email);
-
-        await smtpClient.SendMailAsync(mailMessage, cancellationToken);
-        _logger.LogInformation($"Пользователю с email {email} был отправлен код {code} для восстановления пароля.");
-    }
-
-    public async Task SendMailAboutPasswordRecovering(string email, CancellationToken cancellationToken)
-    {
-        var smtpClient = new SmtpClient(_configuration["Email:SMTP"])
-        {
-            Port = int.Parse(_configuration["Email:Port"]!),
-            Credentials = new NetworkCredential(_configuration["Email:Sender"], _configuration["Email:Password"]),
-            EnableSsl = true,
-        };
-        
-        var mailBody = await EmbeddedResourceHelper.GetEmbeddedResourceAsString(PasswordRecoveredText, cancellationToken);
-
-        var mailMessage = new MailMessage
-        {
-            From = new MailAddress(_configuration["Email:Sender"]!),
-            Subject = "Восстановлен пароль на платформе AdvertBoard",
+            Subject = subject,
             Body = mailBody,
             IsBodyHtml = true,
         };
 
-        mailMessage.To.Add(email);
+        mailMessage.To.Add(toEmail);
 
-        await smtpClient.SendMailAsync(mailMessage, cancellationToken);
-        _logger.LogInformation($"Пользователю с email {email} было отправлено письмо о смене (восстановлении) пароля.");
+        try
+        {
+            await smtpClient.SendMailAsync(mailMessage, cancellationToken);
+            _logger.LogInformation(logMessage);
+        }
+        catch (SmtpException ex)
+        {
+            _logger.LogError(ex, $"Ошибка при отправке письма на {toEmail}");
+            throw;
+        }
     }
 }

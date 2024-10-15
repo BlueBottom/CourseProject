@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace AdvertBoard.Application.AppServices.Helpers;
+namespace AdvertBoard.Infrastructure.DataAccess.Helpers;
 
 /// <summary>
 /// Класс для работы с встроенными ресурсами.

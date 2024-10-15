@@ -22,7 +22,6 @@ using AdvertBoard.Application.AppServices.Contexts.Reviews.Validators.BusinessLo
 using AdvertBoard.Application.AppServices.Contexts.Users.Builders;
 using AdvertBoard.Application.AppServices.Contexts.Users.Repositories;
 using AdvertBoard.Application.AppServices.Contexts.Users.Services;
-using AdvertBoard.Application.AppServices.Contexts.Users.Services.Password;
 using AdvertBoard.Application.AppServices.Contexts.Users.Services.Rating;
 using AdvertBoard.Application.AppServices.Contexts.Users.Validators.BusinessLogic;
 using AdvertBoard.Application.AppServices.Notifications.Services;

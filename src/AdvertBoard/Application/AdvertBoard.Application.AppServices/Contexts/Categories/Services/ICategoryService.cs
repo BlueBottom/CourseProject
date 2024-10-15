@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using AdvertBoard.Contracts.Contexts.Categories;
-using AdvertBoard.Contracts.Contexts.Categories.Requests;
+﻿using AdvertBoard.Contracts.Contexts.Categories.Requests;
 using AdvertBoard.Contracts.Contexts.Categories.Responses;
 
 namespace AdvertBoard.Application.AppServices.Contexts.Categories.Services;

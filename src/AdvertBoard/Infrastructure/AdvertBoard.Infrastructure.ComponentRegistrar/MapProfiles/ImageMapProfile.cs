@@ -1,5 +1,4 @@
-﻿using AdvertBoard.Contracts.Contexts.Images;
-using AdvertBoard.Contracts.Contexts.Images.Requests;
+﻿using AdvertBoard.Contracts.Contexts.Images.Requests;
 using AdvertBoard.Contracts.Contexts.Images.Responses;
 using AdvertBoard.Domain.Contexts.Images;
 using AutoMapper;

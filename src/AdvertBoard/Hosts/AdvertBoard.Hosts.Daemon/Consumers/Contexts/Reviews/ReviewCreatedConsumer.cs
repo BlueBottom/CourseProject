@@ -2,7 +2,7 @@
 using AdvertBoard.Contracts.Contexts.Reviews.Events;
 using MassTransit;
 
-namespace AdvertBoard.Hosts.Daemon.Consumers;
+namespace AdvertBoard.Hosts.Daemon.Consumers.Contexts.Reviews;
 
 /// <summary>
 /// Consumer для пересчета рейтинга.
