@@ -1,6 +1,5 @@
 ﻿using AdvertBoard.Contracts.Contexts.Adverts.Requests;
 using FluentValidation;
-using AdvertBoard.Application.AppServices.Helpers;
 using AdvertBoard.Application.AppServices.Validators;
 
 namespace AdvertBoard.Application.AppServices.Contexts.Adverts.Validators.Requests;

@@ -1,6 +1,5 @@
 ﻿using System.Security.Claims;
 using AdvertBoard.Application.AppServices.Authorization.Requirements;
-using AdvertBoard.Contracts.Contexts.Reviews;
 using AdvertBoard.Contracts.Contexts.Reviews.Responses;
 using Microsoft.AspNetCore.Authorization;
 

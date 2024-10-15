@@ -1,5 +1,4 @@
-﻿using AdvertBoard.Contracts.Contexts.Comments;
-using AdvertBoard.Contracts.Contexts.Comments.Requests;
+﻿using AdvertBoard.Contracts.Contexts.Comments.Requests;
 using AdvertBoard.Contracts.Contexts.Comments.Responses;
 using AdvertBoard.Domain.Contexts.Comments;
 using AutoMapper;

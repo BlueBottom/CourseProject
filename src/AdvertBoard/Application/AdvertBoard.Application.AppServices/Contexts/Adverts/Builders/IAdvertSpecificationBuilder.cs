@@ -1,5 +1,4 @@
 ﻿using AdvertBoard.Application.AppServices.Specifications;
-using AdvertBoard.Contracts.Contexts.Adverts;
 using AdvertBoard.Contracts.Contexts.Adverts.Requests;
 using AdvertBoard.Domain.Contexts.Adverts;
 

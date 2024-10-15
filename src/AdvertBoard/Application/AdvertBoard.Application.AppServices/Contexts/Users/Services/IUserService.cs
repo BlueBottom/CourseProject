@@ -1,6 +1,5 @@
 ﻿using AdvertBoard.Application.AppServices.Contexts.Users.Models;
 using AdvertBoard.Contracts.Common;
-using AdvertBoard.Contracts.Contexts.Users;
 using AdvertBoard.Contracts.Contexts.Users.Requests;
 using AdvertBoard.Contracts.Contexts.Users.Responses;
 
@@ -42,7 +41,8 @@ public interface IUserService
     /// <param name="getAllUsersByFilterRequest">Модель получения пользователей.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Коллекцию укороченных моделей пользователя.</returns>
-    Task<PageResponse<ShortUserResponse>> GetAllByFilterWithPaginationAsync(GetAllUsersByFilterRequest getAllUsersByFilterRequest,
+    Task<PageResponse<ShortUserResponse>> GetByFilterWithPaginationAsync(
+        GetAllUsersByFilterRequest getAllUsersByFilterRequest,
         CancellationToken cancellationToken);
     
     /// <summary>

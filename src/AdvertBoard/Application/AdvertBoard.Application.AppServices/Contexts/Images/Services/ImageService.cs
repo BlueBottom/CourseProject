@@ -3,8 +3,6 @@ using AdvertBoard.Application.AppServices.Contexts.Adverts.Services;
 using AdvertBoard.Application.AppServices.Contexts.Images.Repositories;
 using AdvertBoard.Application.AppServices.Exceptions;
 using AdvertBoard.Application.AppServices.Validators;
-using AdvertBoard.Contracts.Contexts.Adverts.Responses;
-using AdvertBoard.Contracts.Contexts.Images;
 using AdvertBoard.Contracts.Contexts.Images.Requests;
 using AdvertBoard.Contracts.Contexts.Images.Responses;
 using AdvertBoard.Domain.Contexts.Images;

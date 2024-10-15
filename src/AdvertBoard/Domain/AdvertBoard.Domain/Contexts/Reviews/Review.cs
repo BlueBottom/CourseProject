@@ -1,5 +1,4 @@
-﻿using AdvertBoard.Contracts.Enums;
-using AdvertBoard.Domain.Base;
+﻿using AdvertBoard.Domain.Base;
 using AdvertBoard.Domain.Contexts.Users;
 
 namespace AdvertBoard.Domain.Contexts.Reviews;

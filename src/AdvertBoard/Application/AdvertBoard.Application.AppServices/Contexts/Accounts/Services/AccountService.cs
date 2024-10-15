@@ -6,7 +6,6 @@ using AdvertBoard.Application.AppServices.Helpers;
 using AdvertBoard.Application.AppServices.Notifications.Services;
 using AdvertBoard.Application.AppServices.Validators;
 using AdvertBoard.Contracts.Contexts.Accounts.Requests;
-using AdvertBoard.Contracts.Contexts.Users.Requests;
 using AdvertBoard.Domain.Contexts.Users;
 using AutoMapper;
 using FluentValidation;

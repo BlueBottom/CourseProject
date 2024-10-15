@@ -1,10 +1,10 @@
 ﻿using AdvertBoard.Application.AppServices.Contexts.Comments.Repositories;
 using AdvertBoard.Application.AppServices.Exceptions;
 using AdvertBoard.Contracts.Common;
-using AdvertBoard.Contracts.Contexts.Comments;
 using AdvertBoard.Contracts.Contexts.Comments.Requests;
 using AdvertBoard.Contracts.Contexts.Comments.Responses;
 using AdvertBoard.Domain.Contexts.Comments;
+using AdvertBoard.Infrastructure.DataAccess.Helpers;
 using AdvertBoard.Infrastructure.Repository.Relational;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
@@ -15,6 +15,8 @@ namespace AdvertBoard.Infrastructure.DataAccess.Contexts.Comments.Repositories;
 /// <inheritdoc/>
 public class CommentRepository : ICommentRepository
 {
+    private const string GetHierarchyByIdSqlQuery = "Contexts.Comments.Resources.GetHierarchyByIdSqlQuery.txt";
+    
     private readonly IRelationalRepository<Comment> _repository;
     private readonly IMapper _mapper;
 
@@ -37,7 +39,8 @@ public class CommentRepository : ICommentRepository
     }
 
     /// <inheritdoc/>
-    public async Task<PageResponse<ShortCommentResponse>> GetAllWithPaginationAsync(GetAllCommentsRequest getAllCommentsRequest,
+    public async Task<PageResponse<ShortCommentResponse>> GetByAdvertWithPaginationAsync(
+        GetAllCommentsRequest getAllCommentsRequest,
         CancellationToken cancellationToken)
     {
         var result = new PageResponse<ShortCommentResponse>();
@@ -49,7 +52,7 @@ public class CommentRepository : ICommentRepository
         
         var paginationQuery = await query
             .OrderBy(x => x.CreatedAt)
-            .Where(x => x.AdvertId == getAllCommentsRequest.AdvertId)
+            .Where(x => x.AdvertId == getAllCommentsRequest.AdvertId && x.ParentId == null)
             .Skip(getAllCommentsRequest.BatchSize * (getAllCommentsRequest.PageNumber - 1))
             .Take(getAllCommentsRequest.BatchSize)
             .ProjectTo<ShortCommentResponse>(_mapper.ConfigurationProvider)
@@ -92,19 +95,8 @@ public class CommentRepository : ICommentRepository
     /// <inheritdoc/>
     public async Task<CommentHierarchyResponse> GetHierarchyByIdAsync(Guid id, CancellationToken cancellationToken)
     {
-        string sql =
-            """
-            WITH RECURSIVE r AS (
-                SELECT c."Id", c."Content", c."ParentId", c."CreatedAt", c."AdvertId", c."UserId", c."EditedAt", c."IsActive"
-                FROM public."Comment" c
-                WHERE "Id" = {0}
-                UNION
-                SELECT c."Id", c."Content", c."ParentId", c."CreatedAt", c."AdvertId", c."UserId", c."EditedAt", c."IsActive"
-                FROM public."Comment" c
-                JOIN r ON c."ParentId" = r."Id"
-            )
-            SELECT * FROM r
-            """;
+        string sql = await EmbeddedResourceHelper.GetEmbeddedResourceAsString(GetHierarchyByIdSqlQuery, cancellationToken);
+  
         var query = await _repository
             .GetBySql(sql, id)
             .AsNoTrackingWithIdentityResolution()

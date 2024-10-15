@@ -1,5 +1,4 @@
-﻿using AdvertBoard.Contracts.Contexts.Categories;
-using AdvertBoard.Contracts.Contexts.Categories.Requests;
+﻿using AdvertBoard.Contracts.Contexts.Categories.Requests;
 using AdvertBoard.Contracts.Contexts.Categories.Responses;
 using AdvertBoard.Domain.Contexts.Categories;
 using AutoMapper;

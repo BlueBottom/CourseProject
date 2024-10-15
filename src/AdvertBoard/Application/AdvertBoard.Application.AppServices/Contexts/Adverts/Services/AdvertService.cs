@@ -1,5 +1,4 @@
-﻿using System.Security.Claims;
-using AdvertBoard.Application.AppServices.Authorization.Requirements;
+﻿using AdvertBoard.Application.AppServices.Authorization.Requirements;
 using AdvertBoard.Application.AppServices.Contexts.Adverts.Builders;
 using AdvertBoard.Application.AppServices.Contexts.Adverts.Repositories;
 using AdvertBoard.Application.AppServices.Exceptions;

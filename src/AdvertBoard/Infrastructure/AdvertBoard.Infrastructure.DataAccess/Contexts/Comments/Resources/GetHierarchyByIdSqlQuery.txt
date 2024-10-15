@@ -1,0 +1,10 @@
+﻿ WITH RECURSIVE r AS (
+                SELECT c."Id", c."Content", c."ParentId", c."CreatedAt", c."AdvertId", c."UserId", c."EditedAt"
+                FROM public."Comment" c
+                WHERE "Id" = {0}
+                UNION
+                SELECT c."Id", c."Content", c."ParentId", c."CreatedAt", c."AdvertId", c."UserId", c."EditedAt"
+                FROM public."Comment" c
+                JOIN r ON c."ParentId" = r."Id"
+            )
+            SELECT * FROM r

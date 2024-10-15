@@ -1,5 +1,4 @@
 ﻿using AdvertBoard.Contracts.Common;
-using AdvertBoard.Contracts.Contexts.Reviews;
 using AdvertBoard.Contracts.Contexts.Reviews.Requests;
 using AdvertBoard.Contracts.Contexts.Reviews.Responses;
 using AdvertBoard.Domain.Contexts.Reviews;
@@ -17,7 +16,7 @@ public interface IReviewRepository
     /// <param name="getAllReviewsRequest">Модель запроса для получения пользователей.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Коллекцию укороченных моделей отзывов.</returns>
-    Task<PageResponse<ShortReviewResponse>> GetAllByUserIdAsync(GetAllReviewsRequest getAllReviewsRequest,
+    Task<PageResponse<ShortReviewResponse>> GetAllByUserWithPaginationAsync(GetAllReviewsRequest getAllReviewsRequest,
         CancellationToken cancellationToken);
     
     /// <summary>

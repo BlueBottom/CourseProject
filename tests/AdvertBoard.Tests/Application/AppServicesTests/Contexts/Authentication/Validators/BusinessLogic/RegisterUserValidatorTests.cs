@@ -1,10 +1,8 @@
 ﻿using AdvertBoard.Application.AppServices.Contexts.Accounts.Validators.BusinessLogic;
 using AdvertBoard.Application.AppServices.Contexts.Users.Models;
 using AdvertBoard.Application.AppServices.Contexts.Users.Repositories;
-using AdvertBoard.Application.AppServices.Contexts.Users.Services;
 using AdvertBoard.Application.AppServices.Helpers;
 using AdvertBoard.Contracts.Contexts.Accounts.Requests;
-using AdvertBoard.Contracts.Contexts.Users.Requests;
 using AutoFixture;
 using Bogus;
 using FluentValidation.TestHelper;

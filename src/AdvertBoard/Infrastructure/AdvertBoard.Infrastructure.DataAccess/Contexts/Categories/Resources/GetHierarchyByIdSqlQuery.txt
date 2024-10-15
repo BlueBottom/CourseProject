@@ -1,0 +1,10 @@
+﻿WITH RECURSIVE r AS (
+    SELECT c."Id", c."Title", c."ParentId", c."CreatedAt"
+    FROM public."Category" c
+    WHERE "Id" = {0}
+    UNION
+        SELECT c."Id", c."Title", c."ParentId", c."CreatedAt"
+        FROM public."Category" c
+        JOIN r ON c."ParentId" = r."Id"
+    )
+SELECT * FROM r

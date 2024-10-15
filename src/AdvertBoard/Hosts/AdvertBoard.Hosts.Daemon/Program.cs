@@ -10,6 +10,8 @@ using AdvertBoard.Contracts.Contexts.Accounts.Events;
 using AdvertBoard.Contracts.Contexts.Accounts.Requests;
 using AdvertBoard.Contracts.Contexts.Reviews.Events;
 using AdvertBoard.Hosts.Daemon.Consumers;
+using AdvertBoard.Hosts.Daemon.Consumers.Contexts.Accounts;
+using AdvertBoard.Hosts.Daemon.Consumers.Contexts.Reviews;
 using AdvertBoard.Hosts.Daemon.Extensions;
 using AdvertBoard.Infrastructure.ComponentRegistrar;
 using AdvertBoard.Infrastructure.ComponentRegistrar.MapProfiles;

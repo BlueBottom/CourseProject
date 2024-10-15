@@ -1,6 +1,7 @@
 ﻿using AdvertBoard.Application.AppServices.Contexts.Categories.Services;
-using AdvertBoard.Contracts.Contexts.Categories;
+using AdvertBoard.Contracts.Common;
 using AdvertBoard.Contracts.Contexts.Categories.Requests;
+using AdvertBoard.Contracts.Contexts.Categories.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -30,9 +31,17 @@ public class CategoryController : ControllerBase
     /// <param name="createCategoryRequest">Модель запроса на создание категории.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Идентификатор.</returns>
+    /// <response code="200">Запрос выполнен успешно.</response>
+    /// <response code="400">Модель данных не валидна.</response>
+    /// <response code="401">Пользователь не авторизован.</response>
+    /// <response code="403">Нет права доступа.</response>
     [Authorize(Roles = "Admin")]
     [HttpPost]
-    public async Task<IActionResult> AddAsync(CreateCategoryRequest createCategoryRequest, CancellationToken cancellationToken)
+    [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ValidationApiError), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiError), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiError), StatusCodes.Status403Forbidden)]
+    public async Task<IActionResult> AddAsync([FromForm] CreateCategoryRequest createCategoryRequest, CancellationToken cancellationToken)
     {
         var result = await _categoryService.AddAsync(createCategoryRequest, cancellationToken);
         return Ok(result);
@@ -43,7 +52,9 @@ public class CategoryController : ControllerBase
     /// </summary>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Коллекцию укороченных моделей категории.</returns>
+    /// <response code="200">Запрос выполнен успешно.</response>
     [HttpGet("parents")]
+    [ProducesResponseType(typeof(IEnumerable<ShortCategoryResponse>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAllParentsAsync(CancellationToken cancellationToken)
     {
         var result = await _categoryService.GetAllParentsAsync(cancellationToken);
@@ -56,7 +67,11 @@ public class CategoryController : ControllerBase
     /// <param name="id">Идентификатор.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Коллекцию укороченных моделей категории.</returns>
+    /// <response code="200">Запрос выполнен успешно.</response>
+    /// <response code="404">Сущность не найдена.</response>
     [HttpGet("{id:guid}/hierarchy")]
+    [ProducesResponseType(typeof(CategoryHierarchyResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiError), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetHierarchyByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         var result = await _categoryService.GetHierarchyByIdAsync(id, cancellationToken);
@@ -69,8 +84,16 @@ public class CategoryController : ControllerBase
     /// <param name="id">Идентификатор.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Укороченную модель категории.</returns>
+    /// <response code="200">Запрос выполнен успешно.</response>
+    /// <response code="401">Пользователь не авторизован.</response>
+    /// <response code="403">Нет права доступа.</response>
+    /// <response code="404">Сущность не найдена.</response>
     [Authorize(Roles = "Admin")]
     [HttpGet("{id:guid}")]
+    [ProducesResponseType(typeof(ShortCategoryResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiError), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiError), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ApiError), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         var result = await  _categoryService.GetByIdAsync(id, cancellationToken);
@@ -84,9 +107,19 @@ public class CategoryController : ControllerBase
     /// <param name="updateCategoryRequest">Модель запроса на обновление категории.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Идентификатор.</returns>
+    /// <response code="200">Запрос выполнен успешно.</response>
+    /// <response code="400">Модель данных не валидна.</response>
+    /// <response code="401">Пользователь не авторизован.</response>
+    /// <response code="403">Нет права доступа.</response>
+    /// <response code="404">Сущность не найдена.</response>
     [Authorize(Roles = "Admin")]
     [HttpPut("{id:guid}")]
-    public async Task<IActionResult> UpdateAsync(Guid id, UpdateCategoryRequest updateCategoryRequest,
+    [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ValidationApiError), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiError), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiError), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ApiError), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> UpdateAsync(Guid id, [FromForm] UpdateCategoryRequest updateCategoryRequest,
         CancellationToken cancellationToken)
     {
         var result = await _categoryService.UpdateAsync(id, updateCategoryRequest, cancellationToken);
@@ -98,9 +131,17 @@ public class CategoryController : ControllerBase
     /// </summary>
     /// <param name="id">Идентификатоор.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
-    /// <returns><see cref="NoContentResult"/></returns>
+    /// <returns><see cref="NoContentResult"/>.</returns>
+    /// <response code="204">Контент отсутствует.</response>
+    /// <response code="401">Пользователь не авторизован.</response>
+    /// <response code="403">Нет права доступа.</response>
+    /// <response code="404">Сущность не найдена.</response>
     [Authorize(Roles = "Admin")]
     [HttpDelete("{id:guid}")]
+    [ProducesResponseType(typeof(NoContentResult), StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ApiError), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiError), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ApiError), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteAsync(Guid id, CancellationToken cancellationToken)
     {
         var result = await _categoryService.DeleteAsync(id, cancellationToken);

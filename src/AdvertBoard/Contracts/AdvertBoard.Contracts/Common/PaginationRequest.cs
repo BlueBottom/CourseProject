@@ -11,7 +11,7 @@ public class PaginationRequest
     public int PageNumber { get; set; }
 
     /// <summary>
-    /// Количество объявлений на страницу.
+    /// Количество моделей на страницу.
     /// </summary>
     public int BatchSize { get; set; } = 20;
 }

@@ -1,5 +1,4 @@
-﻿using System.Security.Claims;
-using AdvertBoard.Application.AppServices.Authorization.Requirements;
+﻿using AdvertBoard.Application.AppServices.Authorization.Requirements;
 using AdvertBoard.Application.AppServices.Contexts.Comments.Repositories;
 using AdvertBoard.Application.AppServices.Exceptions;
 using AdvertBoard.Application.AppServices.Helpers;
@@ -63,13 +62,13 @@ public class CommentService : ICommentService
     }
 
     /// <inheritdoc/>
-    public async Task<PageResponse<ShortCommentResponse>> GetAllWithPaginationAsync(
+    public async Task<PageResponse<ShortCommentResponse>> GetByAdvertWithPaginationAsync(
         GetAllCommentsRequest getAllCommentsRequest,
         CancellationToken cancellationToken)
     {
         await _getAllCommentsValidator.ValidateAndThrowAsync(getAllCommentsRequest, cancellationToken);
         
-        return await _commentRepository.GetAllWithPaginationAsync(getAllCommentsRequest, cancellationToken);
+        return await _commentRepository.GetByAdvertWithPaginationAsync(getAllCommentsRequest, cancellationToken);
     }
 
     /// <inheritdoc/>
@@ -87,15 +86,6 @@ public class CommentService : ICommentService
         return await _commentRepository.UpdateAsync(id, updateCommentRequest, cancellationToken);
     }
 
-    private async Task EnsureResourceAuthorize(Guid id, CancellationToken cancellationToken)
-    {
-        var existingReview = await _commentRepository.GetByIdAsync(id, cancellationToken);
-        var authResult = await _authorizationService.AuthorizeAsync(_httpContextAccessor.HttpContext.User,
-            existingReview,
-            new ResourceOwnerRequirement());
-        if (!authResult.Succeeded) throw new ForbiddenException();
-    }
-
     /// <inheritdoc/>
     public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken)
     {
@@ -111,5 +101,14 @@ public class CommentService : ICommentService
     public Task<CommentHierarchyResponse> GetHierarchyByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         return _commentRepository.GetHierarchyByIdAsync(id, cancellationToken);
+    }
+    
+    private async Task EnsureResourceAuthorize(Guid id, CancellationToken cancellationToken)
+    {
+        var existingReview = await _commentRepository.GetByIdAsync(id, cancellationToken);
+        var authResult = await _authorizationService.AuthorizeAsync(_httpContextAccessor.HttpContext.User,
+            existingReview,
+            new ResourceOwnerRequirement());
+        if (!authResult.Succeeded) throw new ForbiddenException();
     }
 }

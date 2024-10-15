@@ -1,6 +1,5 @@
 ﻿using AdvertBoard.Application.AppServices.Contexts.Images.Repositories;
 using AdvertBoard.Application.AppServices.Exceptions;
-using AdvertBoard.Contracts.Contexts.Images;
 using AdvertBoard.Contracts.Contexts.Images.Responses;
 using AdvertBoard.Domain.Contexts.Images;
 using AdvertBoard.Infrastructure.Repository;

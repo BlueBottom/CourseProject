@@ -1,5 +1,4 @@
 ﻿using AdvertBoard.Contracts.Common;
-using AdvertBoard.Contracts.Contexts.Comments;
 using AdvertBoard.Contracts.Contexts.Comments.Requests;
 using AdvertBoard.Contracts.Contexts.Comments.Responses;
 using AdvertBoard.Domain.Contexts.Comments;
@@ -20,12 +19,12 @@ public interface ICommentRepository
     Task<Guid> AddAsync(Comment comment, CancellationToken cancellationToken);
 
     /// <summary>
-    /// Получает комментарии к объявлению.
+    /// Получает комментарии к объявлению, у которых нет родительских комментариев.
     /// </summary>
     /// <param name="getAllCommentsRequest">Модель запроса на получение комментариев.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Коллекцию укороченных моделей комментария с пагинацией.</returns>
-    Task<PageResponse<ShortCommentResponse>> GetAllWithPaginationAsync(GetAllCommentsRequest getAllCommentsRequest,
+    Task<PageResponse<ShortCommentResponse>> GetByAdvertWithPaginationAsync(GetAllCommentsRequest getAllCommentsRequest,
         CancellationToken cancellationToken);
 
     /// <summary>

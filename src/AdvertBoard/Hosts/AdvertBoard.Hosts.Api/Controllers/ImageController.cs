@@ -1,6 +1,7 @@
 ﻿using AdvertBoard.Application.AppServices.Contexts.Images.Services;
-using AdvertBoard.Contracts.Contexts.Images;
+using AdvertBoard.Contracts.Common;
 using AdvertBoard.Contracts.Contexts.Images.Requests;
+using AdvertBoard.Contracts.Contexts.Images.Responses;
 using AdvertBoard.Hosts.Api.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -31,7 +32,11 @@ public class ImageController : ControllerBase
     /// <param name="id">Идентификатор.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Модель объявления.</returns>
+    /// <response code="200">Запрос выполнен успешно.</response>
+    /// <response code="404">Сущность не найдена.</response>
     [HttpGet("{id:guid}")]
+    [ProducesResponseType(typeof(ImageResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiError), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
     {
         var result = await _imageService.GetByIdAsync(id, cancellationToken);
@@ -45,8 +50,16 @@ public class ImageController : ControllerBase
     /// <param name="file">Файл изображения.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Идентификатор изображения.</returns>
+    /// <response code="200">Запрос выполнен успешно.</response>
+    /// <response code="400">Модель данных не валидна.</response>
+    /// <response code="401">Пользователь не авторизован.</response>
+    /// <response code="403">Нет права доступа.</response>
     [HttpPost]
     [Authorize]
+    [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ValidationApiError), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiError), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiError), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> AddAsync(Guid advertId, IFormFile file, CancellationToken cancellationToken)
     {
         var image = FormFileHelper.RequestFileToImage(file);
@@ -64,9 +77,17 @@ public class ImageController : ControllerBase
     /// </summary>
     /// <param name="id">Идентификатор изображения.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
-    /// <returns>Статус действия типа <see cref="bool"/>.</returns>
+    /// <returns><see cref="NoContentResult"/>.</returns>
+    /// <response code="204">Контент отсутствует.</response>
+    /// <response code="401">Пользователь не авторизован.</response>
+    /// <response code="403">Нет права доступа.</response>
+    /// <response code="404">Сущность не найдена.</response>
     [HttpDelete("{id:guid}")]
     [Authorize]
+    [ProducesResponseType(typeof(NoContentResult), StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ApiError), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ApiError), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ApiError), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteAsync(Guid id, CancellationToken cancellationToken)
     {
         var result = await _imageService.DeleteAsync(id, cancellationToken);

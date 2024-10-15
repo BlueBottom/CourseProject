@@ -1,5 +1,4 @@
-﻿using AdvertBoard.Contracts.Contexts.Images;
-using AdvertBoard.Contracts.Contexts.Images.Responses;
+﻿using AdvertBoard.Contracts.Contexts.Images.Responses;
 using AdvertBoard.Domain.Contexts.Images;
 
 namespace AdvertBoard.Application.AppServices.Contexts.Images.Repositories;
